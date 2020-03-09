@@ -43,6 +43,10 @@ const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 2
 const USE_QUICK_TEMPLATES = false;
 const RNG_MIN = 0;
 const RNG_MAX = [0, 4, 22, 22, 15, 15];
+const RNG_LEVEL_MIN = 0;
+const RNG_LEVEL_MAX = 99;
+const RNG_QUALITY_MIN = 1;
+const RNG_QUALITY_MAX = 9;
 var AMOUNTS = [0, 1, 16, 18, 7, 2];
 var INITIAL_QUALITY = 1;
 var INITIAL_LEVEL = 0;
@@ -70,9 +74,9 @@ function runTestIteration() {
     for (let t = 0; t < AMOUNTS.length; t++) {
         AMOUNTS[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN)) + RNG_MIN);
     }
-    let iterTime = new Date().getTime();
+    INITIAL_LEVEL = Math.floor((Math.random() * (RNG_LEVEL_MAX - RNG_LEVEL_MIN)) + RNG_LEVEL_MIN);
+    INITIAL_QUALITY = Math.floor((Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN)) + RNG_QUALITY_MIN);
     let solution = findSolution(USE_QUICK_TEMPLATES);
-    solution.time = new Date().getTime() - iterTime;
 
     // Find slow combos
     solution.slow = "";
@@ -83,7 +87,7 @@ function runTestIteration() {
     }
     if (solution.slow) {
         let solutionQuick = findSolution(true);
-        solution.slow = solutionQuick.bestCost - solution.bestCost;
+        solution.slow = (solutionQuick.bestCost - solution.bestCost) + " G in " + ((solution.time - solutionQuick.time) / 1000) + " s";
     }
 
     solution.comboCounts = countIds(solution.bestSteps);
@@ -101,16 +105,26 @@ function runTestIteration() {
 }
 
 function findSolution(quick) {
-    let solution = {budget: AMOUNTS.slice(0), steps: [], bestSteps: [], bestCost : 1000000, troopTotals: [0, 0, 0, 0, 0, 0], iterations: 0};
+    let solTime = new Date().getTime();
+    let solution = {
+      initialLevel: INITIAL_LEVEL,
+      initialQuality: INITIAL_QUALITY,
+      budget: AMOUNTS.slice(0),
+      steps: [],
+      bestSteps: [],
+      bestCost : 1000000,
+      troopTotals: [0, 0, 0, 0, 0, 0],
+      iterations: 0};
     solution.xpBudget = solution.budget.reduce(function(accumulator, currentValue, currentIndex, array) {
       return accumulator + currentValue * TROOPS[currentIndex].xp
     });
-    if (INITIAL_LEVEL === 0 && INITIAL_QUALITY === 1 && INITIAL_XP === 0 && solution.xpBudget < 4300) {
+    if (solution.initialLevel === 0 && solution.initialQuality === 1 && INITIAL_XP === 0 && solution.xpBudget < 4300) {
       console.log("Skipping, XP budget: " + solution.xpBudget);
       return solution; // Skip hopeless budgets
     }
     let comboArr = quick? quickCombos : combos;
     solution = search(0, 0, solution, comboArr);
+    solution.time = new Date().getTime() - solTime;
     return solution;
   }
 
@@ -125,7 +139,7 @@ function search(startCombo, depth, solution, combos) {
       solution.steps[depth] = Object.assign({}, combos[c]);
       addToTotal(solution, combos[c]);
       calculateStats(solution);
-      if (depth === GOAL_QUALITY - INITIAL_QUALITY - 1) {
+      if (depth === GOAL_QUALITY - solution.initialQuality - 1) {
         if (solution.sumCost < solution.bestCost && solution.sumLevel >= GOAL_LEVEL && budgetFits(solution)) {
           solution.bestCost = solution.sumCost;
           solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
@@ -159,9 +173,9 @@ function search(startCombo, depth, solution, combos) {
   }
   
   function calculateStats(solution) {
-    solution.quality = INITIAL_QUALITY;
-    solution.sumLevel = INITIAL_LEVEL;
-    solution.sumXp = levelXp[INITIAL_LEVEL] + INITIAL_XP;
+    solution.quality = solution.initialQuality;
+    solution.sumLevel = solution.initialLevel;
+    solution.sumXp = levelXp[solution.initialLevel] + INITIAL_XP;
     solution.sumCost = 0;
     for (let combo of solution.steps) {
       solution.quality++;
