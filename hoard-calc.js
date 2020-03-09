@@ -1,3 +1,4 @@
+// TODO constants?
 const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 28];
 
 const RUN_TESTS = 1;
@@ -65,7 +66,7 @@ function runTests() {
   }
 }
 
-function renderTests(bestSolutions, totalComboCounts) {
+function renderTests(solutions, totalComboCounts) {
   removeElement('main-table');
   removeElement('combo-table');
 
@@ -84,16 +85,16 @@ function renderTests(bestSolutions, totalComboCounts) {
     td.textContent = TEMPLATES_QUICK.includes(Number(key)) ? '' : 'X';
   }
 
-	const table = createTable(["Budget", "XP Budget", "Gold", "Time", "Iterations", "Slow", "Combos"]);
+	const table = createTable(["Budget", "XP Budget", "Gold", "Time", "Slow", "Combos", "In Level", "In Quality"]);
 	table.id = 'main-table';
 	table.classList.add('mainTable');
   document.body.appendChild(table);
-  //sorttable.makeSortable(table);
+  // TODO sorttable.makeSortable(table);
 
-  for (let solution of bestSolutions) {
+  for (let solution of solutions) {
     if (!solution) continue;
     let tr = table.insertRow(-1);
-		for (let attribute of ['budget', 'xpBudget', 'bestCost', 'time', 'iterations', 'slow', 'comboCounts']) {
+		for (let attribute of ['budget', 'xpBudget', 'bestCost', 'time', 'slow', 'comboCounts', 'initialLevel', 'initialQuality']) {
 			let td = tr.insertCell(-1);
 			if (attribute === 'budget') {
         td.textContent = '';
@@ -102,8 +103,8 @@ function renderTests(bestSolutions, totalComboCounts) {
         }
       } else if (attribute === 'comboCounts') {
         td.textContent = '';
-        for (let troopNr of solution.budget) {
-          td.textContent += troopNr += " ";
+        for (let [comboId, count] of solution.comboCounts.entries()) {
+          if (count) td.textContent += comboId += " ";
         }
       } else {
         td.textContent = solution[attribute];
