@@ -1,46 +1,53 @@
 // TODO constants?
+const TROOPS = [
+  { shortName: "C", name: "Coin Purse", percent: 5, xp: 10 },
+  { shortName: "R", name: "Gold Ring", percent: 10, xp: 25 },
+  { shortName: "P", name: "Priest's Chalice", percent: 20, xp: 50 },
+  { shortName: "K", name: "King's Crown", percent: 25, xp: 100 },
+  { shortName: "G", name: "Genie' Lamp", percent: 30, xp: 250 },
+  { shortName: "S", name: "Sacred Treasure", percent: 50, xp: 500 }
+];
 const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 28];
 
-const RUN_TESTS = 1;
 const RUN_ITERATIONS = 100;
+const RANDOMIZE = 0;
+
+var AMOUNTS = [0, 10, 25, 25, 5, 4];
+var INITIAL_QUALITY = 2;
+var INITIAL_LEVEL = 24;
+var INITIAL_XP = 0; // leftover
+var GOAL_LEVEL = 100;
+var GOAL_QUALITY = 10;
 
 start();
 
 function start() {
   console.log("Starting...");
-  let result;
-  let time = new Date().getTime();
-  if (RUN_TESTS) {
-    runTests();
-  } else {
-    calculate();
-  }
-  let elapsed = new Date().getTime() - time;
-  console.log("Done! Time: " + elapsed + " ms");
-}
-
-function calculate() {
-  //let bestSolution = findSolution(USE_QUICK_TEMPLATES);
-  //console.log("Iterations: " + iterations);
-  //return renderSolution(bestSolution);
-}
-
-function runTests() {
   if (window.Worker) {
-    let bestSolutions = [];
+    let solutions = [];
     let totalComboCounts = [];
     let maxTroopCounts = [];
-    let numSolutions = 0;
     let totalTime = 0;
     const myWorker = new Worker("worker.js");
-    myWorker.postMessage(RUN_ITERATIONS);
+    myWorker.postMessage({
+      iterations: RANDOMIZE ? RUN_ITERATIONS : 1,
+      settings: {
+        randomize: RANDOMIZE,
+        budget: AMOUNTS,
+        initialQuality: INITIAL_QUALITY,
+        initialLevel: INITIAL_LEVEL,
+        initialXp: INITIAL_XP,
+        goalLevel: GOAL_LEVEL,
+        goalQuality: GOAL_QUALITY
+      }
+    });
     //console.log('Message posted to worker');
 
     myWorker.onmessage = function(e) {
       //console.log('Message received from worker:');
       //console.log(e);
       let solution = e.data;
-      bestSolutions.push(solution);
+      solutions.push(solution);
       // Count used combos
       let comboCounts = solution.comboCounts;
       for (let c = 0; c < comboCounts.length; c++) {
@@ -55,18 +62,21 @@ function runTests() {
             maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], solution.troopCounts[t]) : solution.troopCounts[t];
         }
       }
-      numSolutions++;
       totalTime += solution.time;
-      console.log("Avg time: " + totalTime / numSolutions);
-      renderTests(bestSolutions, totalComboCounts);
+      if (RANDOMIZE) {
+        renderTests(solutions, totalComboCounts, totalTime / solutions.length);
+        console.log("Max troop counts: " + maxTroopCounts);
+      } else {
+        renderSolution(solutions[0]);
+        console.log("Time: " + (solutions[0].time / 1000) + " s");
+      }
     }
-    console.log(maxTroopCounts);
   } else {
     console.log('Your browser doesn\'t support web workers.')
   }
 }
 
-function renderTests(solutions, totalComboCounts) {
+function renderTests(solutions, totalComboCounts, avgTime) {
   removeElement('main-table');
   removeElement('combo-table');
 
@@ -84,6 +94,10 @@ function renderTests(solutions, totalComboCounts) {
     td = tr.insertCell(-1);
     td.textContent = TEMPLATES_QUICK.includes(Number(key)) ? '' : 'X';
   }
+
+  let tr = comboTable.insertRow(-1);
+  let td = tr.insertCell(-1);
+  td.textContent = "Avg time: " + parseInt(avgTime) / 1000 + " s";
 
 	const table = createTable(["Budget", "XP Budget", "Gold", "Time", "Slow", "Combos", "In Level", "In Quality"]);
 	table.id = 'main-table';
@@ -113,14 +127,14 @@ function renderTests(solutions, totalComboCounts) {
   }
 }
 
-function renderSolution(bestSolution) {
+function renderSolution(solution) {
 	const table = createTable(["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"]);
 	table.id = 'main-table';
 	table.classList.add('mainTable');
   document.body.appendChild(table);
   //sorttable.makeSortable(table);
 
-  for (let step of bestSolution.bestSteps) {
+  for (let step of solution.bestSteps) {
     let tr = table.insertRow(-1);
 		for (let attribute of ['troops', 'percent', 'xp', 'cost', 'level', 'quality', 'extraXp']) {
 			let td = tr.insertCell(-1);
@@ -137,7 +151,7 @@ function renderSolution(bestSolution) {
 
   let tr = table.insertRow(-1);
   let td = tr.insertCell(-1);
-  td.textContent = bestSolution.bestCost;
+  td.textContent = solution.bestCost;
 }
 
 function createTable(COLUMN_NAMES) {
