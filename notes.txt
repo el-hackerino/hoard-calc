@@ -1,0 +1,28 @@
+partial solutions:
+- can't reach quality -> highest quality with fewest gold (/troops?)
+- can't reach level -> highest quality, then level
+
+
+adjustable parameters:
+- initials
+- goal q, lvl
+
+
+balance gold - troops:
+
+gold: minimize gold at any cost
+always use best troops at end, don't care about exceeding 100%
+
+troop: minimize good troop use (adapt to current amounts? to base frequeicy in portals? percentage of budget? allow in-between steps?)
+same? middle ground? too weak? Never exceed 100% at expense of slower climb at end, lose some gold
+
+
+
+low prio:
+Riskiness:
+0%: never go below 100%
+100%: allow 50%+?
+
+
+Interesting: 6 is slow but essential
+0, 3, 8, 1, 3, 10, 	6325	242000	6	18000 G in 0.002 s	0 6 15 28 	9	2

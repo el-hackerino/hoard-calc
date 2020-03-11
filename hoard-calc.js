@@ -7,14 +7,45 @@ const TROOPS = [
   { shortName: "G", name: "Genie' Lamp", percent: 30, xp: 250 },
   { shortName: "S", name: "Sacred Treasure", percent: 50, xp: 500 }
 ];
+const TEMPLATES = [
+  [2, 2, 2, 2, 2], // 100, 0
+  [3, 2, 2, 2, 2], // 105, 1
+  [3, 3, 2, 2, 1], // 100, 2
+  [3, 3, 3, 2, 1], // 105, 3
+  [3, 3, 3, 2, 2], // 115, 4
+  [3, 3, 3, 3],   // 100, 5
+  [4, 2, 2, 2, 1], // 100, 6
+  [4, 3, 2, 2, 1], // 105, 7
+  [4, 3, 3, 1, 1], // 100, 8
+  [4, 3, 3, 2],   // 100, 9
+  [4, 3, 3, 3],   // 105, 10
+  [4, 4, 2, 1, 1], // 100, 11
+  [4, 4, 2, 2],   // 100, 12
+  [5, 2, 1, 1, 1], // 100, 13
+  [5, 2, 2, 1],   // 100, 14
+  [4, 4, 3, 1, 1], // 105, 15
+  [4, 4, 3, 2],   // 105, 16
+  [5, 3, 1, 1, 1], // 105, 17
+  [4, 4, 3, 3],   // 110, 18
+  [5, 3, 3],     // 100, 19
+  [4, 4, 4, 1],   // 100, 20
+  [5, 4, 1, 1],   // 100, 21
+  [4, 4, 4, 2],   // 110, 22
+  [5, 4, 2],     // 100, 23
+  [4, 4, 4, 3],   // 115, 24
+  [5, 4, 3],     // 105, 25
+  [4, 4, 4, 4],   // 120, 26
+  [5, 4, 4],     // 110, 27
+  [5, 5],       // 100, 28
+];
 const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 28];
 
-const RUN_ITERATIONS = 100;
+const RUN_ITERATIONS = 1000;
 const RANDOMIZE = 0;
 
-var AMOUNTS = [0, 10, 25, 25, 15, 14];
+var AMOUNTS = [0, 11, 24, 6, 17, 12];
 var INITIAL_QUALITY = 1;
-var INITIAL_LEVEL = 0;
+var INITIAL_LEVEL = 77;
 var INITIAL_XP = 0; // leftover
 var GOAL_LEVEL = 100;
 var GOAL_QUALITY = 10;
@@ -80,7 +111,7 @@ function renderTests(solutions, totalComboCounts, avgTime) {
   removeElement('main-table');
   removeElement('combo-table');
 
-  const comboTable = createTable(["Combo", "Frequency", "Slow"]);
+  const comboTable = createTable(["Combo", "Troops", "Freq", "Slow"]);
   comboTable.id = 'combo-table';
 	comboTable.classList.add('mainTable');
   document.body.appendChild(comboTable);
@@ -90,16 +121,22 @@ function renderTests(solutions, totalComboCounts, avgTime) {
     let td = tr.insertCell(-1);
     td.textContent = key;
     td = tr.insertCell(-1);
+    td.textContent = '';
+    for (let troop of TEMPLATES[key]) {
+      td.textContent += TROOPS[troop].shortName;
+    }
+    td = tr.insertCell(-1);
     td.textContent = value;
     td = tr.insertCell(-1);
-    td.textContent = TEMPLATES_QUICK.includes(Number(key)) ? '' : 'X';
+    td.textContent = TEMPLATES_QUICK.includes(Number(key)) ? '' : 'x';
   }
 
   let tr = comboTable.insertRow(-1);
   let td = tr.insertCell(-1);
+  td.colSpan = 3;
   td.textContent = "Avg time: " + parseInt(avgTime) / 1000 + " s";
 
-	const table = createTable(["Budget", "Gold", "Time", "Slow", "Combos", "In Level", "In Quality"]);
+	const table = createTable(["Budget", "Gold", "Level", "Quality", "Time", "Slow", "Combos", "In Level", "In Quality"]);
 	table.id = 'main-table';
 	table.classList.add('mainTable');
   document.body.appendChild(table);
@@ -108,7 +145,7 @@ function renderTests(solutions, totalComboCounts, avgTime) {
   for (let solution of solutions) {
     if (!solution) continue;
     let tr = table.insertRow(-1);
-		for (let attribute of ['budget', 'bestCost', 'time', 'slow', 'comboCounts', 'initialLevel', 'initialQuality']) {
+		for (let attribute of ['budget', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'slow', 'comboCounts', 'initialLevel', 'initialQuality']) {
 			let td = tr.insertCell(-1);
 			if (attribute == 'budget') {
         td.textContent = '';
