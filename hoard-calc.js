@@ -41,7 +41,7 @@ const TEMPLATES = [
 const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 28];
 
 const RUN_ITERATIONS = 1000;
-const RANDOMIZE = 0;
+const RANDOMIZE = 1;
 
 var AMOUNTS = [0, 11, 24, 6, 17, 12];
 var INITIAL_QUALITY = 1;
@@ -59,11 +59,13 @@ function start() {
     let totalComboCounts = [];
     let maxTroopCounts = [];
     let totalTime = 0;
+    let totalQuickTime = 0;
     const myWorker = new Worker("worker.js");
     myWorker.postMessage({
       iterations: RANDOMIZE ? RUN_ITERATIONS : 1,
       settings: {
         randomize: RANDOMIZE,
+        useQuickList: true,
         budget: AMOUNTS,
         initialQuality: INITIAL_QUALITY,
         initialLevel: INITIAL_LEVEL,
@@ -72,11 +74,7 @@ function start() {
         goalQuality: GOAL_QUALITY
       }
     });
-    //console.log('Message posted to worker');
-
     myWorker.onmessage = function(e) {
-      //console.log('Message received from worker:');
-      //console.log(e);
       let solution = e.data;
       solutions.push(solution);
       // Count used combos
@@ -94,20 +92,21 @@ function start() {
         }
       }
       totalTime += solution.time;
+      totalQuickTime += solution.quickTime;
       if (RANDOMIZE) {
-        renderTests(solutions, totalComboCounts, totalTime / solutions.length);
+        renderTests(solutions, totalComboCounts, totalTime / solutions.length, totalQuickTime / solutions.length);
         console.log("Max troop counts: " + maxTroopCounts);
       } else {
         renderSolution(solutions[0]);
         console.log("Time: " + (solutions[0].time / 1000) + " s");
       }
     }
-  } else {
+  } else { // TODO
     console.log('Your browser doesn\'t support web workers.')
   }
 }
 
-function renderTests(solutions, totalComboCounts, avgTime) {
+function renderTests(solutions, totalComboCounts, avgTime, avgQuickTime) {
   removeElement('main-table');
   removeElement('combo-table');
 
@@ -130,13 +129,12 @@ function renderTests(solutions, totalComboCounts, avgTime) {
     td = tr.insertCell(-1);
     td.textContent = TEMPLATES_QUICK.includes(Number(key)) ? '' : 'x';
   }
-
   let tr = comboTable.insertRow(-1);
   let td = tr.insertCell(-1);
-  td.colSpan = 3;
-  td.textContent = "Avg time: " + parseInt(avgTime) / 1000 + " s";
+  td.colSpan = 4;
+  td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg quick time: " + parseInt(avgQuickTime);
 
-	const table = createTable(["Budget", "Gold", "Level", "Quality", "Time", "Slow", "Combos", "In Level", "In Quality"]);
+	const table = createTable(["Budget", "Gold", "Level", "Quality", "Time", "Quick", "Quick G", "Combos", "In Level", "In Quality"]);
 	table.id = 'main-table';
 	table.classList.add('mainTable');
   document.body.appendChild(table);
@@ -145,7 +143,7 @@ function renderTests(solutions, totalComboCounts, avgTime) {
   for (let solution of solutions) {
     if (!solution) continue;
     let tr = table.insertRow(-1);
-		for (let attribute of ['budget', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'slow', 'comboCounts', 'initialLevel', 'initialQuality']) {
+		for (let attribute of ['budget', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'quickTime', 'quickCostDiff', 'comboCounts', 'initialLevel', 'initialQuality']) {
 			let td = tr.insertCell(-1);
 			if (attribute == 'budget') {
         td.textContent = '';
