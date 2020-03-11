@@ -12,6 +12,14 @@ h1 {
 	z-index: -1;
 }
 
+table {
+	font-size: small
+}
+
+th {
+	text-align: start;
+}
+
 p {
 	margin: 0;
 }
