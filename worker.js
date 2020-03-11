@@ -40,7 +40,7 @@ const TEMPLATES = [
 //const TEMPLATES_USELESS = [3, 8, 11, 19, 22, 23];
 const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 28];
 
-const USE_QUICK_TEMPLATES = false;
+const USE_QUICK_TEMPLATES = true;
 const RNG_MIN = 0;
 const RNG_MAX = [0, 4, 22, 22, 15, 15];
 const RNG_LEVEL_MIN = 0;
@@ -48,7 +48,7 @@ const RNG_LEVEL_MAX = 40;
 const RNG_QUALITY_MIN = 1;
 const RNG_QUALITY_MAX = 5;
 var levelXp = [];
-var combos = [];
+var allCombos = [];
 var quickCombos = [];
 
 onmessage = function (e) {
@@ -67,6 +67,8 @@ function resetSolution(solution) {
   solution.steps = [];
   solution.bestSteps = [];
   solution.bestCost = 1000000;
+  solution.bestLevel = solution.initialLevel;
+  solution.bestQuality = solution.initialQuality;
   solution.troopTotals = [0, 0, 0, 0, 0, 0];
   solution.iterations = 0;
 }
@@ -122,22 +124,12 @@ function runTestIteration(settings) {
 
 function findSolution(solution, quick) {
   let solTime = new Date().getTime();
-  solution.xpBudget = solution.budget.reduce(function (accumulator, currentValue, currentIndex, array) {
-    return accumulator + currentValue * TROOPS[currentIndex].xp
-  });
-  if (solution.initialLevel === 0 && solution.initialQuality === 1 && solution.initialXp === 0 && solution.xpBudget < 4300) {
-    console.log("Skipping, XP budget: " + solution.xpBudget);
-    return solution; // Skip hopeless budgets
-  }
-  let comboArr = quick ? quickCombos : combos;
-  search(0, 0, solution, comboArr);
+  search(0, 0, solution, quick ? quickCombos : allCombos);
   solution.time = new Date().getTime() - solTime;
 }
 
-
 function search(startCombo, depth, solution, combos) {
   for (let c = startCombo; c < combos.length; c++) {
-    //if (iterations > 1000 && iterations < 1100) console.log(JSON.parse(JSON.stringify(solution)));
     solution.iterations++;
     if (solution.steps[depth]) {
       subtractFromTotal(solution, solution.steps[depth]);
@@ -145,17 +137,36 @@ function search(startCombo, depth, solution, combos) {
     solution.steps[depth] = Object.assign({}, combos[c]);
     addToTotal(solution, combos[c]);
     calculateStats(solution);
-    if (depth === solution.goalQuality - solution.initialQuality - 1) {
-      if (solution.sumCost < solution.bestCost && solution.sumLevel >= solution.goalLevel && budgetFits(solution)) {
-        solution.bestCost = solution.sumCost;
-        solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
+    if (budgetFits(solution)) {
+      if (solution.quality > solution.bestQuality) {
+        //console.log("New best quality: " + solution.quality);
+        saveBestSolution(solution);
+      } else if (solution.quality === solution.bestQuality) {
+        if (solution.sumLevel > solution.bestLevel && solution.bestLevel < solution.goalLevel) {
+          //console.log("New best level: " + solution.sumLevel);
+          saveBestSolution(solution);
+        } else if (solution.sumLevel >= solution.goalLevel) {
+          if (solution.sumCost < solution.bestCost) {
+            //console.log("New best cost: " + solution.bestCost);
+            saveBestSolution(solution);
+          }
+        }
       }
-    } else if (solution.sumCost < solution.bestCost && budgetFits(solution)) {
-      search(c, depth + 1, solution, combos);
+      if (solution.quality < solution.goalQuality) {
+        search(c, depth + 1, solution, combos);
+      }
     }
   }
   subtractFromTotal(solution, solution.steps[depth]);
   solution.steps.pop();
+}
+
+function saveBestSolution(solution) {
+  solution.bestQuality = solution.quality;
+  solution.bestLevel = solution.sumLevel;
+  solution.bestCost = solution.sumCost;
+  solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
+  //console.log(solution);
 }
 
 function addToTotal(solution, combo) {
@@ -261,7 +272,7 @@ function makeCombos() {
       combo.quick = true;
       quickCombos.push(combo);
     }
-    combos.push(combo);
+    allCombos.push(combo);
     id++;
   }
 }

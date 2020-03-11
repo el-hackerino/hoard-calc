@@ -12,9 +12,9 @@ const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 2
 const RUN_ITERATIONS = 100;
 const RANDOMIZE = 0;
 
-var AMOUNTS = [0, 10, 25, 25, 5, 4];
-var INITIAL_QUALITY = 2;
-var INITIAL_LEVEL = 24;
+var AMOUNTS = [0, 10, 25, 25, 15, 14];
+var INITIAL_QUALITY = 1;
+var INITIAL_LEVEL = 0;
 var INITIAL_XP = 0; // leftover
 var GOAL_LEVEL = 100;
 var GOAL_QUALITY = 10;
@@ -99,7 +99,7 @@ function renderTests(solutions, totalComboCounts, avgTime) {
   let td = tr.insertCell(-1);
   td.textContent = "Avg time: " + parseInt(avgTime) / 1000 + " s";
 
-	const table = createTable(["Budget", "XP Budget", "Gold", "Time", "Slow", "Combos", "In Level", "In Quality"]);
+	const table = createTable(["Budget", "Gold", "Time", "Slow", "Combos", "In Level", "In Quality"]);
 	table.id = 'main-table';
 	table.classList.add('mainTable');
   document.body.appendChild(table);
@@ -108,14 +108,14 @@ function renderTests(solutions, totalComboCounts, avgTime) {
   for (let solution of solutions) {
     if (!solution) continue;
     let tr = table.insertRow(-1);
-		for (let attribute of ['budget', 'xpBudget', 'bestCost', 'time', 'slow', 'comboCounts', 'initialLevel', 'initialQuality']) {
+		for (let attribute of ['budget', 'bestCost', 'time', 'slow', 'comboCounts', 'initialLevel', 'initialQuality']) {
 			let td = tr.insertCell(-1);
-			if (attribute === 'budget') {
+			if (attribute == 'budget') {
         td.textContent = '';
         for (let troopNr of solution.budget) {
           td.textContent += troopNr += ", ";
         }
-      } else if (attribute === 'comboCounts') {
+      } else if (attribute == 'comboCounts') {
         td.textContent = '';
         for (let [comboId, count] of solution.comboCounts.entries()) {
           if (count) td.textContent += comboId += " ";
@@ -138,7 +138,7 @@ function renderSolution(solution) {
     let tr = table.insertRow(-1);
 		for (let attribute of ['troops', 'percent', 'xp', 'cost', 'level', 'quality', 'extraXp']) {
 			let td = tr.insertCell(-1);
-			if (attribute === 'troops') {
+			if (attribute == 'troops') {
         td.textContent = '';
         for (let troop of step.troops) {
           td.textContent += TROOPS[troop].shortName;
