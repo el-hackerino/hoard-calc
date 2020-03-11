@@ -38,12 +38,11 @@ const TEMPLATES = [
   [5, 5],       // 100, 28
 ];
 //const TEMPLATES_USELESS = [3, 8, 11, 19, 22, 23];
-const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 28];
+const TEMPLATES_QUICK = [0, 3, 4, 5, 9, 10, 12, 18, 19, 20, 23, 24, 26, 27, 28];
 
-const USE_QUICK_TEMPLATES = 0;
 const RNG_MIN = 0;
 //const RNG_MAX = [0, 5, 26, 22, 18, 18];
-const RNG_MAX = [0, 12, 30, 30, 20, 20];
+const RNG_MAX = [0, 10, 36, 28, 20, 18]; // at least 9,36,28,20,18
 const RNG_LEVEL_MIN = 0;
 const RNG_LEVEL_MAX = 90;
 const RNG_QUALITY_MIN = 1;
@@ -97,17 +96,28 @@ function runTestIteration(settings) {
   
   let solutionQuick = Object.assign({}, solution);
   resetSolution(solutionQuick);
-  findSolution(solutionQuick, true);
-  solution.slow = (solutionQuick.bestCost - solution.bestCost) + " G in " + ((solution.time - solutionQuick.time) / 1000) + " s";
+  findSolution(solutionQuick, 1);
+  solution.quickTime = solutionQuick.time;
+  solution.quickCostDiff = solutionQuick.bestCost - solution.bestCost;
 
   solution.comboCounts = countIds(solution.bestSteps);
 
   // Count used troops
+  let combos = allCombos;
   solution.troopCounts = [];
-  for (let combo of solution.bestSteps) {
+  for (let step of solution.bestSteps) {
     for (let t = 0; t < TROOPS.length; t++) {
-      if (combo.counts[t]) {
-        solution.troopCounts[t] = solution.troopCounts[t] ? solution.troopCounts[t] + combo.counts[t] : combo.counts[t];
+      if (combos[step.combo].counts[t]) {
+        solution.troopCounts[t] = solution.troopCounts[t] ? solution.troopCounts[t] + combos[step.combo].counts[t] : combos[step.combo].counts[t];
+      }
+    }
+  }
+
+  // Convert steps to old form as expected by the render methods
+  for (let step of solution.bestSteps) {
+    for (var prop in combos[step.combo]) {
+      if (Object.prototype.hasOwnProperty.call(combos[step.combo], prop)) {
+          step[prop] = combos[step.combo][prop];
       }
     }
   }
@@ -117,20 +127,26 @@ function runTestIteration(settings) {
 function findSolution(solution, quick) {
   let solTime = new Date().getTime();
   search(0, 0, solution, quick ? quickCombos : allCombos);
-  solution.time = new Date().getTime() - solTime;
+  solution.time = (new Date().getTime() - solTime);
 }
 
 function search(startCombo, depth, solution, combos) {
   for (let c = startCombo; c < combos.length; c++) {
     solution.iterations++;
-    if (solution.steps[depth]) {
-      subtractFromTotal(solution, solution.steps[depth]);
+    if (solution.iterations % 100000 == 0) {
     }
-    solution.steps[depth] = Object.assign({}, combos[c]);
+    if (solution.steps[depth]) {
+      subtractFromTotal(solution, combos[solution.steps[depth].combo]);
+      if (solution.iterations % 100000 == 0) {
+      }
+    }
+    solution.steps[depth] = {combo: c};
     solution.lastInsert = depth;
     addToTotal(solution, combos[c]);
+    if (solution.iterations % 100000 == 0) {
+    }
     if (budgetFits(solution)) {
-      calculateStats(solution);
+      calculateStats(solution, combos);
       if (solution.quality > solution.bestQuality) {
         //console.log("New best quality: " + solution.quality);
         saveBestSolution(solution);
@@ -150,7 +166,7 @@ function search(startCombo, depth, solution, combos) {
       }
     }
   }
-  subtractFromTotal(solution, solution.steps[depth]);
+  subtractFromTotal(solution, combos[solution.steps[depth].combo]);
   solution.steps.pop();
 }
 
@@ -181,26 +197,29 @@ function subtractFromTotal(solution, combo) {
   }
 }
 
-function calculateStats(solution) {
+function calculateStats(solution, combos) {
+  let step = solution.steps[solution.lastInsert];
   solution.quality = solution.initialQuality + solution.lastInsert + 1;
-  let combo = solution.steps[solution.lastInsert];
-  combo.quality = solution.quality;
+  step.quality = solution.quality;
+  let prevXp, prevLevel, prevCost;
   if (solution.lastInsert == 0) {
-    combo.sumXp = levelXp[solution.initialLevel] + solution.initialXp + combo.xp;
-    combo.level = getLevel(solution.initialLevel, combo.sumXp);
-    combo.cost = getCost(solution.initialLevel, combo.troops.length);
-    combo.sumCost = combo.cost;
+    prevXp = levelXp[solution.initialLevel] + solution.initialXp;
+    prevLevel = solution.initialLevel;
+    prevCost = 0;
   } else {
-    let prevCombo = solution.steps[solution.lastInsert - 1];
-    combo.sumXp = prevCombo.sumXp + combo.xp;
-    combo.level = getLevel(prevCombo.level, combo.sumXp);
-    combo.cost = getCost(prevCombo.level, combo.troops.length);
-    combo.sumCost = prevCombo.sumCost + combo.cost;
+    let prevStep = solution.steps[solution.lastInsert - 1];
+    prevXp = prevStep.sumXp;
+    prevLevel = prevStep.level;
+    prevCost = prevStep.sumCost;
   }
-  combo.extraXp = combo.sumXp - levelXp[combo.level];
-  solution.sumXp = combo.sumXp;
-  solution.sumLevel = combo.level;
-  solution.sumCost = combo.sumCost;
+  step.sumXp = prevXp + combos[step.combo].xp;
+  step.level = getLevel(prevLevel, step.sumXp);
+  step.cost = getCost(prevLevel, combos[step.combo].troops.length);
+  step.sumCost = prevCost + step.cost;
+  step.extraXp = step.sumXp - levelXp[step.level];
+  solution.sumXp = step.sumXp;
+  solution.sumLevel = step.level;
+  solution.sumCost = step.sumCost;
 }
 
 function budgetFits(solution) {
@@ -259,7 +278,6 @@ function makeCombos() {
     combo.xp = combo.troops.reduce(sumXp, 0);
     combo.counts = countTroops(combo.troops);
     if (TEMPLATES_QUICK.includes(combo.id)) {
-      combo.quick = true;
       quickCombos.push(combo);
     }
     allCombos.push(combo);
@@ -271,7 +289,7 @@ function countIds(arr) {
   let result = [];
   for (let i = 0; i < arr.length; i++) {
     if (arr[i]) {
-      result[arr[i].id] ? result[arr[i].id]++ : result[arr[i].id] = 1;
+      result[arr[i].combo] ? result[arr[i].combo]++ : result[arr[i].combo] = 1;
     }
   }
   return result;
