@@ -1,3 +1,7 @@
+partial solutions:
+- can't reach quality -> highest quality, then fewest gold (/troops?)
+- can't reach level -> highest quality, then level (not level -> gold? better long-term; troops?)
+
 
 adjustable parameters:
 - initials

@@ -45,3 +45,7 @@ p {
 .controls div {
   padding-bottom: 1rem;
 }
+
+.highlight {
+	color: hsl(0, 100%, 50%);
+  }

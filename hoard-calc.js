@@ -41,11 +41,11 @@ const TEMPLATES = [
 const TEMPLATES_QUICK = [0, 1, 3, 4, 5, 9, 10, 12, 14, 19, 20, 23, 25, 26, 27, 28];
 
 const RUN_ITERATIONS = 1000;
-const RANDOMIZE = 1;
+const RANDOMIZE = 0;
 
-var AMOUNTS = [0, 11, 24, 6, 17, 12];
+var AMOUNTS = [0, 5, 2, 18, 11, 4];
 var INITIAL_QUALITY = 1;
-var INITIAL_LEVEL = 77;
+var INITIAL_LEVEL = 6;
 var INITIAL_XP = 0; // leftover
 var GOAL_LEVEL = 100;
 var GOAL_QUALITY = 10;
@@ -59,13 +59,12 @@ function start() {
     let totalComboCounts = [];
     let maxTroopCounts = [];
     let totalTime = 0;
-    let totalQuickTime = 0;
+    let totalSlowTime = 0;
     const myWorker = new Worker("worker.js");
-    myWorker.postMessage({
+    let solution = {
       iterations: RANDOMIZE ? RUN_ITERATIONS : 1,
       settings: {
         randomize: RANDOMIZE,
-        useQuickList: true,
         budget: AMOUNTS,
         initialQuality: INITIAL_QUALITY,
         initialLevel: INITIAL_LEVEL,
@@ -73,32 +72,41 @@ function start() {
         goalLevel: GOAL_LEVEL,
         goalQuality: GOAL_QUALITY
       }
-    });
+    };
+    if (RANDOMIZE) {
+      myWorker.postMessage(solution);
+    } else {
+      solution.settings.useQuickList = true;
+      myWorker.postMessage(solution);
+      solution.settings.useQuickList = false;
+      myWorker.postMessage(solution);
+    }
+
     myWorker.onmessage = function(e) {
       let solution = e.data;
-      solutions.push(solution);
-      // Count used combos
-      let comboCounts = solution.comboCounts;
-      for (let c = 0; c < comboCounts.length; c++) {
-        if (comboCounts[c]) {
-            totalComboCounts[c] = totalComboCounts[c] ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
-        }
-      }
-      let solutionTroopCounts = solution.solutionTroopCounts;
-      // Save max troop counts
-      for (let t = 0; t < solution.troopCounts.length; t++) {
-        if (solution.troopCounts[t]) {
-            maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], solution.troopCounts[t]) : solution.troopCounts[t];
-        }
-      }
-      totalTime += solution.time;
-      totalQuickTime += solution.quickTime;
       if (RANDOMIZE) {
-        renderTests(solutions, totalComboCounts, totalTime / solutions.length, totalQuickTime / solutions.length);
+        solutions.push(solution);
+        // Count used combos
+        let comboCounts = solution.slowSolution.comboCounts;
+        for (let c = 0; c < comboCounts.length; c++) {
+          if (comboCounts[c]) {
+              totalComboCounts[c] = totalComboCounts[c] ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
+          }
+        }
+        let solutionTroopCounts = solution.troopCounts;
+        // Save max troop counts
+        for (let t = 0; t < solution.troopCounts.length; t++) {
+          if (solution.troopCounts[t]) {
+              maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], solution.troopCounts[t]) : solution.troopCounts[t];
+          }
+        }
+        totalTime += solution.time;
+        totalSlowTime += solution.slowTime;
+        renderTests(solutions, totalComboCounts, totalTime / solutions.length, totalSlowTime / solutions.length);
         console.log("Max troop counts: " + maxTroopCounts);
       } else {
-        renderSolution(solutions[0]);
-        console.log("Time: " + (solutions[0].time / 1000) + " s");
+        renderSolution(solution);
+        console.log("Time: " + (solution.time / 1000) + " s");
       }
     }
   } else { // TODO
@@ -106,7 +114,7 @@ function start() {
   }
 }
 
-function renderTests(solutions, totalComboCounts, avgTime, avgQuickTime) {
+function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
   removeElement('main-table');
   removeElement('combo-table');
 
@@ -132,9 +140,9 @@ function renderTests(solutions, totalComboCounts, avgTime, avgQuickTime) {
   let tr = comboTable.insertRow(-1);
   let td = tr.insertCell(-1);
   td.colSpan = 4;
-  td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg quick time: " + parseInt(avgQuickTime);
+  td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgslowTime);
 
-	const table = createTable(["Budget", "Gold", "Level", "Quality", "Time", "Quick", "Quick G", "Combos", "In Level", "In Quality"]);
+	const table = createTable(["Budget", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos", "In Level", "In Quality"]);
 	table.id = 'main-table';
 	table.classList.add('mainTable');
   document.body.appendChild(table);
@@ -143,17 +151,28 @@ function renderTests(solutions, totalComboCounts, avgTime, avgQuickTime) {
   for (let solution of solutions) {
     if (!solution) continue;
     let tr = table.insertRow(-1);
-		for (let attribute of ['budget', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'quickTime', 'quickCostDiff', 'comboCounts', 'initialLevel', 'initialQuality']) {
+		for (let attribute of ['budget', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'slowTime', 'quickCostDiff', 'combos', 'slowCombos', 'initialLevel', 'initialQuality']) {
 			let td = tr.insertCell(-1);
 			if (attribute == 'budget') {
         td.textContent = '';
         for (let troopNr of solution.budget) {
           td.textContent += troopNr += ", ";
         }
-      } else if (attribute == 'comboCounts') {
-        td.textContent = '';
-        for (let [comboId, count] of solution.comboCounts.entries()) {
-          if (count) td.textContent += comboId += " ";
+      } else if (attribute == 'combos') {
+        td.innerHTML = '';
+        for (let step of solution.bestSteps) {
+          let comboString = '<span>' + step.combo + " </span>";
+          td.innerHTML += comboString;
+        }
+      } else if (attribute == 'slowCombos') {
+        td.innerHTML = '';
+        for (let step of solution.slowSolution.bestSteps) {
+          let comboString = '<span';
+          if (!TEMPLATES_QUICK.includes(Number(step.combo))) {
+            comboString += ' class=\'highlight\'';
+          }
+          comboString += '>' + step.combo + " </span>";
+          td.innerHTML += comboString;
         }
       } else {
         td.textContent = solution[attribute];
