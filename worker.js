@@ -92,16 +92,20 @@ function runTestIteration(settings) {
     solution.initialQuality = Math.floor((Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN)) + RNG_QUALITY_MIN);
   }
 
-  findSolution(solution, 0);
-  
-  let solutionQuick = Object.assign({}, solution);
-  resetSolution(solutionQuick);
-  findSolution(solutionQuick, 1);
-  solution.quickTime = solutionQuick.time;
-  solution.quickCostDiff = solutionQuick.bestCost - solution.bestCost;
-
+  findSolution(solution, settings.randomize ? 1 : settings.useQuickList);
   solution.comboCounts = countIds(solution.bestSteps);
 
+  if (!settings.randomize) {
+    return solution;
+  }
+  let slowSolution = Object.assign({}, solution);
+  resetSolution(slowSolution);
+  findSolution(slowSolution, 0);
+  slowSolution.comboCounts = countIds(slowSolution.bestSteps);
+  solution.slowSolution = slowSolution;
+  solution.slowTime = slowSolution.time;
+  solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
+  
   // Count used troops
   let combos = allCombos;
   solution.troopCounts = [];
@@ -112,7 +116,13 @@ function runTestIteration(settings) {
       }
     }
   }
+  return solution;
+}
 
+function findSolution(solution, quick) {
+  let solTime = new Date().getTime();
+  let combos = quick ? quickCombos : allCombos;
+  search(0, 0, solution, combos);
   // Convert steps to old form as expected by the render methods
   for (let step of solution.bestSteps) {
     for (var prop in combos[step.combo]) {
@@ -121,12 +131,6 @@ function runTestIteration(settings) {
       }
     }
   }
-  return solution;
-}
-
-function findSolution(solution, quick) {
-  let solTime = new Date().getTime();
-  search(0, 0, solution, quick ? quickCombos : allCombos);
   solution.time = (new Date().getTime() - solTime);
 }
 
