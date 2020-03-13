@@ -1,5 +1,6 @@
 importScripts('constants.js');
 
+const DEBUG = 0;
 const BUDGET_MAX = [0, 10, 36, 28, 20, 18];
 const RNG_MIN = 0;
 const RNG_MAX = [0, 10, 36, 28, 20, 18];
@@ -15,7 +16,7 @@ fillXpTable();
 makeCombos();
 
 onmessage = function (message) {
-  console.log('Worker: Message received from main script');
+  //console.log('Worker: Message received from main script');
   //console.log(e.data);
   for (let i = 0; i < message.data.iterations; i++) {
     let result = runTestIteration(message.data.settings);
@@ -25,6 +26,8 @@ onmessage = function (message) {
 }
 
 function resetSolution(solution) {
+  solution.reachedQuality = false;
+  solution.reachedLevel = false;
   solution.steps = [];
   solution.bestSteps = [];
   solution.bestCost = 1000000;
@@ -68,7 +71,12 @@ function runTestIteration(settings) {
   slowSolution.comboCounts = countIds(slowSolution.bestSteps);
   solution.slowSolution = slowSolution;
   solution.slowTime = slowSolution.time;
-  solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
+  if (solution.bestQuality >= slowSolution.bestQuality) {
+    solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
+  } else {
+    solution.quickCostDiff = slowSolution.bestQuality + " > " + solution.bestQuality;
+  }
+
   
   // Count used troops
   let combos = allCombos;
@@ -100,6 +108,8 @@ function findSolution(solution, quick) {
 
 function search(startCombo, depth, solution, combos) {
   for (let c = startCombo; c < combos.length; c++) {
+    var reachedQuality = false;
+    var reachedLevel = false;
     solution.iterations++;
     // if (solution.iterations % 100000 == 0) {
     //   console.log(solution.iterations);
@@ -112,21 +122,46 @@ function search(startCombo, depth, solution, combos) {
     addToTotal(solution, combos[c]);
     if (budgetFits(solution)) {
       calculateStats(solution, combos);
-      if (solution.quality > solution.bestQuality) {
-        //console.log("New best quality: " + solution.quality);
-        saveBestSolution(solution);
-      } else if (solution.quality == solution.bestQuality) {
-        if (solution.sumLevel > solution.bestLevel && solution.bestLevel < solution.goalLevel) {
-          //console.log("New best level: " + solution.sumLevel);
+      // TODO can each goal be reached separately?
+      if (solution.quality == solution.goalQuality) {
+        reachedQuality = true;
+        if (!solution.reachedQuality) {
+          if (DEBUG) console.log("Reached target quality!");
+          solution.reachedQuality = true;
           saveBestSolution(solution);
-        } else if (solution.sumLevel >= solution.goalLevel) {
-          if (solution.sumCost < solution.bestCost) {
-            //console.log("New best cost: " + solution.bestCost);
-            saveBestSolution(solution);
-          }
         }
       }
-      if (solution.quality < solution.goalQuality) {
+      if (solution.sumLevel >= solution.goalLevel) {
+        reachedLevel = true;
+        if (!solution.reachedLevel) {
+          if (DEBUG) console.log("Reached target level!");
+          solution.reachedLevel = true;
+          saveBestSolution(solution);
+        }
+      }
+      if (solution.quality > solution.bestQuality) {
+        if (DEBUG) console.log("New best quality: " + solution.quality + ", old: " + solution.bestQuality);
+        saveBestSolution(solution);
+      } else if (reachedQuality && reachedLevel && solution.sumCost < solution.bestCost) {
+        if (DEBUG) console.log("New best cost at goal: " + solution.sumCost);
+        saveBestSolution(solution);
+      } else if (reachedQuality && !reachedLevel && solution.reachedQuality && !solution.reachedLevel
+        && solution.quality == solution.bestQuality
+        && solution.sumCost < solution.bestCost) {
+        if (DEBUG) console.log("New best cost at quality goal: " + solution.sumCost);
+        saveBestSolution(solution);
+      } else if (!reachedQuality && reachedLevel && !solution.reachedQuality && solution.reachedLevel
+        && solution.quality == solution.bestQuality
+        && solution.sumCost < solution.bestCost) {
+        if (DEBUG) console.log("New best cost at level goal: " + solution.sumCost);
+        saveBestSolution(solution);
+      } else if (!reachedQuality && !reachedLevel && !solution.reachedQuality && !solution.reachedLevel
+        && solution.quality == solution.bestQuality
+        && solution.sumCost < solution.bestCost) {
+        if (DEBUG) console.log("New best cost below goal: " + solution.sumCost);
+        saveBestSolution(solution);
+      }
+      if (!reachedQuality || !reachedLevel) {
         search(c, depth + 1, solution, combos);
       }
     }
@@ -165,6 +200,7 @@ function subtractFromTotal(solution, combo) {
 function calculateStats(solution, combos) {
   let step = solution.steps[solution.lastInsert];
   solution.quality = solution.initialQuality + solution.lastInsert + 1;
+  if (solution.quality > 10) solution.quality = 10;
   step.quality = solution.quality;
   let prevXp, prevLevel, prevCost;
   if (solution.lastInsert == 0) {
