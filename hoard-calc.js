@@ -9,7 +9,10 @@ var INITIAL_XP = 5; // leftover
 var GOAL_LEVEL = 100;
 var GOAL_QUALITY = 10;
 
-const INPUTS = [
+const INPUT_LEVEL = document.querySelector('#level');
+const INPUT_QUALITY = document.querySelector('#quality');
+const INPUT_XP = document.querySelector('#xp');
+const TROOP_INPUTS = [
   document.querySelector('#t1'),
   document.querySelector('#t2'),
   document.querySelector('#t3'),
@@ -17,6 +20,7 @@ const INPUTS = [
   document.querySelector('#t5'),
   document.querySelector('#t6'),
 ];
+const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP];
 
 if (window.Worker) {
   let solutions = [];
@@ -25,32 +29,36 @@ if (window.Worker) {
   let totalTime = 0;
   let totalSlowTime = 0;
   const myWorker = new Worker("worker.js");
-  for (let input of INPUTS) {
-    input.onchange = function () {
-      console.log("Calculating...");
-      for (let [i, input] of INPUTS.entries()) {
-        AMOUNTS[i] = input.value;
+  work();
+  for (let input of ALL_INPUTS) {
+    input.onchange = work;
+  }
+
+  function work() {
+    console.log("Calculating...");
+    for (let [i, input] of TROOP_INPUTS.entries()) {
+      AMOUNTS[i] = input.value;
+    }
+    let solution = {
+      iterations: RANDOMIZE ? RUN_ITERATIONS : 1,
+      settings: {
+        randomize: RANDOMIZE,
+        budget: AMOUNTS,
+        initialQuality: Number(INPUT_QUALITY.value),
+        initialLevel: Number(INPUT_LEVEL.value),
+        initialXp: Number(INPUT_XP.value),
+        goalLevel: GOAL_LEVEL,
+        goalQuality: GOAL_QUALITY
       }
-      let solution = {
-        iterations: RANDOMIZE ? RUN_ITERATIONS : 1,
-        settings: {
-          randomize: RANDOMIZE,
-          budget: AMOUNTS,
-          initialQuality: INITIAL_QUALITY,
-          initialLevel: INITIAL_LEVEL,
-          initialXp: INITIAL_XP,
-          goalLevel: GOAL_LEVEL,
-          goalQuality: GOAL_QUALITY
-        }
-      };
-      if (RANDOMIZE) {
-        myWorker.postMessage(solution);
-      } else {
-        solution.settings.useQuickList = 1;
-        myWorker.postMessage(solution);
-        // solution.settings.useQuickList = false;
-        // myWorker.postMessage(solution);
-      }
+    };
+    console.log(solution);
+    if (RANDOMIZE) {
+      myWorker.postMessage(solution);
+    } else {
+      solution.settings.useQuickList = 1;
+      myWorker.postMessage(solution);
+      // solution.settings.useQuickList = false;
+      // myWorker.postMessage(solution);
     }
   }
 
@@ -85,12 +93,12 @@ if (window.Worker) {
 }
 
 function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
-  removeElement('main-table');
+  removeElement('test-table');
   removeElement('combo-table');
 
   const comboTable = createTable(["Combo", "Troops", "Freq", "Slow"]);
   comboTable.id = 'combo-table';
-  comboTable.classList.add('mainTable');
+  comboTable.classList.add('comboTable');
   document.body.appendChild(comboTable);
 
   for (let [key, value] of Object.entries(totalComboCounts).filter(([key, value]) => value > 0)) {
@@ -113,8 +121,8 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
   td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgslowTime);
 
   const table = createTable(["Budget", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos", "In Level", "In Quality"]);
-  table.id = 'main-table';
-  table.classList.add('mainTable');
+  table.id = 'test-table';
+  table.classList.add('testTable');
   document.body.appendChild(table);
   // TODO sorttable.makeSortable(table);
 

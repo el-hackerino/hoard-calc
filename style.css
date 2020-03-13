@@ -7,6 +7,10 @@ table {
 	font-size: small
 }
 
+#main-table {
+	font-size: medium
+}
+
 th {
 	text-align: start;
 }
@@ -21,7 +25,7 @@ label {
 	float: left;
 	text-align: right;
 	padding: 5px 10px 0 0;
-	width: 140px;
+	width: 10em;
 }
 input[type=number] {
 float: left;

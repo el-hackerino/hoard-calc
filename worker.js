@@ -86,6 +86,7 @@ function runTestIteration(settings) {
 function findSolution(solution, quick) {
   let solTime = new Date().getTime();
   let combos = quick ? quickCombos : allCombos;
+  console.log(solution);
   search(0, 0, solution, combos);
   // Convert steps to old form as expected by the render methods
   for (let step of solution.bestSteps) {
