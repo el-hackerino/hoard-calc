@@ -1,12 +1,6 @@
-const RANDOMIZE = 0;
-const RUN_ITERATIONS = 1000;
+const RUN_TESTS = 0;
+const TEST_ITERATIONS = 1000;
 
-const INPUT_LEVEL = document.querySelector('#level');
-const INPUT_QUALITY = document.querySelector('#quality');
-const INPUT_XP = document.querySelector('#xp');
-const INPUT_TARGET_LEVEL = document.querySelector('#targetLevel');
-const INPUT_TARGET_QUALITY = document.querySelector('#targetQuality');
-const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const TROOP_INPUTS = [
   document.querySelector('#t1'),
   document.querySelector('#t2'),
@@ -15,7 +9,14 @@ const TROOP_INPUTS = [
   document.querySelector('#t5'),
   document.querySelector('#t6'),
 ];
+const INPUT_LEVEL = document.querySelector('#level');
+const INPUT_QUALITY = document.querySelector('#quality');
+const INPUT_XP = document.querySelector('#xp');
+const INPUT_TARGET_LEVEL = document.querySelector('#targetLevel');
+const INPUT_TARGET_QUALITY = document.querySelector('#targetQuality');
+const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP, INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_EXHAUSTIVE];
+const STOPBUTTON = document.querySelector('#stop');
 
 if (window.Worker) {
   let solutions = [];
@@ -23,23 +24,29 @@ if (window.Worker) {
   let maxTroopCounts = [];
   let totalTime = 0;
   let totalSlowTime = 0;
-  const myWorker = new Worker("worker.js");
-  work();
+  var myWorker;
+  calculate();
   for (let input of ALL_INPUTS) {
-    input.onchange = work;
+    input.onchange = calculate;
   }
+  STOPBUTTON.onclick = function() {
+    console.log("Stopping...");
+    myWorker.terminate()
+  };
 
-  function work() {
+  function calculate() {
     console.log("Calculating...");
-    myWorker.terminate;
+    if (myWorker) myWorker.terminate();
+    myWorker = new Worker("worker.js");
+    myWorker.onmessage = render;
     var budget = [];
     for (let [i, input] of TROOP_INPUTS.entries()) {
       budget[i] = input.value;
     }
     let solution = {
-      iterations: RANDOMIZE ? RUN_ITERATIONS : 1,
+      iterations: RUN_TESTS ? TEST_ITERATIONS : 1,
       settings: {
-        randomize: RANDOMIZE,
+        randomize: RUN_TESTS,
         budget: budget,
         initialQuality: Number(INPUT_QUALITY.value),
         initialLevel: Number(INPUT_LEVEL.value),
@@ -48,12 +55,11 @@ if (window.Worker) {
         goalQuality: Number(INPUT_TARGET_QUALITY.value)
       }
     };
-    if (RANDOMIZE) {
+    if (RUN_TESTS) {
       myWorker.postMessage(solution);
     } else {
       solution.settings.useQuickList = 1;
       myWorker.postMessage(solution);
-      console.log(INPUT_EXHAUSTIVE.checked)
       if (INPUT_EXHAUSTIVE.checked) {
         solution.settings.useQuickList = 0;
         myWorker.postMessage(solution);
@@ -61,9 +67,10 @@ if (window.Worker) {
     }
   }
 
-  myWorker.onmessage = function (e) {
-    let solution = e.data;
-    if (RANDOMIZE) {
+
+  function render(message) {
+    let solution = message.data;
+    if (RUN_TESTS) {
       solutions.push(solution);
       // Count used combos
       let comboCounts = solution.slowSolution.comboCounts;
