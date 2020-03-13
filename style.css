@@ -3,15 +3,6 @@ html {
 	font-family: sans-serif;
 }
 
-h1 {
-	margin: 0;
-	font-size: 15vw;
-	letter-spacing: -0.2rem;
-	position: absolute;
-	top: 0;
-	z-index: -1;
-}
-
 table {
 	font-size: small
 }
@@ -24,26 +15,41 @@ p {
 	margin: 0;
 }
 
-.controls {
-	padding: 4vw;
-	width: 75%;
-	margin: 10vw auto;
-	background-color: rgba(255,255,255,0.7);
-	border: 5px solid black;
-	opacity: 0.3;
-	transition: 1s all;
+label {
+	font: bold 20px Helvetica, sans-serif;
+	display: block;
+	float: left;
+	text-align: right;
+	padding: 5px 10px 0 0;
+	width: 140px;
+}
+input[type=number] {
+float: left;
+width: 3em;
+font: bold 20px Helvetica, sans-serif;
+padding: 3px 0 0 0;
+text-align: center;
+}
+form div {
+overflow: hidden;
+margin: 0 0 5px 0;
+}
+.button {
+margin: 0 0 0 5px;
+text-indent: -9999px;
+cursor: pointer;
+width: 29px;
+height: 29px;
+float: left;
+text-align: center;
+background: url(images/buttons.png) no-repeat;
+}
+.dec {
+background-position: 0 -29px;
 }
 
-.controls:hover, .controls:focus {
-  opacity: 1;
-}
-
-.controls label, .controls p, .controls input {
-	font-size: 3vw;
-}
-
-.controls div {
-  padding-bottom: 1rem;
+.buttons {
+padding: 20px 0 0 140px;
 }
 
 .highlight {

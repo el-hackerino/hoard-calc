@@ -26,3 +26,16 @@ Riskiness:
 
 Interesting: 6 is slow but essential
 0, 3, 8, 1, 3, 10, 	6325	242000	6	18000 G in 0.002 s	0 6 15 28 	9	2
+
+0,0,25,21,6,2
+Troops	%	XP	    Cost	Level	Quality	Extra XP
+KKKPP	115	400	    9000	28	    2	    15
+KKKPP	115	400	    31000	40	    3	    1
+KKKPP	115	400	    43000	48	    4	    45
+KKKPP	115	400	    51000	56	    5	    25
+KKKK	100	400	    47200	63	    6	    5
+GKKP	100	500	    52800	70	    7	    36
+GKKK	105	550	    58400	77	    8	    68
+GGGG	120	1000	64000	89	    9	    66
+SS   	100	1000	36800	100	    10	    21
+393200
