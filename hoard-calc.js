@@ -15,8 +15,8 @@ const INPUT_XP = document.querySelector('#xp');
 const INPUT_TARGET_LEVEL = document.querySelector('#targetLevel');
 const INPUT_TARGET_QUALITY = document.querySelector('#targetQuality');
 const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
-const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP, INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_EXHAUSTIVE];
-const STOPBUTTON = document.querySelector('#stop');
+const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
+  INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_EXHAUSTIVE];
 
 if (window.Worker) {
   let solutions = [];
@@ -25,14 +25,10 @@ if (window.Worker) {
   let totalTime = 0;
   let totalSlowTime = 0;
   var myWorker;
-  calculate();
   for (let input of ALL_INPUTS) {
     input.onchange = calculate;
   }
-  STOPBUTTON.onclick = function() {
-    console.log("Stopping...");
-    myWorker.terminate()
-  };
+  calculate();
 
   function calculate() {
     console.log("Calculating...");
@@ -66,7 +62,6 @@ if (window.Worker) {
       }
     }
   }
-
 
   function render(message) {
     let solution = message.data;
