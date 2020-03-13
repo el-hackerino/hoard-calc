@@ -1,4 +1,4 @@
-const RUN_TESTS = 0;
+const RUN_TESTS = 1;
 const TEST_ITERATIONS = 1000;
 
 const TROOP_INPUTS = [
@@ -32,6 +32,11 @@ if (window.Worker) {
 
   function calculate() {
     console.log("Calculating...");
+    if (Number(INPUT_QUALITY.value) >= Number(INPUT_TARGET_QUALITY.value)
+      && Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
+        renderMessage("No need to upgrade!");
+        return;
+    }
     if (myWorker) myWorker.terminate();
     myWorker = new Worker("worker.js");
     myWorker.onmessage = render;
@@ -121,7 +126,7 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
   td.colSpan = 4;
   td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgslowTime);
 
-  const table = createTable(["Budget", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos", "In Level", "In Quality"]);
+  const table = createTable(["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos"]);
   table.id = 'test-table';
   table.classList.add('testTable');
   document.body.appendChild(table);
@@ -130,7 +135,7 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
   for (let solution of solutions) {
     if (!solution) continue;
     let tr = table.insertRow(-1);
-    for (let attribute of ['budget', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'slowTime', 'quickCostDiff', 'combos', 'slowCombos', 'initialLevel', 'initialQuality']) {
+    for (let attribute of ['budget', 'initialLevel', 'initialQuality', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'slowTime', 'quickCostDiff', 'combos', 'slowCombos']) {
       let td = tr.insertCell(-1);
       if (attribute == 'budget') {
         td.textContent = '';
@@ -191,6 +196,15 @@ function renderSolution(solution) {
   td = tr.insertCell(-1);
   td.colSpan = 7;
   td.textContent = solution.iterations;
+}
+
+function renderMessage(message) {
+  removeElement('main-table');
+  let msg = document.createElement('div');
+  msg.textContent = message;
+  msg.id = 'main-table';
+  msg.classList.add('mainTable');
+  document.body.appendChild(msg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
