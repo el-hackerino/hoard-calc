@@ -14,11 +14,11 @@ var quickCombos = [];
 fillXpTable();
 makeCombos();
 
-onmessage = function (e) {
-  //console.log('Worker: Message received from main script:');
+onmessage = function (message) {
+  console.log('Worker: Message received from main script');
   //console.log(e.data);
-  for (let i = 0; i < e.data.iterations; i++) {
-    let result = runTestIteration(e.data.settings);
+  for (let i = 0; i < message.data.iterations; i++) {
+    let result = runTestIteration(message.data.settings);
     //console.log('Worker: Posting message back to main script');
     postMessage(result);
   }
