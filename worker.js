@@ -86,7 +86,6 @@ function runTestIteration(settings) {
 function findSolution(solution, quick) {
   let solTime = new Date().getTime();
   let combos = quick ? quickCombos : allCombos;
-  console.log(solution);
   search(0, 0, solution, combos);
   // Convert steps to old form as expected by the render methods
   for (let step of solution.bestSteps) {
@@ -102,9 +101,9 @@ function findSolution(solution, quick) {
 function search(startCombo, depth, solution, combos) {
   for (let c = startCombo; c < combos.length; c++) {
     solution.iterations++;
-    if (solution.iterations % 100000 == 0) {
-      console.log(solution.iterations);
-    }
+    // if (solution.iterations % 100000 == 0) {
+    //   console.log(solution.iterations);
+    // }
     if (solution.steps[depth]) {
       subtractFromTotal(solution, combos[solution.steps[depth].combo]);
     }
