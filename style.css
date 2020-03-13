@@ -12,7 +12,11 @@ table {
 }
 
 th {
-	text-align: start;
+	text-align: center;
+}
+
+td {
+	text-align: center;
 }
 
 p {
@@ -27,35 +31,39 @@ label {
 	padding: 5px 10px 0 0;
 	width: 10em;
 }
+
 input[type=number] {
-float: left;
-width: 3em;
-font: bold 20px Helvetica, sans-serif;
-padding: 3px 0 0 0;
-text-align: center;
+	float: left;
+	width: 3em;
+	font: bold 20px Helvetica, sans-serif;
+	padding: 3px 0 0 0;
+	text-align: center;
 }
+
 form div {
-overflow: hidden;
-margin: 0 0 5px 0;
+	overflow: hidden;
+	margin: 0 0 5px 0;
 }
+
 .button {
-margin: 0 0 0 5px;
-text-indent: -9999px;
-cursor: pointer;
-width: 29px;
-height: 29px;
-float: left;
-text-align: center;
-background: url(images/buttons.png) no-repeat;
+	margin: 0 0 0 5px;
+	text-indent: -9999px;
+	cursor: pointer;
+	width: 29px;
+	height: 29px;
+	float: left;
+	text-align: center;
+	background: url(images/buttons.png) no-repeat;
 }
+
 .dec {
-background-position: 0 -29px;
+	background-position: 0 -29px;
 }
 
 .buttons {
-padding: 20px 0 0 140px;
+	padding: 20px 0 0 140px;
 }
 
 .highlight {
 	color: hsl(0, 100%, 50%);
-  }
+}

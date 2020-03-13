@@ -1,17 +1,12 @@
-const RUN_ITERATIONS = 1000;
 const RANDOMIZE = 0;
-
-var AMOUNTS = [0, 5, 28, 28, 1, 6];
-//var AMOUNTS = [0, 5, 2, 18, 11, 4];
-var INITIAL_QUALITY = 6;
-var INITIAL_LEVEL = 63;
-var INITIAL_XP = 5; // leftover
-var GOAL_LEVEL = 100;
-var GOAL_QUALITY = 10;
+const RUN_ITERATIONS = 1000;
 
 const INPUT_LEVEL = document.querySelector('#level');
 const INPUT_QUALITY = document.querySelector('#quality');
 const INPUT_XP = document.querySelector('#xp');
+const INPUT_TARGET_LEVEL = document.querySelector('#targetLevel');
+const INPUT_TARGET_QUALITY = document.querySelector('#targetQuality');
+const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const TROOP_INPUTS = [
   document.querySelector('#t1'),
   document.querySelector('#t2'),
@@ -20,7 +15,7 @@ const TROOP_INPUTS = [
   document.querySelector('#t5'),
   document.querySelector('#t6'),
 ];
-const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP];
+const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP, INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_EXHAUSTIVE];
 
 if (window.Worker) {
   let solutions = [];
@@ -36,29 +31,33 @@ if (window.Worker) {
 
   function work() {
     console.log("Calculating...");
+    myWorker.terminate;
+    var budget = [];
     for (let [i, input] of TROOP_INPUTS.entries()) {
-      AMOUNTS[i] = input.value;
+      budget[i] = input.value;
     }
     let solution = {
       iterations: RANDOMIZE ? RUN_ITERATIONS : 1,
       settings: {
         randomize: RANDOMIZE,
-        budget: AMOUNTS,
+        budget: budget,
         initialQuality: Number(INPUT_QUALITY.value),
         initialLevel: Number(INPUT_LEVEL.value),
         initialXp: Number(INPUT_XP.value),
-        goalLevel: GOAL_LEVEL,
-        goalQuality: GOAL_QUALITY
+        goalLevel: Number(INPUT_TARGET_LEVEL.value),
+        goalQuality: Number(INPUT_TARGET_QUALITY.value)
       }
     };
-    console.log(solution);
     if (RANDOMIZE) {
       myWorker.postMessage(solution);
     } else {
       solution.settings.useQuickList = 1;
       myWorker.postMessage(solution);
-      // solution.settings.useQuickList = false;
-      // myWorker.postMessage(solution);
+      console.log(INPUT_EXHAUSTIVE.checked)
+      if (INPUT_EXHAUSTIVE.checked) {
+        solution.settings.useQuickList = 0;
+        myWorker.postMessage(solution);
+      }
     }
   }
 
@@ -184,11 +183,15 @@ function renderSolution(solution) {
 
   let tr = table.insertRow(-1);
   let td = tr.insertCell(-1);
+  td.colSpan = 7;
   td.textContent = solution.bestCost;
   tr = table.insertRow(-1);
   td = tr.insertCell(-1);
+  td.colSpan = 7;
   td.textContent = solution.iterations;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 function createTable(COLUMN_NAMES) {
   let table = document.createElement('table');
@@ -207,8 +210,4 @@ function removeElement(id) {
     const oldElement = document.getElementById(id);
     oldElement.parentNode.removeChild(oldElement);
   }
-}
-
-function reset() {
-  iterations = 0;
 }
