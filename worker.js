@@ -3,10 +3,10 @@ importScripts('constants.js');
 const DEBUG = 0;
 const BUDGET_MAX = [0, 10, 36, 28, 20, 18];
 const RNG_MIN = 0;
-const RNG_MAX = [0, 10, 36, 28, 20, 18];
-const RNG_LEVEL_MIN = 0;
+const RNG_MAX = [0, 10, 20, 20, 20, 10];
+const RNG_LEVEL_MIN = 30;
 const RNG_LEVEL_MAX = 90;
-const RNG_QUALITY_MIN = 1;
+const RNG_QUALITY_MIN = 3;
 const RNG_QUALITY_MAX = 9;
 var levelXp = [];
 var allCombos = [];
@@ -71,12 +71,11 @@ function runTestIteration(settings) {
   slowSolution.comboCounts = countIds(slowSolution.bestSteps);
   solution.slowSolution = slowSolution;
   solution.slowTime = slowSolution.time;
-  if (solution.bestQuality >= slowSolution.bestQuality) {
+  if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
     solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
   } else {
-    solution.quickCostDiff = slowSolution.bestQuality + " > " + solution.bestQuality;
+    solution.quickCostDiff = slowSolution.bestQuality + " > " + solution.bestQuality + ", " + slowSolution.bestLevel + " > " + solution.bestLevel;
   }
-
   
   // Count used troops
   let combos = allCombos;
@@ -117,7 +116,7 @@ function search(startCombo, depth, solution, combos) {
     if (solution.steps[depth]) {
       subtractFromTotal(solution, combos[solution.steps[depth].combo]);
     }
-    solution.steps[depth] = {combo: c};
+    solution.steps[depth] = {combo: c, comboId: combos[c].id};
     solution.lastInsert = depth;
     addToTotal(solution, combos[c]);
     if (budgetFits(solution)) {
@@ -139,29 +138,12 @@ function search(startCombo, depth, solution, combos) {
           saveBestSolution(solution);
         }
       }
-      if (solution.quality > solution.bestQuality) {
-        if (DEBUG) console.log("New best quality: " + solution.quality + ", old: " + solution.bestQuality);
-        saveBestSolution(solution);
-      } else if (reachedQuality && reachedLevel && solution.sumCost < solution.bestCost) {
-        if (DEBUG) console.log("New best cost at goal: " + solution.sumCost);
-        saveBestSolution(solution);
-      } else if (reachedQuality && !reachedLevel && solution.reachedQuality && !solution.reachedLevel
-        && solution.quality == solution.bestQuality
-        && solution.sumCost < solution.bestCost) {
-        if (DEBUG) console.log("New best cost at quality goal: " + solution.sumCost);
-        saveBestSolution(solution);
-      } else if (!reachedQuality && reachedLevel && !solution.reachedQuality && solution.reachedLevel
-        && solution.quality == solution.bestQuality
-        && solution.sumCost < solution.bestCost) {
-        if (DEBUG) console.log("New best cost at level goal: " + solution.sumCost);
-        saveBestSolution(solution);
-      } else if (!reachedQuality && !reachedLevel && !solution.reachedQuality && !solution.reachedLevel
-        && solution.quality == solution.bestQuality
-        && solution.sumCost < solution.bestCost) {
-        if (DEBUG) console.log("New best cost below goal: " + solution.sumCost);
+      if (solution.sumCost < solution.bestCost
+        && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
+        if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
-      if (!reachedQuality || !reachedLevel) {
+      if (!reachedQuality) {;// || !reachedLevel) { // Need additional logic after quality goal is reached?
         search(c, depth + 1, solution, combos);
       }
     }
@@ -256,6 +238,8 @@ function sumPercent(total, i) {
 }
 
 function getLevel(level, newXp) {
+  // Actually slower
+  // return parseInt(-0.5 + Math.sqrt(0.25 + 2 * newXp));
   while (level < 1000) {
     level++;
     if (levelXp[level] > newXp) {

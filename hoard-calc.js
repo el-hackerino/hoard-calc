@@ -1,5 +1,7 @@
-const RUN_TESTS = 1;
-const TEST_ITERATIONS = 1000;
+const RUN_TESTS = 0;
+const TEST_ITERATIONS = 100000;
+const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 1;
+const DEBUG_MAXCOUNTS = 0;
 
 const TROOP_INPUTS = [
   document.querySelector('#t1'),
@@ -79,16 +81,18 @@ if (window.Worker) {
           totalComboCounts[c] = totalComboCounts[c] ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
         }
       }
-      // Save max troop counts
-      for (let t = 0; t < solution.troopCounts.length; t++) {
-        if (solution.troopCounts[t]) {
-          maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], solution.troopCounts[t]) : solution.troopCounts[t];
+      if (DEBUG_MAXCOUNTS) {
+        // Save max troop counts
+        for (let t = 0; t < solution.troopCounts.length; t++) {
+          if (solution.troopCounts[t]) {
+            maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], solution.troopCounts[t]) : solution.troopCounts[t];
+          }
         }
       }
       totalTime += solution.time;
       totalSlowTime += solution.slowTime;
       renderTests(solutions, totalComboCounts, totalTime / solutions.length, totalSlowTime / solutions.length);
-      console.log("Max troop counts: " + maxTroopCounts);
+      if (DEBUG_MAXCOUNTS) console.log("Max troop counts: " + maxTroopCounts);
     } else {
       renderSolution(solution);
       console.log("Time: " + (solution.time / 1000) + " s");
@@ -107,7 +111,7 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
   comboTable.classList.add('comboTable');
   document.body.appendChild(comboTable);
 
-  for (let [key, value] of Object.entries(totalComboCounts).filter(([key, value]) => value > 0)) {
+  for (let [key, value] of Object.entries(totalComboCounts).filter(([key, value]) => value > 0).sort(([key, value], [key2, value2]) => value < value2)) {
     let tr = comboTable.insertRow(-1);
     let td = tr.insertCell(-1);
     td.textContent = key;
@@ -145,7 +149,7 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
       } else if (attribute == 'combos') {
         td.innerHTML = '';
         for (let step of solution.bestSteps) {
-          let comboString = '<span>' + step.combo + " </span>";
+          let comboString = '<span>' + step.comboId + " </span>";
           td.innerHTML += comboString;
         }
       } else if (attribute == 'slowCombos') {
@@ -166,7 +170,11 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
 }
 
 function renderSolution(solution) {
-  removeElement('main-table');
+  if (!solution.bestSteps.length) {
+    renderMessage("Cannot find any useful steps!");
+    return;
+  }
+  if (!DEBUG_EXHAUSTIVE_SINGLE_SOLUTION) removeElement('main-table');
   const table = createTable(["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"]);
   table.id = 'main-table';
   table.classList.add('mainTable');
@@ -226,4 +234,14 @@ function removeElement(id) {
     const oldElement = document.getElementById(id);
     oldElement.parentNode.removeChild(oldElement);
   }
+}
+
+function sortFn(attribute) {
+	return function(a, b) {
+		if (a[attribute] === b[attribute]) {
+			return 0;
+		} else {
+			return (a[attribute] < b[attribute]) ? -1 : 1;
+		};
+	};
 }
