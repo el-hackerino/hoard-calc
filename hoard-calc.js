@@ -47,24 +47,22 @@ if (window.Worker) {
       budget[i] = input.value;
     }
     let solution = {
-      iterations: RUN_TESTS ? TEST_ITERATIONS : 1,
-      settings: {
-        randomize: RUN_TESTS,
-        budget: budget,
-        initialQuality: Number(INPUT_QUALITY.value),
-        initialLevel: Number(INPUT_LEVEL.value),
-        initialXp: Number(INPUT_XP.value),
-        goalLevel: Number(INPUT_TARGET_LEVEL.value),
-        goalQuality: Number(INPUT_TARGET_QUALITY.value)
-      }
+      num_tests: RUN_TESTS ? TEST_ITERATIONS : 1,
+      run_tests: RUN_TESTS,
+      budget: budget,
+      initialQuality: Number(INPUT_QUALITY.value),
+      initialLevel: Number(INPUT_LEVEL.value),
+      initialXp: Number(INPUT_XP.value),
+      goalLevel: Number(INPUT_TARGET_LEVEL.value),
+      goalQuality: Number(INPUT_TARGET_QUALITY.value)
     };
     if (RUN_TESTS) {
       myWorker.postMessage(solution);
     } else {
-      solution.settings.useQuickList = 1;
+      solution.useQuickList = 1;
       myWorker.postMessage(solution);
       if (INPUT_EXHAUSTIVE.checked) {
-        solution.settings.useQuickList = 0;
+        solution.useQuickList = 0;
         myWorker.postMessage(solution);
       }
     }
@@ -156,10 +154,10 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
         td.innerHTML = '';
         for (let step of solution.slowSolution.bestSteps) {
           let comboString = '<span';
-          if (!TEMPLATES_QUICK.includes(Number(step.combo))) {
+          if (!TEMPLATES_QUICK.includes(Number(step.comboId))) {
             comboString += ' class=\'highlight\'';
           }
-          comboString += '>' + step.combo + " </span>";
+          comboString += '>' + step.comboId + " </span>";
           td.innerHTML += comboString;
         }
       } else {
@@ -174,9 +172,10 @@ function renderSolution(solution) {
     renderMessage("Cannot find any useful steps!");
     return;
   }
-  if (!DEBUG_EXHAUSTIVE_SINGLE_SOLUTION) removeElement('main-table');
+  let tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
+  removeElement(tableId);
   const table = createTable(["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"]);
-  table.id = 'main-table';
+  table.id = tableId;
   table.classList.add('mainTable');
   document.body.appendChild(table);
   //sorttable.makeSortable(table);

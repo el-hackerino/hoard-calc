@@ -18,8 +18,8 @@ makeCombos();
 onmessage = function (message) {
   //console.log('Worker: Message received from main script');
   //console.log(e.data);
-  for (let i = 0; i < message.data.iterations; i++) {
-    let result = runTestIteration(message.data.settings);
+  for (let i = 0; i < message.data.num_tests; i++) {
+    let result = runTestIteration(message.data);
     //console.log('Worker: Posting message back to main script');
     postMessage(result);
   }
@@ -40,29 +40,21 @@ function resetSolution(solution) {
   }
 }
 
-function runTestIteration(settings) {
-  let solution = {
-    initialLevel: settings.initialLevel,
-    initialQuality: settings.initialQuality,
-    initialXp : settings.initialXp,
-    goalLevel: settings.goalLevel,
-    goalQuality: settings.goalQuality,
-    budget: settings.budget,
-  };
+function runTestIteration(solution) {
   resetSolution(solution);
   
-  if (settings.randomize) {
-    for (let t = 0; t < settings.budget.length; t++) {
+  if (solution.run_tests) {
+    for (let t = 0; t < solution.budget.length; t++) {
       solution.budget[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN)) + RNG_MIN);
     }
     solution.initialLevel = Math.floor((Math.random() * (RNG_LEVEL_MAX - RNG_LEVEL_MIN)) + RNG_LEVEL_MIN);
     solution.initialQuality = Math.floor((Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN)) + RNG_QUALITY_MIN);
   }
 
-  findSolution(solution, settings.randomize ? 1 : settings.useQuickList);
+  findSolution(solution, solution.run_tests ? 1 : solution.useQuickList);
   solution.comboCounts = countIds(solution.bestSteps);
 
-  if (!settings.randomize) {
+  if (!solution.run_tests) {
     return solution;
   }
   let slowSolution = Object.assign({}, solution);
@@ -74,7 +66,7 @@ function runTestIteration(settings) {
   if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
     solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
   } else {
-    solution.quickCostDiff = slowSolution.bestQuality + " > " + solution.bestQuality + ", " + slowSolution.bestLevel + " > " + solution.bestLevel;
+    solution.quickCostDiff = slowSolution.bestQuality + "->" + solution.bestQuality + ", " + slowSolution.bestLevel + "->" + solution.bestLevel;
   }
   
   // Count used troops
@@ -121,7 +113,6 @@ function search(startCombo, depth, solution, combos) {
     addToTotal(solution, combos[c]);
     if (budgetFits(solution)) {
       calculateStats(solution, combos);
-      // TODO can each goal be reached separately?
       if (solution.quality == solution.goalQuality) {
         reachedQuality = true;
         if (!solution.reachedQuality) {
@@ -138,7 +129,10 @@ function search(startCombo, depth, solution, combos) {
           saveBestSolution(solution);
         }
       }
-      if (solution.sumCost < solution.bestCost
+      if (solution.quality > solution.bestQuality && solution.quality <= solution.goalQuality) {
+        if (DEBUG) console.log("New quality: " + solution.quality);
+        saveBestSolution(solution);
+      } else if ((solution.sumCost < solution.bestCost && solution.quality == solution.bestQuality)
         && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
