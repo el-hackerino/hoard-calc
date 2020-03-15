@@ -19,6 +19,9 @@ const INPUT_TARGET_QUALITY = document.querySelector('#targetQuality');
 const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_EXHAUSTIVE];
+const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"];
+const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
+const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos"];
 
 if (window.Worker) {
   let solutions = [];
@@ -30,6 +33,17 @@ if (window.Worker) {
   for (let input of ALL_INPUTS) {
     input.onchange = calculate;
   }
+  if (!RUN_TESTS) {
+    initTable("main-table", MAIN_TABLE_COLUMNS);
+    if (DEBUG_EXHAUSTIVE_SINGLE_SOLUTION) {
+      initTable("main-table-2", MAIN_TABLE_COLUMNS);
+    }
+  } else {
+    initTable("combo-table", COMBO_TABLE_COLUMNS);
+    initTable("test-table", TEST_TABLE_COLUMNS);
+    // TODO sorttable.makeSortable(table);
+  }
+
   calculate();
 
   function calculate() {
@@ -101,16 +115,11 @@ if (window.Worker) {
 }
 
 function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
-  removeElement('test-table');
-  removeElement('combo-table');
-
-  const comboTable = createTable(["Combo", "Troops", "Freq", "Slow"]);
-  comboTable.id = 'combo-table';
-  comboTable.classList.add('comboTable');
-  document.body.appendChild(comboTable);
+  let tableId = "combo-table";
+  let table = clearTable(tableId);
 
   for (let [key, value] of Object.entries(totalComboCounts).filter(([key, value]) => value > 0).sort(([key, value], [key2, value2]) => value < value2)) {
-    let tr = comboTable.insertRow(-1);
+    let tr = table.insertRow(-1);
     let td = tr.insertCell(-1);
     td.textContent = key;
     td = tr.insertCell(-1);
@@ -123,16 +132,13 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
     td = tr.insertCell(-1);
     td.textContent = TEMPLATES_QUICK.includes(Number(key)) ? '' : 'x';
   }
-  let tr = comboTable.insertRow(-1);
+  let tr = table.insertRow(-1);
   let td = tr.insertCell(-1);
   td.colSpan = 4;
   td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgslowTime);
 
-  const table = createTable(["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos"]);
-  table.id = 'test-table';
-  table.classList.add('testTable');
-  document.body.appendChild(table);
-  // TODO sorttable.makeSortable(table);
+  tableId = "test-table";
+  table = clearTable(tableId);
 
   for (let solution of solutions) {
     if (!solution) continue;
@@ -172,13 +178,8 @@ function renderSolution(solution) {
     renderMessage("Cannot find any useful steps!");
     return;
   }
-  let tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
-  removeElement(tableId);
-  const table = createTable(["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"]);
-  table.id = tableId;
-  table.classList.add('mainTable');
-  document.body.appendChild(table);
-  //sorttable.makeSortable(table);
+  const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
+  const table = clearTable(tableId);
 
   for (let step of solution.bestSteps) {
     let tr = table.insertRow(-1);
@@ -216,16 +217,18 @@ function renderMessage(message) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-function createTable(COLUMN_NAMES) {
-  let table = document.createElement('table');
-  // Headers
-  let tr = table.insertRow(-1);
+function initTable(id, COLUMN_NAMES) {
+  let table = document.getElementById(id);
+  let thead = document.createElement('thead');
   COLUMN_NAMES.forEach(function (columnName, i) {
     let th = document.createElement('th');
     th.textContent = columnName;
-    tr.appendChild(th);
+    thead.appendChild(th);
   });
-  return table;
+  table.appendChild(thead);
+  let tbody = document.createElement('tbody');
+  table.appendChild(tbody);
+  return tbody;
 }
 
 function removeElement(id) {
@@ -235,12 +238,10 @@ function removeElement(id) {
   }
 }
 
-function sortFn(attribute) {
-	return function(a, b) {
-		if (a[attribute] === b[attribute]) {
-			return 0;
-		} else {
-			return (a[attribute] < b[attribute]) ? -1 : 1;
-		};
-	};
+function clearTable(id) {
+  const table = document.getElementById(id);
+  if (table.hasChildNodes()) {
+    table.removeChild(table.lastChild);
+  }
+  return table;
 }
