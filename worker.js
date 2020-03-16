@@ -3,11 +3,12 @@ importScripts('constants.js');
 const DEBUG = 0;
 const BUDGET_MAX = [0, 10, 36, 28, 20, 18];
 const RNG_MIN = 0;
-const RNG_MAX = [0, 10, 20, 20, 20, 10];
-const RNG_LEVEL_MIN = 20;
+const RNG_MAX = [0, 10, 36, 28, 20, 18]; // [0, 10, 20, 20, 20, 10];
+const RNG_LEVEL_MIN = 0;
 const RNG_LEVEL_MAX = 100;
-const RNG_QUALITY_MIN = 2;
-const RNG_QUALITY_MAX = 9;
+const RNG_QUALITY_MIN = 1;
+const RNG_QUALITY_MAX = 7;
+const MAX_GOLD = 1000000;
 var levelXp = [];
 var allCombos = [];
 var quickCombos = [];
@@ -17,8 +18,8 @@ makeCombos();
 
 onmessage = function (message) {
   //console.log('Worker: Message received from main script');
-  //console.log(e.data);
-  for (let i = 0; i < message.data.num_tests; i++) {
+  //console.log(message.data);
+  for (let i = 0; i < (message.data.run_tests ? message.data.num_tests : 1); i++) {
     let result = runTestIteration(message.data);
     //console.log('Worker: Posting message back to main script');
     postMessage(result);
@@ -30,7 +31,7 @@ function resetSolution(solution) {
   solution.reachedLevel = false;
   solution.steps = [];
   solution.bestSteps = [];
-  solution.bestCost = 1000000;
+  solution.bestCost = MAX_GOLD;
   solution.bestLevel = solution.initialLevel;
   solution.bestQuality = solution.initialQuality;
   solution.troopTotals = [0, 0, 0, 0, 0, 0];
@@ -48,12 +49,14 @@ function runTestIteration(solution) {
       solution.budget[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN)) + RNG_MIN);
     }
     solution.initialQuality = Math.floor((Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN)) + RNG_QUALITY_MIN);
-    let minLevel = Math.max(solution.initialQuality * 10, RNG_LEVEL_MIN);
+    // Get rid of unrealistically low initial level values
+    let iq = solution.initialQuality;
+    let minLevel = Math.max(-.35 * iq * iq + 10 * iq + 5, RNG_LEVEL_MIN);
     solution.initialLevel = Math.floor((Math.random() * (RNG_LEVEL_MAX - minLevel)) + minLevel);
   }
 
   findSolution(solution, solution.run_tests ? 1 : solution.useQuickList);
-  if (solution.bestCost == 1000000) {
+  if (solution.bestCost == MAX_GOLD) {
     resetSolution(solution);
   }
   solution.comboCounts = countIds(solution.bestSteps);
@@ -87,7 +90,7 @@ function runTestIteration(solution) {
 }
 
 function findSolution(solution, quick) {
-  let solTime = new Date().getTime();
+  let startTime = new Date().getTime();
   let combos = quick ? quickCombos : allCombos;
   search(0, 0, solution, combos);
   // TODO if no solution found, clean up values like bestQuality/level?
@@ -99,7 +102,8 @@ function findSolution(solution, quick) {
       }
     }
   }
-  solution.time = (new Date().getTime() - solTime);
+  solution.time = (new Date().getTime() - startTime);
+  solution.timeToOptimum = solution.timeFound - startTime;
 }
 
 function search(startCombo, depth, solution, combos) {
@@ -156,6 +160,7 @@ function saveBestSolution(solution) {
   solution.bestLevel = solution.sumLevel;
   solution.bestCost = solution.sumCost;
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
+  solution.timeFound = new Date().getTime();
   //console.log(solution);
 }
 

@@ -36,6 +36,12 @@ form div {
 	overflow: hidden;
 	margin: 0 0 5px 0;
 }
+#message {
+	display: inline-block;
+}
 .highlight {
 	color: hsl(0, 100%, 50%);
 }
+.hidden {
+	display: none;
+  }
