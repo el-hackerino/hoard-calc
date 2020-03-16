@@ -1,8 +1,6 @@
 partial solutions:
-- can't reach quality -> highest quality, then fewest gold (/troops?)
-- can't reach level -> highest quality, then level (not level -> gold? better long-term; troops?)
-
-
+- can't reach quality -> highest quality, then least gold /troops
+- can't reach level -> highest quality, then least gold / troops
 
 balance gold - troops:
 
@@ -13,6 +11,5 @@ troop: minimize good troop use (adapt to current amounts? to base frequeicy in p
 same? middle ground? too weak? Never exceed 100% at expense of slower climb at end, lose some gold
 
 
-
-lost quick sol?
-0, 1, 5, 3, 2, 2, 	17	1	1000000	0	6	1	22	4->6, 62->0		0 12 30 
+optimization:
+- do we always find the solution early in the search? How can we use this?

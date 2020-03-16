@@ -1,12 +1,12 @@
 importScripts('constants.js');
 
-const DEBUG = 1;
+const DEBUG = 0;
 const BUDGET_MAX = [0, 10, 36, 28, 20, 18];
 const RNG_MIN = 0;
 const RNG_MAX = [0, 10, 20, 20, 20, 10];
-const RNG_LEVEL_MIN = 0;
-const RNG_LEVEL_MAX = 90;
-const RNG_QUALITY_MIN = 1;
+const RNG_LEVEL_MIN = 20;
+const RNG_LEVEL_MAX = 100;
+const RNG_QUALITY_MIN = 2;
 const RNG_QUALITY_MAX = 9;
 var levelXp = [];
 var allCombos = [];
@@ -47,11 +47,15 @@ function runTestIteration(solution) {
     for (let t = 0; t < solution.budget.length; t++) {
       solution.budget[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN)) + RNG_MIN);
     }
-    solution.initialLevel = Math.floor((Math.random() * (RNG_LEVEL_MAX - RNG_LEVEL_MIN)) + RNG_LEVEL_MIN);
     solution.initialQuality = Math.floor((Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN)) + RNG_QUALITY_MIN);
+    let minLevel = Math.max(solution.initialQuality * 10, RNG_LEVEL_MIN);
+    solution.initialLevel = Math.floor((Math.random() * (RNG_LEVEL_MAX - minLevel)) + minLevel);
   }
 
   findSolution(solution, solution.run_tests ? 1 : solution.useQuickList);
+  if (solution.bestCost == 1000000) {
+    resetSolution(solution);
+  }
   solution.comboCounts = countIds(solution.bestSteps);
 
   if (!solution.run_tests) {
@@ -152,7 +156,7 @@ function saveBestSolution(solution) {
   solution.bestLevel = solution.sumLevel;
   solution.bestCost = solution.sumCost;
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
-  console.log(solution);
+  //console.log(solution);
 }
 
 function addToTotal(solution, combo) {
