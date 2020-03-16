@@ -66,14 +66,16 @@ function runTestIteration(solution) {
   }
   let slowSolution = Object.assign({}, solution);
   resetSolution(slowSolution);
-  findSolution(slowSolution, 0);
+  findSolution(slowSolution, 0, 0); // TODO toLevel is simply too expensive with the full combo list, maybe offer it as an option with quick list
   slowSolution.comboCounts = countIds(slowSolution.bestSteps);
   solution.slowSolution = slowSolution;
   solution.slowTime = slowSolution.time;
   if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
     solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
   } else {
-    solution.quickCostDiff = solution.bestQuality + "->" + slowSolution.bestQuality + ", " + solution.bestLevel + "->" + slowSolution.bestLevel;
+    solution.quickCostDiff = solution.bestQuality + "->" + slowSolution.bestQuality
+       + ", " + solution.bestLevel + "->" + slowSolution.bestLevel
+       + ", " + solution.bestCost + "->" + slowSolution.bestCost;
   }
   
   // Count used troops
@@ -89,11 +91,11 @@ function runTestIteration(solution) {
   return solution;
 }
 
-function findSolution(solution, quick) {
+function findSolution(solution, quick, toLevel) {
+//console.log(quick + "," + toLevel)
   let startTime = new Date().getTime();
   let combos = quick ? quickCombos : allCombos;
-  search(0, 0, solution, combos);
-  // TODO if no solution found, clean up values like bestQuality/level?
+  search(0, 0, solution, combos, toLevel);
   // Convert steps to old form as expected by the render methods
   for (let step of solution.bestSteps) {
     for (var prop in combos[step.combo]) {
@@ -106,7 +108,7 @@ function findSolution(solution, quick) {
   solution.timeToOptimum = solution.timeFound - startTime;
 }
 
-function search(startCombo, depth, solution, combos) {
+function search(startCombo, depth, solution, combos, toLevel) {
   for (let c = startCombo; c < combos.length; c++) {
     var reachedQuality = false;
     var reachedLevel = false;
@@ -122,7 +124,7 @@ function search(startCombo, depth, solution, combos) {
     addToTotal(solution, combos[c]);
     if (budgetFits(solution)) {
       calculateStats(solution, combos);
-      if (solution.quality == solution.goalQuality) {
+      if (solution.quality >= solution.goalQuality) {
         reachedQuality = true;
         if (!solution.reachedQuality) {
           if (DEBUG) console.log("Reached target quality!");
@@ -130,7 +132,7 @@ function search(startCombo, depth, solution, combos) {
           saveBestSolution(solution);
         }
       }
-      if (solution.sumLevel >= solution.goalLevel){
+      if (solution.sumLevel >= solution.goalLevel) {
         reachedLevel = true;
         if (!solution.reachedLevel) {
           if (DEBUG) console.log("Reached target level!");
@@ -141,13 +143,13 @@ function search(startCombo, depth, solution, combos) {
       if (solution.quality > solution.bestQuality && solution.quality <= solution.goalQuality) {
         if (DEBUG) console.log("New quality: " + solution.quality);
         saveBestSolution(solution);
-      } else if ((solution.sumCost < solution.bestCost && solution.quality == solution.bestQuality)
+      } else if ((solution.sumCost < solution.bestCost && solution.quality >= solution.bestQuality)
         && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
-      if (!reachedQuality) {;// || !reachedLevel) { // Need additional logic after quality goal is reached?
-        search(c, depth + 1, solution, combos);
+      if (!reachedQuality || toLevel && !reachedLevel) { // Need additional logic after quality goal is reached?
+        search(c, depth + 1, solution, combos, toLevel);
       }
     }
   }

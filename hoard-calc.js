@@ -18,8 +18,7 @@ const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_EXHAUSTIVE];
 const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"];
-const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
-const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos"];
+const MAIN_TABLE_ATTRIBUTES = ['troops', 'percent', 'xp', 'cost', 'level', 'quality', 'extraXp'];
 
 if (window.Worker) {
   var exhaustiveSearchDone = false;
@@ -81,7 +80,7 @@ if (window.Worker) {
     console.log("Time: " + (solution.time / 1000) + " s");
   }
 } else { // TODO
-  console.log('Your browser doesn\'t support web workers.')
+  renderMessage('Your browser does not support web workers :(', true);
 }
 
 function renderSolution(solution) {
@@ -94,7 +93,7 @@ function renderSolution(solution) {
 
   for (let step of solution.bestSteps) {
     let tr = table.insertRow(-1);
-    for (let attribute of ['troops', 'percent', 'xp', 'cost', 'level', 'quality', 'extraXp']) {
+    for (let attribute of MAIN_TABLE_ATTRIBUTES) {
       let td = tr.insertCell(-1);
       if (attribute == 'troops') {
         td.textContent = '';
@@ -111,10 +110,10 @@ function renderSolution(solution) {
   let td = tr.insertCell(-1);
   td.colSpan = 7;
   td.textContent = solution.bestCost;
-  tr = table.insertRow(-1);
-  td = tr.insertCell(-1);
-  td.colSpan = 7;
-  td.textContent = solution.iterations;
+  // tr = table.insertRow(-1);
+  // td = tr.insertCell(-1);
+  // td.colSpan = 7;
+  // td.textContent = solution.iterations;
 }
 
 function renderMessage(message, hide) {
