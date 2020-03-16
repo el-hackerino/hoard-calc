@@ -50,8 +50,8 @@ if (window.Worker) {
     console.log("Calculating...");
     if (Number(INPUT_QUALITY.value) >= Number(INPUT_TARGET_QUALITY.value)
       && Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
-        renderMessage("No need to upgrade!");
-        return;
+      renderMessage("No need to upgrade!");
+      return;
     }
     if (myWorker) myWorker.terminate();
     myWorker = new Worker("worker.js");
@@ -217,31 +217,31 @@ function renderMessage(message) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-function initTable(id, COLUMN_NAMES) {
-  let table = document.getElementById(id);
-  let thead = document.createElement('thead');
-  COLUMN_NAMES.forEach(function (columnName, i) {
-    let th = document.createElement('th');
-    th.textContent = columnName;
-    thead.appendChild(th);
-  });
-  table.appendChild(thead);
-  let tbody = document.createElement('tbody');
-  table.appendChild(tbody);
-  return tbody;
-}
+// function initTable(id, COLUMN_NAMES) {
+//   let table = document.getElementById(id);
+//   let thead = document.createElement('thead');
+//   COLUMN_NAMES.forEach(function (columnName, i) {
+//     let th = document.createElement('th');
+//     th.textContent = columnName;
+//     thead.appendChild(th);
+//   });
+//   table.appendChild(thead);
+//   let tbody = document.createElement('tbody');
+//   table.appendChild(tbody);
+//   return tbody;
+// }
 
-function removeElement(id) {
-  if (document.getElementById(id)) {
-    const oldElement = document.getElementById(id);
-    oldElement.parentNode.removeChild(oldElement);
-  }
-}
+// function removeElement(id) {
+//   if (document.getElementById(id)) {
+//     const oldElement = document.getElementById(id);
+//     oldElement.parentNode.removeChild(oldElement);
+//   }
+// }
 
-function clearTable(id) {
-  const table = document.getElementById(id);
-  if (table.hasChildNodes()) {
-    table.removeChild(table.lastChild);
-  }
-  return table;
-}
+// function clearTable(id) {
+//   const table = document.getElementById(id);
+//   if (table.hasChildNodes()) {
+//     table.removeChild(table.lastChild);
+//   }
+//   return table;
+// }
