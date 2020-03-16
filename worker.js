@@ -161,6 +161,7 @@ function saveBestSolution(solution) {
   solution.bestQuality = solution.quality;
   solution.bestLevel = solution.sumLevel;
   solution.bestCost = solution.sumCost;
+  solution.bestGoldCost = solution.sumGoldCost;
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
   solution.timeFound = new Date().getTime();
   //console.log(solution);
@@ -190,25 +191,30 @@ function calculateStats(solution, combos) {
   solution.quality = solution.initialQuality + solution.lastInsert + 1;
   if (solution.quality > 10) solution.quality = 10;
   step.quality = solution.quality;
-  let prevXp, prevLevel, prevCost;
+  let prevXp, prevLevel, prevCost, prevGoldCost;
   if (solution.lastInsert == 0) {
     prevXp = levelXp[solution.initialLevel] + solution.initialXp;
     prevLevel = solution.initialLevel;
     prevCost = 0;
+    prevGoldCost = 0;
   } else {
     let prevStep = solution.steps[solution.lastInsert - 1];
     prevXp = prevStep.sumXp;
     prevLevel = prevStep.level;
     prevCost = prevStep.sumCost;
+    prevGoldCost = prevStep.sumGoldCost;
   }
   step.sumXp = prevXp + combos[step.combo].xp;
   step.level = getLevel(prevLevel, step.sumXp);
   step.cost = getCost(prevLevel, combos[step.combo].troops.length);
-  step.sumCost = prevCost + step.cost;
+  step.troopCost = getTroopCost(combos[step.combo].troops) * solution.troopCostFactor;
+  step.sumCost = prevCost + step.cost + step.troopCost;
+  step.sumGoldCost = prevGoldCost + step.cost;
   step.extraXp = step.sumXp - levelXp[step.level];
   solution.sumXp = step.sumXp;
   solution.sumLevel = step.level;
   solution.sumCost = step.sumCost;
+  solution.sumGoldCost = step.sumGoldCost;
 }
 
 function budgetFits(solution) {
@@ -257,6 +263,12 @@ function getLevel(level, newXp) {
 
 function getCost(level, numTroops) {
   return (600 + 200 * level) * numTroops;
+}
+
+function getTroopCost(troopArray) {
+  return troopArray.reduce(function(total, troop) {
+    return total + TROOPS[troop].value;
+  }, 0);
 }
 
 function makeCombos() {

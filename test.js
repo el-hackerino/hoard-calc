@@ -27,6 +27,7 @@ if (window.Worker) {
     initialXp: 0,
     goalLevel: GOAL_LEVEL,
     goalQuality: GOAL_QUALITY,
+    troopCostFactor: 0,
     budget: [0, 0, 0, 0, 0, 0]
   };
   console.log("Calculating...");

@@ -1,4 +1,4 @@
-const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 1;
+const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
 const DEBUG_MAXCOUNTS = 0;
 
 const TROOP_INPUTS = [
@@ -14,11 +14,12 @@ const INPUT_QUALITY = document.querySelector('#quality');
 const INPUT_XP = document.querySelector('#xp');
 const INPUT_TARGET_LEVEL = document.querySelector('#targetLevel');
 const INPUT_TARGET_QUALITY = document.querySelector('#targetQuality');
+const INPUT_TROOP_COST_FACTOR = document.querySelector('#troopCostFactor');
 const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
-  INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_EXHAUSTIVE];
-const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"];
-const MAIN_TABLE_ATTRIBUTES = ['troops', 'percent', 'xp', 'cost', 'level', 'quality', 'extraXp'];
+  INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE];
+const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Troop Cost", "Level", "Quality", "Extra XP"];
+const MAIN_TABLE_ATTRIBUTES = ['troops', 'percent', 'xp', 'cost', 'troopCost', 'level', 'quality', 'extraXp'];
 
 if (window.Worker) {
   var exhaustiveSearchDone = false;
@@ -57,7 +58,8 @@ if (window.Worker) {
       initialLevel: Number(INPUT_LEVEL.value),
       initialXp: Number(INPUT_XP.value),
       goalLevel: Number(INPUT_TARGET_LEVEL.value),
-      goalQuality: Number(INPUT_TARGET_QUALITY.value)
+      goalQuality: Number(INPUT_TARGET_QUALITY.value),
+      troopCostFactor: Number(INPUT_TROOP_COST_FACTOR.value)
     };
     solution.useQuickList = 1;
     myWorker.postMessage(solution);
@@ -109,7 +111,7 @@ function renderSolution(solution) {
   let tr = table.insertRow(-1);
   let td = tr.insertCell(-1);
   td.colSpan = 7;
-  td.textContent = solution.bestCost;
+  td.textContent = solution.bestGoldCost;
   // tr = table.insertRow(-1);
   // td = tr.insertCell(-1);
   // td.colSpan = 7;
