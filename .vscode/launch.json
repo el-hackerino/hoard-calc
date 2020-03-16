@@ -4,8 +4,16 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
-            "name": "Launch index.html",
+            "name": "Test",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "file": "${workspaceFolder}/test.html"
+        },
+        {
+            "name": "Main page",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
