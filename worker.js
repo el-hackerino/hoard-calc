@@ -1,12 +1,12 @@
 importScripts('constants.js');
 
-const DEBUG = 0;
+const DEBUG = 1;
 const BUDGET_MAX = [0, 10, 36, 28, 20, 18];
 const RNG_MIN = 0;
 const RNG_MAX = [0, 10, 20, 20, 20, 10];
-const RNG_LEVEL_MIN = 30;
+const RNG_LEVEL_MIN = 0;
 const RNG_LEVEL_MAX = 90;
-const RNG_QUALITY_MIN = 3;
+const RNG_QUALITY_MIN = 1;
 const RNG_QUALITY_MAX = 9;
 var levelXp = [];
 var allCombos = [];
@@ -66,7 +66,7 @@ function runTestIteration(solution) {
   if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
     solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
   } else {
-    solution.quickCostDiff = slowSolution.bestQuality + "->" + solution.bestQuality + ", " + slowSolution.bestLevel + "->" + solution.bestLevel;
+    solution.quickCostDiff = solution.bestQuality + "->" + slowSolution.bestQuality + ", " + solution.bestLevel + "->" + slowSolution.bestLevel;
   }
   
   // Count used troops
@@ -86,6 +86,7 @@ function findSolution(solution, quick) {
   let solTime = new Date().getTime();
   let combos = quick ? quickCombos : allCombos;
   search(0, 0, solution, combos);
+  // TODO if no solution found, clean up values like bestQuality/level?
   // Convert steps to old form as expected by the render methods
   for (let step of solution.bestSteps) {
     for (var prop in combos[step.combo]) {
@@ -121,7 +122,7 @@ function search(startCombo, depth, solution, combos) {
           saveBestSolution(solution);
         }
       }
-      if (solution.sumLevel >= solution.goalLevel) {
+      if (solution.sumLevel >= solution.goalLevel){
         reachedLevel = true;
         if (!solution.reachedLevel) {
           if (DEBUG) console.log("Reached target level!");
@@ -151,7 +152,7 @@ function saveBestSolution(solution) {
   solution.bestLevel = solution.sumLevel;
   solution.bestCost = solution.sumCost;
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
-  //console.log(solution);
+  console.log(solution);
 }
 
 function addToTotal(solution, combo) {
