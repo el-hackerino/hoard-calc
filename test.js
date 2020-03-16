@@ -6,7 +6,8 @@ const GOAL_QUALITY = 10;
 const GOAL_LEVEL = 100;
 
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
-const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Combos", "Slow Combos"];
+const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Time To Solve", "Diff", "Combos", "Slow Combos"];
+const TEST_TABLE_ATTRIBUTES = ['budget', 'initialLevel', 'initialQuality', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'slowTime', 'timeToOptimum', 'quickCostDiff', 'combos', 'slowCombos'];
 
 if (window.Worker) {
   let solutions = [];
@@ -87,7 +88,7 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
   for (let solution of solutions) {
     if (!solution) continue;
     let tr = table.insertRow(-1);
-    for (let attribute of ['budget', 'initialLevel', 'initialQuality', 'bestCost', 'bestLevel', 'bestQuality', 'time', 'slowTime', 'quickCostDiff', 'combos', 'slowCombos']) {
+    for (let attribute of TEST_TABLE_ATTRIBUTES) {
       let td = tr.insertCell(-1);
       if (attribute == 'budget') {
         td.textContent = '';
@@ -110,7 +111,9 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
           comboString += '>' + step.comboId + " </span>";
           td.innerHTML += comboString;
         }
-      } else {
+      } else if (attribute == 'timeToOptimum') {
+        td.textContent = Math.round(solution.slowSolution.timeToOptimum / solution.slowSolution.time * 100) / 100 || '-';
+       } else {
         td.textContent = solution[attribute];
       }
     }

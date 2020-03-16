@@ -22,11 +22,7 @@ const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
 const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Slow G", "Combos", "Slow Combos"];
 
 if (window.Worker) {
-  let solutions = [];
-  let totalComboCounts = [];
-  let maxTroopCounts = [];
-  let totalTime = 0;
-  let totalSlowTime = 0;
+  var exhaustiveSearchDone = false;
   var myWorker;
   for (let input of ALL_INPUTS) {
     input.onchange = calculate;
@@ -42,8 +38,11 @@ if (window.Worker) {
     console.log("Calculating...");
     if (Number(INPUT_QUALITY.value) >= Number(INPUT_TARGET_QUALITY.value)
       && Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
-      renderMessage("No need to upgrade!");
+      renderMessage("No need to upgrade!", true);
       return;
+    } else {
+      exhaustiveSearchDone = false;
+      renderMessage('', false);
     }
     if (myWorker) myWorker.terminate();
     myWorker = new Worker("worker.js");
@@ -53,8 +52,7 @@ if (window.Worker) {
       budget[i] = input.value;
     }
     let solution = {
-      num_tests: RUN_TESTS ? TEST_ITERATIONS : 1,
-      run_tests: RUN_TESTS,
+      run_tests: false,
       budget: budget,
       initialQuality: Number(INPUT_QUALITY.value),
       initialLevel: Number(INPUT_LEVEL.value),
@@ -68,10 +66,17 @@ if (window.Worker) {
       solution.useQuickList = 0;
       myWorker.postMessage(solution);
     }
+    renderMessage('Calculating...', false);
   }
 
   function render(message) {
     let solution = message.data;
+    if (solution.useQuickList && !exhaustiveSearchDone) {
+      renderMessage('Refining...', false);
+    } else {
+      exhaustiveSearchDone = true;
+      renderMessage('', false);
+    } 
     renderSolution(solution);
     console.log("Time: " + (solution.time / 1000) + " s");
   }
@@ -81,7 +86,7 @@ if (window.Worker) {
 
 function renderSolution(solution) {
   if (!solution.bestSteps.length) {
-    renderMessage("Cannot find any useful steps!");
+    renderMessage("Cannot find any useful steps!", true);
     return;
   }
   const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
@@ -112,11 +117,13 @@ function renderSolution(solution) {
   td.textContent = solution.iterations;
 }
 
-function renderMessage(message) {
-  removeElement('main-table');
-  let msg = document.createElement('div');
-  msg.textContent = message;
-  msg.id = 'main-table';
-  msg.classList.add('mainTable');
-  document.body.appendChild(msg);
+function renderMessage(message, hide) {
+  document.getElementById('message').textContent = message;
+  if (hide) {
+    document.getElementById('main-table').classList.add('hidden');
+    document.getElementById('main-table-2').classList.add('hidden');
+  } else {
+    document.getElementById('main-table').classList.remove('hidden');
+    document.getElementById('main-table-2').classList.remove('hidden');
+  }
 }
