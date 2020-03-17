@@ -1,5 +1,6 @@
-const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 1;
+const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
 const DEBUG_MAXCOUNTS = 0;
+const TROOP_COST_FACTORS = [0, 1, 2, 3, 5, 10, 50];
 
 const TROOP_INPUTS = [
   document.querySelector('#t1'),
@@ -20,6 +21,9 @@ const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE];
 const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Troop Cost", "Level", "Quality", "Extra XP"];
 const MAIN_TABLE_ATTRIBUTES = ['troops', 'percent', 'xp', 'cost', 'troopCost', 'level', 'quality', 'extraXp'];
+
+document.getElementById('targetLevel-div').classList.add("hidden");
+document.getElementById('targetQuality-div').classList.add("hidden");
 
 if (window.Worker) {
   var exhaustiveSearchDone = false;
@@ -59,7 +63,7 @@ if (window.Worker) {
       initialXp: Number(INPUT_XP.value),
       goalLevel: Number(INPUT_TARGET_LEVEL.value),
       goalQuality: Number(INPUT_TARGET_QUALITY.value),
-      troopCostFactor: Number(INPUT_TROOP_COST_FACTOR.value)
+      troopCostFactor: TROOP_COST_FACTORS[Number(INPUT_TROOP_COST_FACTOR.value)]
     };
     solution.useQuickList = 1;
     myWorker.postMessage(solution);
@@ -81,7 +85,7 @@ if (window.Worker) {
     renderSolution(solution);
     console.log("Time: " + (solution.time / 1000) + " s");
   }
-} else { // TODO
+} else {
   renderMessage('Your browser does not support web workers :(', true);
 }
 
