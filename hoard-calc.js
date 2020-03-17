@@ -19,8 +19,8 @@ const INPUT_TROOP_COST_FACTOR = document.querySelector('#troopCostFactor');
 const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE];
-const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Troop Cost", "Level", "Quality", "Extra XP"];
-const MAIN_TABLE_ATTRIBUTES = ['troops', 'percent', 'xp', 'cost', 'troopCost', 'level', 'quality', 'extraXp'];
+const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"];
+const MAIN_TABLE_ATTRIBUTES = ['troops', 'percent', 'xp', 'cost', 'level', 'quality', 'extraXp'];
 
 document.getElementById('targetLevel-div').classList.add("hidden");
 document.getElementById('targetQuality-div').classList.add("hidden");
@@ -46,7 +46,7 @@ if (window.Worker) {
       return;
     } else {
       exhaustiveSearchDone = false;
-      renderMessage('', false);
+      renderMessage('&nbsp;', false);
     }
     if (myWorker) myWorker.terminate();
     myWorker = new Worker("worker.js");
@@ -80,7 +80,7 @@ if (window.Worker) {
       renderMessage('Refining...', false);
     } else {
       exhaustiveSearchDone = true;
-      renderMessage('', false);
+      renderMessage('&nbsp;', false);
     } 
     renderSolution(solution);
     console.log("Time: " + (solution.time / 1000) + " s");
@@ -112,23 +112,20 @@ function renderSolution(solution) {
     }
   }
 
-  let tr = table.insertRow(-1);
-  let td = tr.insertCell(-1);
-  td.colSpan = 7;
-  td.textContent = solution.bestGoldCost;
-  // tr = table.insertRow(-1);
-  // td = tr.insertCell(-1);
-  // td.colSpan = 7;
-  // td.textContent = solution.iterations;
+  document.getElementById('totalCost').innerHTML = solution.bestGoldCost;
 }
 
-function renderMessage(message, hide) {
-  document.getElementById('message').textContent = message;
-  if (hide) {
+function renderMessage(message, hideTable) {
+  document.getElementById('message').innerHTML = message;
+  if (hideTable) {
     document.getElementById('main-table').classList.add('hidden');
     document.getElementById('main-table-2').classList.add('hidden');
   } else {
     document.getElementById('main-table').classList.remove('hidden');
     document.getElementById('main-table-2').classList.remove('hidden');
   }
+}
+
+function hideMessage() {
+  renderMessage('&nbsp;', false);
 }

@@ -14,20 +14,23 @@ table {
 	border-spacing: 0;
 	width: max-content;
 }
+.mainTable, #message, #totalCostLabel {
+	padding-left: 25px;
+}
 .mainTable td, th {
 	border: white 0px solid;
 	width: max-content;
-	padding: 4px;
+	padding: 6px;
+	padding-left: 15px;
 }
 .mainTable th {
 	background-color: #e4b289;
 	text-align: left;
-
-	background-repeat: no-repeat;
-	background-position: center right;
 	white-space: normal;
 }
-
+.mainTable tr:nth-child(even) {
+	background-color: #ffeed3;
+  }
 th {
 	text-align: center;
 }
@@ -61,6 +64,18 @@ form div {
 }
 #message {
 	display: inline-block;
+	border: 3px white solid;
+}
+#totalCostLabel, #totalCost {
+	display: inline-block;
+	border: 3px white solid;
+	font: medium Helvetica, sans-serif;
+}
+#totalCostLabel {
+	padding-left: 35px;
+}
+#totalCost {
+	font-weight: bold;
 }
 .highlight {
 	color: hsl(0, 100%, 50%);
