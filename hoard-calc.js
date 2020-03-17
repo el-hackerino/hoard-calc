@@ -19,8 +19,8 @@ const INPUT_TROOP_COST_FACTOR = document.querySelector('#troopCostFactor');
 const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE];
-const MAIN_TABLE_COLUMNS = ["Troops", "%", "XP", "Cost", "Level", "Quality", "Extra XP"];
-const MAIN_TABLE_ATTRIBUTES = ['troops', 'percent', 'xp', 'cost', 'level', 'quality', 'extraXp'];
+const MAIN_TABLE_COLUMNS = ["Troops", "Gold", "Level", "Quality"];
+const MAIN_TABLE_ATTRIBUTES = ['troops', 'cost', 'level', 'quality'];
 
 document.getElementById('targetLevel-div').classList.add("hidden");
 document.getElementById('targetQuality-div').classList.add("hidden");

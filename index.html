@@ -6,76 +6,78 @@
     <link rel="stylesheet" href="style.css">
 
 <body>
-    <form>
-        <div class="formColumn">
-            <div>
-                <label for="t1">Coin Purse</label>
-                <input id="t1" type="number" min="0" value="10">
+    <div class="main">
+        <form>
+            <div class="formColumn">
+                <div>
+                    <label for="t1">Coin Purse</label>
+                    <input id="t1" type="number" min="0" value="10">
+                </div>
+                <div>
+                    <label for="t2">Gold Ring</label>
+                    <input id="t2" type="number" min="0" value="10">
+                </div>
+                <div>
+                    <label for="t3">Priest's Chalice</label>
+                    <input id="t3" type="number" min="0" value="10">
+                </div>
+                <div>
+                    <label for="t4">King's Crown</label>
+                    <input id="t4" type="number" min="0" value="10">
+                </div>
+                <div>
+                    <label for="t5">Genie's Lamp</label>
+                    <input id="t5" type="number" min="0" value="10">
+                </div>
+                <div>
+                    <label for="t6">Sacred Treasure</label>
+                    <input id="t6" type="number" min="0" value="10">
+                </div>
             </div>
-            <div>
-                <label for="t2">Gold Ring</label>
-                <input id="t2" type="number" min="0" value="10">
+            <div class="formColumn">
+                <div>
+                    <label for="level">Initial Hoard Level</label>
+                    <input id="level" type="number" min="0" max="100" value="0">
+                </div>
+                <div>
+                    <label for="quality">Initial Hoard Quality</label>
+                    <input id="quality" type="number" min="1" max="10" value="1">
+                </div>
+                <div>
+                    <label for="xp">Initial Leftover XP</label>
+                    <input id="xp" type="number" min="0" value="0">
+                </div>
+                <div id="targetLevel-div">
+                    <label for="targetLevel">Target Hoard Level</label>
+                    <input id="targetLevel" type="number" min="0" max="100" value="100">
+                </div>
+                <div id="targetQuality-div">
+                    <label for="targetQuality">Target Hoard Quality</label>
+                    <input id="targetQuality" type="number" min="1" max="10" value="10">
+                </div>
+                <div class="slideContainer">
+                    <label for="troopCostFactor" class="column sliderLabel">Save Gold</label>
+                    <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
+                    <div class="column sliderLabel">Save Troops</div>
+                </div>
+                <div>
+                    <label for="exhaustive">Exhaustive Search</label>
+                    <input id="exhaustive" type="checkbox" checked="0">
+                </div>
             </div>
-            <div>
-                <label for="t3">Priest's Chalice</label>
-                <input id="t3" type="number" min="0" value="10">
-            </div>
-            <div>
-                <label for="t4">King's Crown</label>
-                <input id="t4" type="number" min="0" value="10">
-            </div>
-            <div>
-                <label for="t5">Genie's Lamp</label>
-                <input id="t5" type="number" min="0" value="10">
-            </div>
-            <div>
-                <label for="t6">Sacred Treasure</label>
-                <input id="t6" type="number" min="0" value="10">
-            </div>
+        </form>
+        <table id="main-table" class="mainTable"></table>
+        <table id="main-table-2" class="mainTable"></table>
+        <table id="combo-table" class="comboTable"></table>
+        <table id="test-table" class="testTable"></table>
+
+        <div class="bottom">
+            <div id="totalCostLabel" class="totalCostLabel">Total Gold: </div>
+            <div id="totalCost" class="totalCost"></div>
+            <div id="message" class="message"></div>
         </div>
-        <div class="formColumn">
-            <div>
-                <label for="level">Initial Hoard Level</label>
-                <input id="level" type="number" min="0" max="100" value="0">
-            </div>
-            <div>
-                <label for="quality">Initial Hoard Quality</label>
-                <input id="quality" type="number" min="1" max="10" value="1">
-            </div>
-            <div>
-                <label for="xp">Initial Leftover XP</label>
-                <input id="xp" type="number" min="0" value="0">
-            </div>
-            <div id="targetLevel-div">
-                <label for="targetLevel">Target Hoard Level</label>
-                <input id="targetLevel" type="number" min="0" max="100" value="100">
-            </div>
-            <div id="targetQuality-div">
-                <label for="targetQuality">Target Hoard Quality</label>
-                <input id="targetQuality" type="number" min="1" max="10" value="10">
-            </div>
-            <!-- <div>
-                <label for="troopCostFactor">Troop Cost Factor</label>
-                <input id="troopCostFactor" type="number" min="0" max="50" value="1">
-            </div> -->
-            <div class="slidecontainer">
-                <label for="troopCostFactor" class="column sliderLabel">Save Gold</label>
-                <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
-                <div class="column sliderLabel">Save Troops</div>
-            </div>
-            <div>
-                <label for="exhaustive">Exhaustive Search</label>
-                <input id="exhaustive" type="checkbox" checked="0">
-            </div>
-        </div>
-    </form>
-    <div id="message" class="message"></div>
-    <table id="main-table" class="mainTable"></table>
-    <table id="main-table-2" class="mainTable"></table>
-    <table id="combo-table" class="comboTable"></table>
-    <table id="test-table" class="testTable"></table>
-    <div id="totalCostLabel" class="totalCostLabel">Total Gold: </div>
-    <div id="totalCost" class="totalCost"></div>
+    </div>
+
     <script src="constants.js"></script>
     <script src="hoard-calc.js"></script>
 </body>

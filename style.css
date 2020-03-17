@@ -2,6 +2,14 @@ html {
 	background-color: rgb(255, 255, 255);
 	font-family: sans-serif;
 }
+.main {
+	background-color: #eeeeee;
+	width: max-content;
+	padding: 10px;
+	margin: 0 auto;
+}
+
+
 table {
 	font-size: small
 }
@@ -9,10 +17,10 @@ table {
 	font-family: helvetica;
 	font-size: medium;
 	display: block;
-	background-color: white;
-	border: 3px white solid;
+	border: 3px transparent solid;
 	border-spacing: 0;
 	width: max-content;
+	margin: 0 auto;
 }
 .mainTable, #message, #totalCostLabel {
 	padding-left: 25px;
@@ -22,24 +30,19 @@ table {
 	width: max-content;
 	padding: 6px;
 	padding-left: 15px;
+	text-align: center;
 }
 .mainTable th {
 	background-color: #e4b289;
-	text-align: left;
-	white-space: normal;
 }
 .mainTable tr:nth-child(even) {
 	background-color: #ffeed3;
-  }
-th {
-	text-align: center;
 }
-td {
-	text-align: center;
+.mainTable tr:nth-child(odd) {
+	background-color: #ffffff;
 }
-p {
-	margin: 0;
-}
+
+
 label {
 	font: bold medium Helvetica, sans-serif;
 	display: block;
@@ -62,36 +65,21 @@ form div {
 	overflow: hidden;
 	margin: 0 0 5px 0;
 }
-#message {
-	display: inline-block;
-	border: 3px white solid;
-}
-#totalCostLabel, #totalCost {
-	display: inline-block;
-	border: 3px white solid;
-	font: medium Helvetica, sans-serif;
-}
-#totalCostLabel {
-	padding-left: 35px;
-}
-#totalCost {
-	font-weight: bold;
-}
-.highlight {
-	color: hsl(0, 100%, 50%);
-}
-.hidden {
-	display: none;
-}
+
 .slider {
 	width: 5em;
+	margin: 3px 0 0 0;
+	border: 0;
+	padding: 0;
+}
+.sliderContainer {
 	margin: 0;
 	border: 0;
 	padding: 0;
 }
 .sliderLabel {
 	font: bold medium Helvetica, sans-serif;
-	padding: 5px 10px 0 0;
+	padding: 5px 10px 0 5px;
 	width: 10em;
 }
 .formColumn {
@@ -104,4 +92,32 @@ form div {
 	display:inline-block;
 	vertical-align: top;
 	width: max-content;
+}
+
+
+.bottom {
+	margin: 0 auto;
+}
+#message {
+	display: inline-block;
+	padding: 3px;
+}
+#totalCostLabel, #totalCost {
+	display: inline-block;
+	padding: 3px;
+	font: medium Helvetica, sans-serif;
+}
+#totalCostLabel {
+	padding-left: 35px;
+}
+#totalCost {
+	font-weight: bold;
+}
+
+
+.highlight {
+	color: hsl(0, 100%, 50%);
+}
+.hidden {
+	display: none;
 }
