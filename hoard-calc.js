@@ -1,4 +1,4 @@
-const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
+const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 1;
 const DEBUG_MAXCOUNTS = 0;
 
 const TROOP_INPUTS = [
@@ -72,7 +72,7 @@ if (window.Worker) {
 
   function render(message) {
     let solution = message.data;
-    if (solution.useQuickList && !exhaustiveSearchDone) {
+    if (solution.useQuickList && INPUT_EXHAUSTIVE.checked && !exhaustiveSearchDone) {
       renderMessage('Refining...', false);
     } else {
       exhaustiveSearchDone = true;

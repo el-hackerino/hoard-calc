@@ -1,5 +1,6 @@
 const TEST_ITERATIONS = 100000;
 const DEBUG_MAXCOUNTS = 0;
+const RENDER_DIFF_ONLY = 1;
 
 const INITIAL_XP = 0;
 const GOAL_QUALITY = 10;
@@ -53,14 +54,15 @@ if (window.Worker) {
     }
     totalTime += solution.time;
     totalSlowTime += solution.slowTime;
-    renderTests(solutions, totalComboCounts, totalTime / solutions.length, totalSlowTime / solutions.length);
+    renderComboStats(solutions, totalComboCounts, totalTime / solutions.length, totalSlowTime / solutions.length);
+    renderTestResults(solution);
     if (DEBUG_MAXCOUNTS) console.log("Max troop counts: " + maxTroopCounts);
   }
 } else { // TODO
   console.log('Your browser doesn\'t support web workers.')
 }
 
-function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
+function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
   let tableId = "combo-table";
   let table = clearTable(tableId);
 
@@ -82,41 +84,39 @@ function renderTests(solutions, totalComboCounts, avgTime, avgslowTime) {
   let td = tr.insertCell(-1);
   td.colSpan = 4;
   td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgslowTime);
+}
 
-  tableId = "test-table";
-  table = clearTable(tableId);
-
-  for (let solution of solutions) {
-    if (!solution) continue;
-    let tr = table.insertRow(-1);
-    for (let attribute of TEST_TABLE_ATTRIBUTES) {
-      let td = tr.insertCell(-1);
-      if (attribute == 'budget') {
-        td.textContent = '';
-        for (let troopNr of solution.budget) {
-          td.textContent += troopNr += ", ";
-        }
-      } else if (attribute == 'combos') {
-        td.innerHTML = '';
-        for (let step of solution.bestSteps) {
-          let comboString = '<span>' + step.comboId + " </span>";
-          td.innerHTML += comboString;
-        }
-      } else if (attribute == 'slowCombos') {
-        td.innerHTML = '';
-        for (let step of solution.slowSolution.bestSteps) {
-          let comboString = '<span';
-          if (!TEMPLATES_QUICK.includes(Number(step.comboId))) {
-            comboString += ' class=\'highlight\'';
-          }
-          comboString += '>' + step.comboId + " </span>";
-          td.innerHTML += comboString;
-        }
-      } else if (attribute == 'timeToOptimum') {
-        td.textContent = Math.round(solution.slowSolution.timeToOptimum / solution.slowSolution.time * 100) / 100 || '-';
-       } else {
-        td.textContent = solution[attribute];
+function renderTestResults(solution) {
+  if (!solution || RENDER_DIFF_ONLY && !solution.quickCostDiff) return;
+  let table = document.getElementById("test-table");
+  let tr = table.insertRow(-1);
+  for (let attribute of TEST_TABLE_ATTRIBUTES) {
+    let td = tr.insertCell(-1);
+    if (attribute == 'budget') {
+      td.textContent = '';
+      for (let troopNr of solution.budget) {
+        td.textContent += troopNr += ", ";
       }
+    } else if (attribute == 'combos') {
+      td.innerHTML = '';
+      for (let step of solution.bestSteps) {
+        let comboString = '<span>' + step.comboId + " </span>";
+        td.innerHTML += comboString;
+      }
+    } else if (attribute == 'slowCombos') {
+      td.innerHTML = '';
+      for (let step of solution.slowSolution.bestSteps) {
+        let comboString = '<span';
+        if (!TEMPLATES_QUICK.includes(Number(step.comboId))) {
+          comboString += ' class=\'highlight\'';
+        }
+        comboString += '>' + step.comboId + " </span>";
+        td.innerHTML += comboString;
+      }
+    } else if (attribute == 'timeToOptimum') {
+      td.textContent = Math.round(solution.slowSolution.timeToOptimum / solution.slowSolution.time * 100) / 100 || '-';
+      } else {
+      td.textContent = solution[attribute];
     }
   }
 }

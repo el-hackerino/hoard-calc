@@ -10,7 +10,5 @@ always use best troops at end, don't care about exceeding 100%
 troop: minimize good troop use (adapt to current amounts? to base frequeicy in portals? percentage of budget? allow in-between steps?)
 same? middle ground? too weak? Never exceed 100% at expense of slower climb at end, lose some gold
 
-bug:
-0,0,1,0,2,10 ; 0,5 -> need decreasing XP between two steps!
-
 TODO move randomization to test.js
+

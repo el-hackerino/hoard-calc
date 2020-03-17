@@ -3,7 +3,7 @@ importScripts('constants.js');
 const DEBUG = 0;
 const BUDGET_MAX = [0, 10, 36, 28, 20, 18];
 const RNG_MIN = 0;
-const RNG_MAX = [0, 10, 36, 28, 20, 18]; // [0, 10, 20, 20, 20, 10];
+const RNG_MAX = [0, 10, 20, 20, 20, 10];
 const RNG_LEVEL_MIN = 0;
 const RNG_LEVEL_MAX = 100;
 const RNG_QUALITY_MIN = 1;
@@ -55,7 +55,7 @@ function runTestIteration(solution) {
     solution.initialLevel = Math.floor((Math.random() * (RNG_LEVEL_MAX - minLevel)) + minLevel);
   }
 
-  findSolution(solution, solution.run_tests ? 1 : solution.useQuickList);
+  findSolution(solution, solution.run_tests ? 1 : solution.useQuickList, 0, 0);
   if (solution.bestCost == MAX_GOLD) {
     resetSolution(solution);
   }
@@ -66,7 +66,7 @@ function runTestIteration(solution) {
   }
   let slowSolution = Object.assign({}, solution);
   resetSolution(slowSolution);
-  findSolution(slowSolution, 0, 0); // TODO toLevel is simply too expensive with the full combo list, maybe offer it as an option with quick list
+  findSolution(slowSolution, 0, 0, 0); // TODO toLevel is simply too expensive with the full combo list, maybe offer it as an option with quick list
   slowSolution.comboCounts = countIds(slowSolution.bestSteps);
   solution.slowSolution = slowSolution;
   solution.slowTime = slowSolution.time;
@@ -91,11 +91,11 @@ function runTestIteration(solution) {
   return solution;
 }
 
-function findSolution(solution, quick, toLevel) {
-//console.log(quick + "," + toLevel)
+function findSolution(solution, quick, toLevel, resort) {
   let startTime = new Date().getTime();
   let combos = quick ? quickCombos : allCombos;
   search(0, 0, solution, combos, toLevel);
+  if (resort) resortSolution(solution, combos);
   // Convert steps to old form as expected by the render methods
   for (let step of solution.bestSteps) {
     for (var prop in combos[step.combo]) {
@@ -167,25 +167,6 @@ function saveBestSolution(solution) {
   //console.log(solution);
 }
 
-function addToTotal(solution, combo) {
-  for (let tc = 0; tc < TROOPS.length; tc++) {
-    if (!solution.troopTotals[tc]) {
-      solution.troopTotals[tc] = 0;
-    }
-    if (combo.counts[tc]) {
-      solution.troopTotals[tc] += combo.counts[tc];
-    }
-  }
-}
-
-function subtractFromTotal(solution, combo) {
-  for (let tc = 0; tc < TROOPS.length; tc++) {
-    if (combo.counts[tc]) {
-      solution.troopTotals[tc] -= combo.counts[tc];
-    }
-  }
-}
-
 function calculateStats(solution, combos) {
   let step = solution.steps[solution.lastInsert];
   solution.quality = solution.initialQuality + solution.lastInsert + 1;
@@ -217,6 +198,25 @@ function calculateStats(solution, combos) {
   solution.sumGoldCost = step.sumGoldCost;
 }
 
+function addToTotal(solution, combo) {
+  for (let tc = 0; tc < TROOPS.length; tc++) {
+    if (!solution.troopTotals[tc]) {
+      solution.troopTotals[tc] = 0;
+    }
+    if (combo.counts[tc]) {
+      solution.troopTotals[tc] += combo.counts[tc];
+    }
+  }
+}
+
+function subtractFromTotal(solution, combo) {
+  for (let tc = 0; tc < TROOPS.length; tc++) {
+    if (combo.counts[tc]) {
+      solution.troopTotals[tc] -= combo.counts[tc];
+    }
+  }
+}
+
 function budgetFits(solution) {
   for (let i = 0; i < solution.budget.length; i++) {
     if (solution.troopTotals[i] > solution.budget[i]) {
@@ -224,6 +224,68 @@ function budgetFits(solution) {
     }
   }
   return true;
+}
+
+function resortSolution(solution, combos) {
+  console.log("res")
+  let permutations = permute(solution.bestSteps);
+  let bestCost = MAX_GOLD;
+  let bestPerm;
+  for (permutation of permutations) {
+    let permCost = calculateCost(permutation, levelXp[solution.initialLevel] + solution.initialXp, solution.initialLevel, combos);
+    if (permCost < bestCost) {
+      bestCost = permCost;
+      bestPerm = permutation;
+    }
+  }
+  solution.bestSteps = bestPerm;
+  solution.bestGoldCost = bestCost;
+  recalculate(solution, combos);
+}
+
+function recalculate(solution, combos) {
+  solution.steps = solution.bestSteps;
+  for (let i = 0; i < solution.bestSteps.length; i++) {
+    solution.lastInsert = i;
+    calculateStats(solution, combos);
+  }
+  saveBestSolution(solution);
+}
+
+function calculateCost(stepArray, initialXp, initialLevel, combos) {
+  let prevXp = initialXp;
+  let prevLevel = initialLevel;
+  let prevCost = 0;
+  for (step of stepArray) {
+    step.cost = getCost(prevLevel, combos[step.combo].troops.length);
+    prevCost = prevCost + step.cost;
+    prevXp = prevXp + combos[step.combo].xp;
+    step.level = getLevel(prevLevel, prevXp);
+    prevLevel = getLevel(prevLevel, prevXp);
+  }
+  return prevCost;
+}
+
+function permute(permutation) {
+  var length = permutation.length,
+      result = [permutation.slice()],
+      c = new Array(length).fill(0),
+      i = 1, k, p;
+  while (i < length) {
+    if (c[i] < i) {
+      k = i % 2 && c[i];
+      p = permutation[i];
+      permutation[i] = permutation[k];
+      permutation[k] = p;
+      ++c[i];
+      i = 1;
+      result.push(permutation.slice());
+    } else {
+      c[i] = 0;
+      ++i;
+    }
+  }
+  return result;
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -292,7 +354,7 @@ function countIds(arr) {
   let result = [];
   for (let i = 0; i < arr.length; i++) {
     if (arr[i]) {
-      result[arr[i].combo] ? result[arr[i].combo]++ : result[arr[i].combo] = 1;
+      result[arr[i].comboId] ? result[arr[i].comboId]++ : result[arr[i].comboId] = 1;
     }
   }
   return result;
