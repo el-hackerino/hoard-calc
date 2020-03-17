@@ -44,6 +44,7 @@ function resetSolution(solution) {
 function runTestIteration(solution) {
   resetSolution(solution);
   
+  // Randomize values
   if (solution.run_tests) {
     for (let t = 0; t < solution.budget.length; t++) {
       solution.budget[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN)) + RNG_MIN);
@@ -83,8 +84,8 @@ function runTestIteration(solution) {
   solution.troopCounts = [];
   for (let step of solution.bestSteps) {
     for (let t = 0; t < TROOPS.length; t++) {
-      if (combos[step.combo].counts[t]) {
-        solution.troopCounts[t] = solution.troopCounts[t] ? solution.troopCounts[t] + combos[step.combo].counts[t] : combos[step.combo].counts[t];
+      if (combos[step.comboId].counts[t]) {
+        solution.troopCounts[t] = solution.troopCounts[t] ? solution.troopCounts[t] + combos[step.comboId].counts[t] : combos[step.comboId].counts[t];
       }
     }
   }

@@ -5,9 +5,29 @@ html {
 table {
 	font-size: small
 }
-#main-table, #main-table-2 {
-	font-size: medium
+.mainTable {
+	font-family: helvetica;
+	font-size: medium;
+	display: block;
+	background-color: white;
+	border: 3px white solid;
+	border-spacing: 0;
+	width: max-content;
 }
+.mainTable td, th {
+	border: white 0px solid;
+	width: max-content;
+	padding: 4px;
+}
+.mainTable th {
+	background-color: #e4b289;
+	text-align: left;
+
+	background-repeat: no-repeat;
+	background-position: center right;
+	white-space: normal;
+}
+
 th {
 	text-align: center;
 }
@@ -22,7 +42,7 @@ label {
 	display: block;
 	float: left;
 	text-align: right;
-	padding: 5px 10px 0 0;
+	padding: 6px 10px 0 0;
 	width: 10em;
 }
 input[type=number] {
@@ -31,6 +51,9 @@ input[type=number] {
 	font: bold medium Helvetica, sans-serif;
 	padding: 3px 0 0 0;
 	text-align: center;
+}
+input[type=checkbox] {
+	margin: 6px 0 0 0;
 }
 form div {
 	overflow: hidden;
@@ -44,4 +67,26 @@ form div {
 }
 .hidden {
 	display: none;
-  }
+}
+.slider {
+	width: 5em;
+	margin: 0;
+	border: 0;
+	padding: 0;
+}
+.sliderLabel {
+	font: bold medium Helvetica, sans-serif;
+	padding: 5px 10px 0 0;
+	width: 10em;
+}
+.formColumn {
+	display:inline-block;
+	vertical-align: top;
+	width: max-content;
+	padding: 10px;
+}
+.column {
+	display:inline-block;
+	vertical-align: top;
+	width: max-content;
+}
