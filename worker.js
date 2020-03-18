@@ -17,11 +17,8 @@ fillXpTable();
 makeCombos();
 
 onmessage = function (message) {
-  //console.log('Worker: Message received from main script');
-  //console.log(message.data);
   for (let i = 0; i < (message.data.run_tests ? message.data.num_tests : 1); i++) {
     let result = runTestIteration(message.data);
-    //console.log('Worker: Posting message back to main script');
     postMessage(result);
   }
 }
@@ -57,18 +54,14 @@ function runTestIteration(solution) {
   }
 
   findSolution(solution, solution.run_tests ? 1 : solution.useQuickList, 0, 0);
-  if (solution.bestCost == MAX_GOLD) {
-    resetSolution(solution);
-  }
-  solution.comboCounts = countIds(solution.bestSteps);
 
   if (!solution.run_tests) {
     return solution;
   }
+
   let slowSolution = Object.assign({}, solution);
   resetSolution(slowSolution);
   findSolution(slowSolution, 0, 0, 0); // TODO toLevel is simply too expensive with the full combo list, maybe offer it as an option with quick list
-  slowSolution.comboCounts = countIds(slowSolution.bestSteps);
   solution.slowSolution = slowSolution;
   solution.slowTime = slowSolution.time;
   if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
@@ -78,17 +71,7 @@ function runTestIteration(solution) {
        + ", " + solution.bestLevel + "->" + slowSolution.bestLevel
        + ", " + solution.bestCost + "->" + slowSolution.bestCost;
   }
-  
-  // Count used troops
-  let combos = allCombos;
-  solution.troopCounts = [];
-  for (let step of solution.bestSteps) {
-    for (let t = 0; t < TROOPS.length; t++) {
-      if (combos[step.comboId].counts[t]) {
-        solution.troopCounts[t] = solution.troopCounts[t] ? solution.troopCounts[t] + combos[step.comboId].counts[t] : combos[step.comboId].counts[t];
-      }
-    }
-  }
+
   return solution;
 }
 
@@ -97,14 +80,19 @@ function findSolution(solution, quick, toLevel, resort) {
   let combos = quick ? quickCombos : allCombos;
   search(0, 0, solution, combos, toLevel);
   if (resort) resortSolution(solution, combos);
-  // Convert steps to old form as expected by the render methods
+  // Copy combo attributes to step for simpler rendering
   for (let step of solution.bestSteps) {
     for (var prop in combos[step.combo]) {
       if (Object.prototype.hasOwnProperty.call(combos[step.combo], prop)) {
-          step[prop] = combos[step.combo][prop];
+        step[prop] = combos[step.combo][prop];
       }
     }
   }
+  setTroopCounts(solution);
+  if (solution.bestCost == MAX_GOLD) {
+    resetSolution(solution);
+  }
+  solution.comboCounts = countIds(solution.bestSteps);
   solution.time = (new Date().getTime() - startTime);
   solution.timeToOptimum = solution.timeFound - startTime;
 }
@@ -114,9 +102,6 @@ function search(startCombo, depth, solution, combos, toLevel) {
     var reachedQuality = false;
     var reachedLevel = false;
     solution.iterations++;
-    // if (solution.iterations % 100000 == 0) {
-    //   console.log(solution.iterations);
-    // }
     if (solution.steps[depth]) {
       subtractFromTotal(solution, combos[solution.steps[depth].combo]);
     }
@@ -227,8 +212,18 @@ function budgetFits(solution) {
   return true;
 }
 
+function setTroopCounts(solution) {
+  solution.troopCounts = [];
+  for (let step of solution.bestSteps) {
+    for (let t = 0; t < TROOPS.length; t++) {
+      if (allCombos[step.comboId].counts[t]) {
+        solution.troopCounts[t] = solution.troopCounts[t] ? solution.troopCounts[t] + allCombos[step.comboId].counts[t] : allCombos[step.comboId].counts[t];
+      }
+    }
+  }
+}
+
 function resortSolution(solution, combos) {
-  console.log("res")
   let permutations = permute(solution.bestSteps);
   let bestCost = MAX_GOLD;
   let bestPerm;

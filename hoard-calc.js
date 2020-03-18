@@ -1,7 +1,7 @@
 const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
 const DEBUG_MAXCOUNTS = 0;
 const DEBUG_GENERAL = 0;
-const TROOP_COST_FACTORS = [0, 1, 2, 3, 5, 10, 50];
+const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 3, 5, 10, 50];
 
 const TROOP_INPUTS = [
   document.querySelector('#t1'),
@@ -108,6 +108,17 @@ function renderSolution(solution) {
     showMessage("Cannot find any useful steps!", true);
     return;
   }
+
+  let troopCountDiv = document.getElementById('troop-counts');
+  troopCountDiv.innerHTML = '';
+  for (let [i, count] of solution.troopCounts.entries()) {
+    if (!count) continue;
+    let card = document.createElement('div');
+    card.classList.add('card', 'card' + i, 'troop-entry');
+    troopCountDiv.appendChild(card);
+    troopCountDiv.innerHTML += ' x ' + count + '&nbsp;&nbsp;&nbsp;';
+  }
+
   const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
   const table = clearTable(tableId);
 

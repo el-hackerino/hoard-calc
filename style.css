@@ -107,6 +107,17 @@ input[type=checkbox] {
 }
 
 
+#troop-counts {
+	margin: 0 auto 10px auto;
+	width: max-content;
+	display: -webkit-flex;
+	display: flex;
+	align-items: center;
+	font-size: larger;
+}
+.troop-entry {
+	border-right: 10px;
+}
 .mainTable {
 	font-size: medium;
 	display: block;
@@ -190,11 +201,10 @@ input[type=checkbox] {
 	margin: 0 auto;
 }
 #totalCostLabel, #totalCost {
-	font: medium;
 	font-size: larger;
 }
 #totalCost {
-	font-weight: bolder;
+	font-weight: 1000;
 	color: #f4a220;
 }
 
