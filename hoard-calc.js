@@ -1,5 +1,6 @@
 const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
 const DEBUG_MAXCOUNTS = 0;
+const DEBUG_GENERAL = 0;
 const TROOP_COST_FACTORS = [0, 1, 2, 3, 5, 10, 50];
 
 const TROOP_INPUTS = [
@@ -19,7 +20,7 @@ const INPUT_TROOP_COST_FACTOR = document.querySelector('#troopCostFactor');
 const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE];
-const MAIN_TABLE_COLUMNS = ["Step", "Troops", "Gold", "Level", "Quality"];
+const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ['nr', 'troops', 'cost', 'level', 'quality'];
 
 document.getElementById('targetLevel-div').classList.add("hidden");
@@ -40,6 +41,8 @@ if (window.Worker) {
   for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP]) {
     input.previousElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepDown();calculate()});
     input.nextElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepUp();calculate()});
+    input.previousElementSibling.tabIndex = -1;
+    input.nextElementSibling.tabIndex = -1;
   }
   INPUT_TROOP_COST_FACTOR.oninput = calculate;
   initTable("main-table", MAIN_TABLE_COLUMNS);
@@ -50,14 +53,14 @@ if (window.Worker) {
   calculate();
 
   function calculate() {
-    console.log("Calculating...");
+    if (DEBUG_GENERAL) console.log("Calculating...");
     if (Number(INPUT_QUALITY.value) >= Number(INPUT_TARGET_QUALITY.value)
       && Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
-      renderMessage("No need to upgrade!", true);
+      showMessage("No need to upgrade!", true);
       return;
     } else {
       exhaustiveSearchDone = false;
-      renderMessage('&nbsp;', false);
+      hideMessage();
     }
     if (myWorker) myWorker.terminate();
     myWorker = new Worker("worker.js");
@@ -82,27 +85,27 @@ if (window.Worker) {
       solution.useQuickList = 0;
       myWorker.postMessage(solution);
     }
-    renderMessage('Calculating...', false);
+    showMessage('Calculating...', false);
   }
 
   function render(message) {
     let solution = message.data;
     if (solution.useQuickList && INPUT_EXHAUSTIVE.checked && !exhaustiveSearchDone) {
-      renderMessage('Refining...', false);
+      showMessage('Refining...', false);
     } else {
       exhaustiveSearchDone = true;
-      renderMessage('&nbsp;', false);
+      hideMessage();
     } 
     renderSolution(solution);
-    console.log("Time: " + (solution.time / 1000) + " s");
+    if (DEBUG_GENERAL) console.log("Time: " + (solution.time / 1000) + " s");
   }
 } else {
-  renderMessage('Your browser does not support web workers :(', true);
+  showMessage('Your browser does not support web workers :(', true);
 }
 
 function renderSolution(solution) {
   if (!solution.bestSteps.length) {
-    renderMessage("Cannot find any useful steps!", true);
+    showMessage("Cannot find any useful steps!", true);
     return;
   }
   const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
@@ -131,7 +134,7 @@ function renderSolution(solution) {
   document.getElementById('totalCost').innerHTML = solution.bestGoldCost;
 }
 
-function renderMessage(message, hideTable) {
+function showMessage(message, hideTable) {
   document.getElementById('message').innerHTML = message;
   if (hideTable) {
     document.getElementById('main-table').classList.add('hidden');
@@ -143,5 +146,5 @@ function renderMessage(message, hideTable) {
 }
 
 function hideMessage() {
-  renderMessage('&nbsp;', false);
+  showMessage('&nbsp;', false);
 }

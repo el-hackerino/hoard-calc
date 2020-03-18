@@ -1,24 +1,114 @@
 html {
 	background-image: url(images/background.png);
-	background-size: cover;
+	background-size: 1900px;
 	background-repeat: no-repeat;
 	background-color: black;
 	color: white;
 	font-family: 'Pavanam', Arial, Helvetica, sans-serif;
-	font-weight: bold;
 }
 .main {
 	width: max-content;
 	padding: 10px;
 	margin: 0 auto;
-	background-color:  rgba(0, 0, 0, 0.7);
+	background-color:  rgba(20, 20, 20, 0.7);
 }
-
 .title {
 	font-size: xx-large;
 	font-weight: bolder;
 	color: #f4a220;
+	padding-bottom: 20px;
 }
+
+
+.formColumn {
+	display: inline-block;
+	vertical-align: top;
+	width: max-content;
+	padding: 0px 10px;
+}
+.formColumn div {
+	margin: 3px;
+	text-align: right;
+}
+.formCell {
+	height: 40px;
+}
+form div table tr td {
+	text-align: center;
+}
+
+
+label {
+	color: white;
+	font-weight: bold;
+	display: inline;
+	vertical-align: middle;
+	font-size: medium;
+	text-align: right;
+}
+input[type=number] {
+	float: left;
+	width: 3em;
+	font-weight: bold;
+	font-size: medium;
+	padding: 5px 0 5px 0;
+	color: white;
+	text-align: center;
+	background-color: black;
+	border: 1px solid #666;
+	-webkit-appearance: textfield;
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}
+.number-input {
+	border: 0;
+	display: inline-flex;
+}
+.number-input,
+.number-input * {
+	box-sizing: border-box;
+}
+.number-input button {
+	outline:none;
+	-webkit-appearance: none;
+	background-color: transparent;
+	border: none;
+	width: 1.5rem;
+	cursor: pointer;
+	margin: 0 0 3px 0;
+	position: relative;
+	color: white;
+}
+
+
+.slider {
+	width: 5em;
+	margin: 3px 0 0 0;
+	vertical-align: text-bottom;
+	-webkit-appearance: none;
+	appearance: none;
+	width: 7em;
+	height: 2px;
+	background: #d3d3d3;
+	outline: none;
+}
+.sliderLabel {
+	padding: 15px 2px 0 2px;
+	display: inline;
+	vertical-align: middle;
+}
+input[type=checkbox] {
+	margin: 10px 0 0 0;
+}
+#optionCheckbox {
+	text-align: center;
+}
+
+
 table {
 	font-size: small
 }
@@ -52,92 +142,15 @@ table {
 }
 
 
-label {
-	color: white;
-	font-weight: bold;
-	float: left;
-	text-align: right;
-	padding: 3px 10px 3px 0;
-	width: 10em;
-}
-input[type=number] {
-	float: left;
-	width: 4em;
-	font-weight: bold;
-	padding: 5px 0 5px 0;
-	color: white;
-	text-align: center;
-	background-color: black;
-	border: 1px solid rgb(110, 110, 110);
-	-webkit-appearance: textfield;
-	-moz-appearance: textfield;
-	appearance: textfield;
-}
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none;
-}
-.number-input {
-	border: 1px solid #ddd;
-	display: inline-flex;
-}
-.number-input,
-.number-input * {
-	box-sizing: border-box;
-}
-.number-input button {
-	outline:none;
-	-webkit-appearance: none;
-	background-color: transparent;
-	border: none;
-	align-items: center;
-	justify-content: center;
-	width: 2rem;
-	height: 2rem;
-	cursor: pointer;
-	margin: 0;
-	position: relative;
-	color: white;
-}
-input[type=checkbox] {
-	margin: 6px 0 0 0;
-}
-form div {
-	overflow: hidden;
-	margin: 3px;
-}
-
-
-.slider {
-	width: 5em;
-	margin: 3px 0 0 0;
-	border: 0;
-	padding: 0;
-}
-.sliderContainer {
-	margin: 0;
-	border: 0;
-	padding: 0;
-}
-.sliderLabel {
-	font: bold medium;
-	padding: 5px 10px 0 5px;
-	width: 10em;
-}
-.formColumn {
-	display: inline-block;
-	vertical-align: top;
-	width: max-content;
-	padding: 10px;
-}
-.column {
-	display: inline-block;
-	vertical-align: top;
-	width: max-content;
-}
-
-.fontSizeZero {
-	font-size: 0;
+.largeCard {
+	width: 100px;
+	height: 140px;
+	background-size: cover;
+	background-position: center;
+	margin: 0px 5px;
+	border: solid rgb(148, 148, 148);
+	border-width: 3px 0 10px 0;
+	border-radius: 3px;
 }
 .card {
 	width: 30px;
@@ -174,6 +187,9 @@ form div {
 	background-image: url(images/card5.png);
 	border-color: #13e3f6;
 }
+.fontSizeZero {
+	font-size: 0;
+}
 
 
 .centered {
@@ -187,6 +203,7 @@ form div {
 }
 #totalCost {
 	font-weight: bold;
+	color: #f4a220;
 }
 
 .footer {
