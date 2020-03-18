@@ -1,23 +1,29 @@
 html {
-	background-color: rgb(255, 255, 255);
-	font-family: sans-serif;
+	background-image: url(images/background.png);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-color: black;
+	color: white;
+	font-family: 'Asap'
 }
 .main {
-	background-color: #eeeeee;
 	width: max-content;
 	padding: 10px;
 	margin: 0 auto;
+	background-color:  rgba(0, 0, 0, 0.7);
 }
 
-
+.title {
+	font-size: xx-large;
+	font-weight: bolder;
+}
 table {
 	font-size: small
 }
 .mainTable {
-	font-family: helvetica;
 	font-size: medium;
 	display: block;
-	border: 3px transparent solid;
+	border-collapse: collapse;
 	border-spacing: 0;
 	width: max-content;
 	margin: 0 auto;
@@ -28,43 +34,77 @@ table {
 .mainTable td, th {
 	border: white 0px solid;
 	width: max-content;
-	padding: 6px;
-	padding-left: 15px;
+	padding: 3px 15px 3px 15px;
 	text-align: center;
+	vertical-align: middle;
+	margin: 0;
 }
 .mainTable th {
-	background-color: #e4b289;
+	background-color: #333333;
 }
 .mainTable tr:nth-child(even) {
-	background-color: #ffeed3;
+	background-color: rgba(40, 40, 40, 0.7);
 }
 .mainTable tr:nth-child(odd) {
-	background-color: #ffffff;
+	background-color: rgba(0, 0, 0, 0.7);
 }
 
 
 label {
-	font: bold medium Helvetica, sans-serif;
-	display: block;
+	color: white;
+	font-weight: bold;
 	float: left;
 	text-align: right;
-	padding: 6px 10px 0 0;
+	padding: 3px 10px 3px 0;
 	width: 10em;
 }
 input[type=number] {
 	float: left;
-	width: 3em;
-	font: bold medium Helvetica, sans-serif;
-	padding: 3px 0 0 0;
+	width: 4em;
+	font-weight: bold;
+	padding: 5px 0 5px 0;
+	color: white;
 	text-align: center;
+	background-color: black;
+	border: 1px solid rgb(110, 110, 110);
+	-webkit-appearance: textfield;
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}
+.number-input {
+	border: 1px solid #ddd;
+	display: inline-flex;
+}
+.number-input,
+.number-input * {
+	box-sizing: border-box;
+}
+.number-input button {
+	outline:none;
+	-webkit-appearance: none;
+	background-color: transparent;
+	border: none;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	cursor: pointer;
+	margin: 0;
+	position: relative;
+	color: white;
 }
 input[type=checkbox] {
 	margin: 6px 0 0 0;
 }
 form div {
 	overflow: hidden;
-	margin: 0 0 5px 0;
+	margin: 3px;
 }
+
 
 .slider {
 	width: 5em;
@@ -78,42 +118,78 @@ form div {
 	padding: 0;
 }
 .sliderLabel {
-	font: bold medium Helvetica, sans-serif;
+	font: bold medium;
 	padding: 5px 10px 0 5px;
 	width: 10em;
 }
 .formColumn {
-	display:inline-block;
+	display: inline-block;
 	vertical-align: top;
 	width: max-content;
 	padding: 10px;
 }
 .column {
-	display:inline-block;
+	display: inline-block;
 	vertical-align: top;
 	width: max-content;
 }
 
+.fontSizeZero {
+	font-size: 0;
+}
+.card {
+	width: 30px;
+	height: 35px;
+	background-size: cover;
+	background-position: center;
+	display: inline-block;
+	margin: 1px 5px;
+	border: solid rgb(148, 148, 148);
+	border-width: 2px 0 4px 0;
+	border-radius: 3px;
+}
+.card0 {
+	background-image: url(images/card0.png);
+	border-color: white;
+}
+.card1 {
+	background-image: url(images/card1.png);
+	border-color: #54a721;
+}
+.card2 {
+	background-image: url(images/card2.png);
+	border-color: #1d72ff;
+}
+.card3 {
+	background-image: url(images/card3.png);
+	border-color: #9636e8;
+}
+.card4 {
+	background-image: url(images/card4.png);
+	border-color: #f4a220;
+}
+.card5 {
+	background-image: url(images/card5.png);
+	border-color: #13e3f6;
+}
 
-.bottom {
+
+.centered {
+	padding: 10px;
+	text-align: center;
 	margin: 0 auto;
 }
-#message {
-	display: inline-block;
-	padding: 3px;
-}
 #totalCostLabel, #totalCost {
-	display: inline-block;
-	padding: 3px;
-	font: medium Helvetica, sans-serif;
-}
-#totalCostLabel {
-	padding-left: 35px;
+	font: medium;
+	font-size: larger;
 }
 #totalCost {
 	font-weight: bold;
 }
 
+.footer {
+	height: 200px;
+}
 
 .highlight {
 	color: hsl(0, 100%, 50%);

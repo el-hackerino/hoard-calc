@@ -3,49 +3,87 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Asap' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
 
 <body>
     <div class="main">
+        <div class="title centered">Hoard Master</div>
         <form>
             <div class="formColumn">
                 <div>
                     <label for="t1">Coin Purse</label>
-                    <input id="t1" type="number" min="0" value="10">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="t1" type="number" min="0" value="10">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div>
                     <label for="t2">Gold Ring</label>
-                    <input id="t2" type="number" min="0" value="10">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="t2" type="number" min="0" value="10">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div>
                     <label for="t3">Priest's Chalice</label>
-                    <input id="t3" type="number" min="0" value="10">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="t3" type="number" min="0" value="10">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div>
                     <label for="t4">King's Crown</label>
-                    <input id="t4" type="number" min="0" value="10">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="t4" type="number" min="0" value="10">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div>
                     <label for="t5">Genie's Lamp</label>
-                    <input id="t5" type="number" min="0" value="10">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="t5" type="number" min="0" value="10">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div>
                     <label for="t6">Sacred Treasure</label>
-                    <input id="t6" type="number" min="0" value="10">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="t6" type="number" min="0" value="10">
+                        <button>+</button>
+                    </div>
                 </div>
             </div>
             <div class="formColumn">
                 <div>
-                    <label for="level">Initial Hoard Level</label>
-                    <input id="level" type="number" min="0" max="100" value="0">
+                    <label for="level">Hoard Level</label>
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="level" type="number" min="0" max="100" value="0">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div>
-                    <label for="quality">Initial Hoard Quality</label>
-                    <input id="quality" type="number" min="1" max="10" value="1">
+                    <label for="quality">Hoard Quality</label>
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="quality" type="number" min="1" max="10" value="1">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div>
-                    <label for="xp">Initial Leftover XP</label>
-                    <input id="xp" type="number" min="0" value="0">
+                    <label for="xp">Leftover XP</label>
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="xp" type="number" min="0" value="0">
+                        <button>+</button>
+                    </div>
                 </div>
                 <div id="targetLevel-div">
                     <label for="targetLevel">Target Hoard Level</label>
@@ -66,17 +104,17 @@
                 </div>
             </div>
         </form>
+        <div class="centered">
+            <span id="totalCostLabel">Total gold cost: </span>
+            <span id="totalCost"></span>
+        </div>
         <table id="main-table" class="mainTable"></table>
         <table id="main-table-2" class="mainTable"></table>
         <table id="combo-table" class="comboTable"></table>
         <table id="test-table" class="testTable"></table>
-
-        <div class="bottom">
-            <div id="totalCostLabel" class="totalCostLabel">Total Gold: </div>
-            <div id="totalCost" class="totalCost"></div>
-            <div id="message" class="message"></div>
-        </div>
+        <div id="message" class="centered"></div>
     </div>
+    <div class="footer"></div>
 
     <script src="constants.js"></script>
     <script src="hoard-calc.js"></script>
