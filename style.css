@@ -107,9 +107,6 @@ input[type=checkbox] {
 }
 
 
-table {
-	font-size: small
-}
 .mainTable {
 	font-size: medium;
 	display: block;
@@ -119,7 +116,7 @@ table {
 	margin: 0 auto;
 }
 .mainTable td, th {
-	border: white 0px solid;
+	border: 0;
 	width: max-content;
 	padding: 3px 15px 3px 15px;
 	text-align: center;
@@ -160,7 +157,7 @@ table {
 }
 .card0 {
 	background-image: url(images/card0.png);
-	border-color: white;
+	border-color: #eee;
 }
 .card1 {
 	background-image: url(images/card1.png);
@@ -210,4 +207,11 @@ table {
 }
 .hidden {
 	display: none;
+}
+
+
+.testTable {
+	font-size: small;
+	background-color: black;
+	text-align: center;
 }

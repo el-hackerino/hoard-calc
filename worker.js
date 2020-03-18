@@ -1,9 +1,9 @@
 importScripts('constants.js');
 
 const DEBUG = 0;
-const BUDGET_MAX = [0, 10, 36, 28, 20, 18];
+const BUDGET_MAX = [10, 10, 36, 28, 20, 18];
 const RNG_MIN = 0;
-const RNG_MAX = [0, 10, 20, 20, 20, 10];
+const RNG_MAX = [10, 10, 20, 20, 20, 10];
 const RNG_LEVEL_MIN = 0;
 const RNG_LEVEL_MAX = 100;
 const RNG_QUALITY_MIN = 1;

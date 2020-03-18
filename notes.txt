@@ -1,0 +1,8 @@
+clean up code, lint, etc
+add signature
+add instructions
+add tooltip for checkbox?
+add advanced/details view?
+hide refined search under advanced?
+
+set up hosting
