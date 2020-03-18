@@ -1,8 +1,9 @@
 const TEST_ITERATIONS = 100000;
 const DEBUG_MAXCOUNTS = 0;
-const RENDER_DIFF_ONLY = 1;
+const RENDER_DIFF_ONLY = 0;
 
 const INITIAL_XP = 0;
+const TROOP_COST_FACTOR = 0;
 const GOAL_QUALITY = 10;
 const GOAL_LEVEL = 100;
 
@@ -25,10 +26,10 @@ if (window.Worker) {
   let solution = {
     run_tests: 1,
     num_tests: TEST_ITERATIONS,
-    initialXp: 0,
+    initialXp: INITIAL_XP,
     goalLevel: GOAL_LEVEL,
     goalQuality: GOAL_QUALITY,
-    troopCostFactor: 0,
+    troopCostFactor: TROOP_COST_FACTOR,
     budget: [0, 0, 0, 0, 0, 0]
   };
   console.log("Calculating...");
