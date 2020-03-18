@@ -13,10 +13,11 @@ html {
 	background-color:  rgba(20, 20, 20, 0.7);
 }
 .title {
+	text-align: center;
 	font-size: xx-large;
 	font-weight: bolder;
 	color: #f4a220;
-	padding-bottom: 20px;
+	padding: 10px 0 22px 0;
 }
 
 
@@ -25,6 +26,7 @@ html {
 	vertical-align: top;
 	width: max-content;
 	padding: 0px 10px;
+	font-weight: bold;
 }
 .formColumn div {
 	margin: 3px;
@@ -40,7 +42,6 @@ form div table tr td {
 
 label {
 	color: white;
-	font-weight: bold;
 	display: inline;
 	vertical-align: middle;
 	font-size: medium;
@@ -49,7 +50,6 @@ label {
 input[type=number] {
 	float: left;
 	width: 3em;
-	font-weight: bold;
 	font-size: medium;
 	padding: 5px 0 5px 0;
 	color: white;
@@ -202,7 +202,7 @@ table {
 	font-size: larger;
 }
 #totalCost {
-	font-weight: bold;
+	font-weight: bolder;
 	color: #f4a220;
 }
 
