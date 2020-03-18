@@ -19,8 +19,8 @@ const INPUT_TROOP_COST_FACTOR = document.querySelector('#troopCostFactor');
 const INPUT_EXHAUSTIVE = document.querySelector('#exhaustive');
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE];
-const MAIN_TABLE_COLUMNS = ["Troops", "Gold", "Level", "Quality"];
-const MAIN_TABLE_ATTRIBUTES = ['troops', 'cost', 'level', 'quality'];
+const MAIN_TABLE_COLUMNS = ["Step", "Troops", "Gold", "Level", "Quality"];
+const MAIN_TABLE_ATTRIBUTES = ['nr', 'troops', 'cost', 'level', 'quality'];
 
 document.getElementById('targetLevel-div').classList.add("hidden");
 document.getElementById('targetQuality-div').classList.add("hidden");
@@ -38,8 +38,8 @@ if (window.Worker) {
     input.onchange = calculate;
   }
   for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP]) {
-    input.previousElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepDown()});
-    input.nextElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepUp()});
+    input.previousElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepDown();calculate()});
+    input.nextElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepUp();calculate()});
   }
   INPUT_TROOP_COST_FACTOR.oninput = calculate;
   initTable("main-table", MAIN_TABLE_COLUMNS);
@@ -108,11 +108,13 @@ function renderSolution(solution) {
   const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
   const table = clearTable(tableId);
 
-  for (let step of solution.bestSteps) {
+  for (let [i, step] of solution.bestSteps.entries()) {
     let tr = table.insertRow(-1);
     for (let attribute of MAIN_TABLE_ATTRIBUTES) {
       let td = tr.insertCell(-1);
-      if (attribute == 'troops') {
+      if (attribute == 'nr') {
+        td.innerHTML = i + 1;
+      } else if (attribute == 'troops') {
         td.classList.add('fontSizeZero');
         for (let troop of step.troops) {
           let card = document.createElement('div');
