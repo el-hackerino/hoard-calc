@@ -25,7 +25,7 @@ html {
 	display: inline-block;
 	vertical-align: top;
 	width: max-content;
-	padding: 0px 10px;
+	padding: 0px 5px;
 	font-weight: bold;
 }
 .formColumn div {
@@ -49,7 +49,7 @@ label {
 }
 input[type=number] {
 	float: left;
-	width: 3em;
+	width: 2.5em;
 	font-size: medium;
 	padding: 5px 0 5px 0;
 	color: white;
@@ -84,7 +84,11 @@ input[type=number]::-webkit-outer-spin-button {
 	color: white;
 }
 
-
+.sliderLabel {
+	padding: 17px 2px 0 2px;
+	display: inline;
+	vertical-align: middle;
+}
 .slider {
 	width: 5em;
 	margin: 3px 0 0 0;
@@ -93,13 +97,7 @@ input[type=number]::-webkit-outer-spin-button {
 	appearance: none;
 	width: 7em;
 	height: 2px;
-	background: #d3d3d3;
-	outline: none;
-}
-.sliderLabel {
-	padding: 15px 2px 0 2px;
-	display: inline;
-	vertical-align: middle;
+	cursor: pointer;
 }
 input[type=checkbox] {
 	margin: 10px 0 0 0;
@@ -119,9 +117,6 @@ table {
 	border-spacing: 0;
 	width: max-content;
 	margin: 0 auto;
-}
-.mainTable, #message, #totalCostLabel {
-	padding-left: 25px;
 }
 .mainTable td, th {
 	border: white 0px solid;
@@ -143,8 +138,8 @@ table {
 
 
 .largeCard {
-	width: 100px;
-	height: 140px;
+	width: 90px;
+	height: 125px;
 	background-size: cover;
 	background-position: center;
 	margin: 0px 5px;
