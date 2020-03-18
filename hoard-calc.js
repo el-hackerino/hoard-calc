@@ -24,6 +24,12 @@ const MAIN_TABLE_ATTRIBUTES = ['troops', 'cost', 'level', 'quality'];
 
 document.getElementById('targetLevel-div').classList.add("hidden");
 document.getElementById('targetQuality-div').classList.add("hidden");
+var buttons = document.querySelectorAll('form button:not([type="submit"])');
+for (i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener('click', function(e) {
+    e.preventDefault();
+  });
+}
 
 if (window.Worker) {
   var exhaustiveSearchDone = false;
@@ -31,6 +37,11 @@ if (window.Worker) {
   for (let input of ALL_INPUTS) {
     input.onchange = calculate;
   }
+  for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP]) {
+    input.previousElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepDown()});
+    input.nextElementSibling.addEventListener('click', function() {this.parentNode.querySelector('input[type=number]').stepUp()});
+  }
+  INPUT_TROOP_COST_FACTOR.oninput = calculate;
   initTable("main-table", MAIN_TABLE_COLUMNS);
   if (DEBUG_EXHAUSTIVE_SINGLE_SOLUTION) {
     initTable("main-table-2", MAIN_TABLE_COLUMNS);
@@ -102,12 +113,15 @@ function renderSolution(solution) {
     for (let attribute of MAIN_TABLE_ATTRIBUTES) {
       let td = tr.insertCell(-1);
       if (attribute == 'troops') {
-        td.textContent = '';
+        td.classList.add('fontSizeZero');
         for (let troop of step.troops) {
-          td.textContent += TROOPS[troop].shortName;
+          let card = document.createElement('div');
+          card.classList.add('card');
+          card.classList.add('card' + troop);
+          td.appendChild(card);
         }
       } else {
-        td.textContent = step[attribute];
+        td.innerHTML = step[attribute];
       }
     }
   }
