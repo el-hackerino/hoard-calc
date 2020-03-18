@@ -64,8 +64,8 @@
                     </tr>
                 </table>
             </div>
-            <div class="formColumn">
-                <div class="formCell">
+            <div class="formCell">
+                <div class="formColumn">
                     <label for="level">Hoard Level</label>
                     <div class="number-input">
                         <button>-</button>
@@ -73,7 +73,7 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formCell">
+                <div class="formColumn">
                     <label for="quality">Hoard Quality</label>
                     <div class="number-input">
                         <button>-</button>
@@ -81,7 +81,7 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formCell">
+                <div class="formColumn">
                     <label for="xp">Leftover XP</label>
                     <div class="number-input">
                         <button>-</button>
@@ -89,17 +89,13 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formCell" id="targetLevel-div">
+                <div class="formColumn" id="targetLevel-div">
                     <label for="targetLevel">Target Hoard Level</label>
                     <input id="targetLevel" type="number" min="0" max="100" value="100">
                 </div>
-                <div class="formCell" id="targetQuality-div">
+                <div class="formColumn" id="targetQuality-div">
                     <label for="targetQuality">Target Hoard Quality</label>
                     <input id="targetQuality" type="number" min="1" max="10" value="10">
-                </div>
-                <div class="formCell" id="optionCheckbox">
-                    <label for="exhaustive">Refine Search</label>
-                    <input id="exhaustive" type="checkbox" checked="0">
                 </div>
             </div>
         </form>
@@ -119,7 +115,11 @@
         <table id="main-table-2" class="mainTable"></table>
         <table id="combo-table" class="comboTable"></table>
         <table id="test-table" class="testTable"></table>
-        <div id="message" class="centered"></div>
+        <div id="message"></div>
+        <div id="optionCheckbox">
+            <label for="exhaustive">Refine Search</label>
+            <input id="exhaustive" type="checkbox" checked="0">
+        </div>
     </div>
     <div class="footer"></div>
 
