@@ -17,7 +17,7 @@
                             <div class="largeCard card0"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t1" type="number" min="0" value="10">
+                                <input id="t1" type="number" min="0" max="100" value="10">
                                 <button tabindex="-1">+</button>
                             </div>
                         </td>
@@ -25,7 +25,7 @@
                             <div class="largeCard card1"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t2" type="number" min="0" value="10">
+                                <input id="t2" type="number" min="0" max="100" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -33,7 +33,7 @@
                             <div class="largeCard card2"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t3" type="number" min="0" value="10">
+                                <input id="t3" type="number" min="0" max="100" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -43,7 +43,7 @@
                             <div class="largeCard card3"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t4" type="number" min="0" value="10">
+                                <input id="t4" type="number" min="0" max="100" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -51,7 +51,7 @@
                             <div class="largeCard card4"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t5" type="number" min="0" value="10">
+                                <input id="t5" type="number" min="0" max="100" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -59,7 +59,7 @@
                             <div class="largeCard card5"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t6" type="number" min="0" value="10">
+                                <input id="t6" type="number" min="0" max="100" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -99,17 +99,17 @@
                     <label for="targetQuality">Target Hoard Quality</label>
                     <input id="targetQuality" type="number" min="1" max="10" value="10">
                 </div>
-                <div class="formCell slideContainer">
-                    <div class="sliderLabel">Save Gold</div>
-                    <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
-                    <div class="sliderLabel">Save Treasure</div>
-                </div>
                 <div class="formCell" id="optionCheckbox">
                     <label for="exhaustive">Refine Search</label>
                     <input id="exhaustive" type="checkbox" checked="0">
                 </div>
             </div>
         </form>
+        <div class="centered slideContainer">
+            <div class="sliderLabel">Save Gold</div>
+            <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
+            <div class="sliderLabel">Save Rare Treasure</div>
+        </div>
         <div class="centered">
             <span id="totalCostLabel">Total gold cost: </span>
             <span id="totalCost"></span>
