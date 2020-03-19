@@ -1,8 +1,11 @@
+push level if not reached target quality? seems weird not to
 test run with only low initial quality? 
-push level if not reached target quality?
-add instructions (help button)
-add tooltip for checkbox?
+revisit full combo list again?
+
+add help for checkbox?
 add advanced/details view?
 hide refined search under advanced?
+add alt text for cards
+
 replace card table with divs
-set up hosting
+

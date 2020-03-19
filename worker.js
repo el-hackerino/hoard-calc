@@ -3,11 +3,11 @@ importScripts("constants.js");
 
 const DEBUG = 0;
 const BUDGET_MAX = [10, 10, 36, 28, 20, 18];
-const RNG_MIN = 0;
-const RNG_MAX = [10, 10, 20, 20, 20, 10];
-const RNG_LEVEL_MIN = 0;
+const RNG_MIN = [10, 10, 20, 20, 0, 0];
+const RNG_MAX = [10, 10, 40, 40, 18, 10];
+const RNG_LEVEL_MIN = 30;
 const RNG_LEVEL_MAX = 100;
-const RNG_QUALITY_MIN = 1;
+const RNG_QUALITY_MIN = 3;
 const RNG_QUALITY_MAX = 7;
 const MAX_GOLD = 1000000;
 var levelXp = [];
@@ -45,7 +45,7 @@ function runTestIteration(solution) {
   // Randomize values
   if (solution.run_tests) {
     for (let t = 0; t < solution.budget.length; t++) {
-      solution.budget[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN)) + RNG_MIN);
+      solution.budget[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN[t])) + RNG_MIN[t]);
     }
     solution.initialQuality = Math.floor((Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN)) + RNG_QUALITY_MIN);
     // Get rid of unrealistically low initial level values
@@ -95,7 +95,6 @@ function findSolution(solution, quick, toLevel, resort) {
   }
   solution.comboCounts = countIds(solution.bestSteps);
   solution.time = (new Date().getTime() - startTime);
-  solution.timeToOptimum = solution.timeFound - startTime;
 }
 
 function search(startCombo, depth, solution, combos, toLevel) {
@@ -150,7 +149,6 @@ function saveBestSolution(solution) {
   solution.bestCost = solution.sumCost;
   solution.bestGoldCost = solution.sumGoldCost;
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
-  solution.timeFound = new Date().getTime();
   //console.log(solution);
 }
 
@@ -335,11 +333,11 @@ function makeCombos() {
   for (let template of TEMPLATES) {
     let combo = {};
     combo.id = id;
-    combo.troops = template;
+    combo.troops = template[0];
     combo.percent = combo.troops.reduce(sumPercent, 0);
     combo.xp = combo.troops.reduce(sumXp, 0);
     combo.counts = countTroops(combo.troops);
-    if (TEMPLATES_QUICK.includes(combo.id)) {
+    if (template[1]) {
       quickCombos.push(combo);
     }
     allCombos.push(combo);

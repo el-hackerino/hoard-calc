@@ -4,13 +4,13 @@ const DEBUG_MAXCOUNTS = 0;
 const RENDER_DIFF_ONLY = 0;
 
 const INITIAL_XP = 0;
-const TROOP_COST_FACTOR = 0;
+const TROOP_COST_FACTOR = 1;
 const GOAL_QUALITY = 10;
 const GOAL_LEVEL = 100;
 
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
-const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Time To Solve", "Diff", "Combos", "Slow Combos"];
-const TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "slowTime", "timeToOptimum", "quickCostDiff", "combos", "slowCombos"];
+const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Combos", "Slow Combos"];
+const TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "slowTime", "quickCostDiff", "combos", "slowCombos"];
 
 let solutions = [];
 let totalComboCounts = [];
@@ -76,13 +76,13 @@ function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
     td.textContent = key;
     td = tr.insertCell(-1);
     td.textContent = "";
-    for (let troop of TEMPLATES[key]) {
+    for (let troop of TEMPLATES[key][0]) {
       td.textContent += TROOPS[troop].shortName;
     }
     td = tr.insertCell(-1);
     td.textContent = value;
     td = tr.insertCell(-1);
-    td.textContent = TEMPLATES_QUICK.includes(Number(key)) ? "" : "x";
+    td.textContent = TEMPLATES[Number(key)][1] ? "" : "x";
   }
   let tr = table.insertRow(-1);
   let td = tr.insertCell(-1);
@@ -111,14 +111,12 @@ function renderTestResults(solution) {
       td.innerHTML = "";
       for (let step of solution.slowSolution.bestSteps) {
         let comboString = "<span";
-        if (!TEMPLATES_QUICK.includes(Number(step.comboId))) {
+        if (!TEMPLATES[Number(step.comboId)][1]) {
           comboString += " class='highlight'";
         }
         comboString += ">" + step.comboId + " </span>";
         td.innerHTML += comboString;
       }
-    } else if (attribute == "timeToOptimum") {
-      td.textContent = Math.round(solution.slowSolution.timeToOptimum / solution.slowSolution.time * 100) / 100 || "-";
     } else {
       td.textContent = solution[attribute];
     }
