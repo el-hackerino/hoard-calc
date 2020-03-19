@@ -41,7 +41,7 @@ function resetSolution(solution) {
 
 function runTestIteration(solution) {
   resetSolution(solution);
-  
+
   // Randomize values
   if (solution.run_tests) {
     for (let t = 0; t < solution.budget.length; t++) {
@@ -68,9 +68,9 @@ function runTestIteration(solution) {
   if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
     solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
   } else {
-    solution.quickCostDiff = solution.bestQuality + "->" + slowSolution.bestQuality
-       + ", " + solution.bestLevel + "->" + slowSolution.bestLevel
-       + ", " + solution.bestCost + "->" + slowSolution.bestCost;
+    solution.quickCostDiff = solution.bestQuality + "->" + slowSolution.bestQuality +
+      ", " + solution.bestLevel + "->" + slowSolution.bestLevel +
+      ", " + solution.bestCost + "->" + slowSolution.bestCost;
   }
 
   return solution;
@@ -105,7 +105,10 @@ function search(startCombo, depth, solution, combos, toLevel) {
     if (solution.steps[depth]) {
       subtractFromTotal(solution, combos[solution.steps[depth].combo]);
     }
-    solution.steps[depth] = {combo: c, comboId: combos[c].id};
+    solution.steps[depth] = {
+      combo: c,
+      comboId: combos[c].id
+    };
     solution.lastInsert = depth;
     addToTotal(solution, combos[c]);
     if (budgetFits(solution)) {
@@ -129,8 +132,8 @@ function search(startCombo, depth, solution, combos, toLevel) {
       if (solution.quality > solution.bestQuality && solution.quality <= solution.goalQuality) {
         if (DEBUG) console.log("New quality: " + solution.quality);
         saveBestSolution(solution);
-      } else if ((solution.sumCost < solution.bestCost && solution.quality >= solution.bestQuality)
-        && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
+      } else if ((solution.sumCost < solution.bestCost && solution.quality >= solution.bestQuality) &&
+        reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
@@ -265,7 +268,8 @@ function permute(permutation) {
   var length = permutation.length,
     result = [permutation.slice()],
     c = new Array(length).fill(0),
-    i = 1, k, p;
+    i = 1,
+    k, p;
   while (i < length) {
     if (c[i] < i) {
       k = i % 2 && c[i];
@@ -323,7 +327,7 @@ function getCost(level, numTroops) {
 }
 
 function getTroopCost(troopArray) {
-  return troopArray.reduce(function(total, troop) {
+  return troopArray.reduce(function (total, troop) {
     return total + TROOPS[troop].value;
   }, 0);
 }

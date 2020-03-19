@@ -26,7 +26,8 @@ const INPUT_TARGET_QUALITY = document.querySelector("#targetQuality");
 const INPUT_TROOP_COST_FACTOR = document.querySelector("#troopCostFactor");
 const INPUT_EXHAUSTIVE = document.querySelector("#exhaustive");
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
-  INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE];
+  INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE
+];
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
 
@@ -40,20 +41,28 @@ document.getElementById("help").style.width = document.getElementById("main-form
 // Prevent form submission
 var buttons = document.querySelectorAll("form button:not([type=\"submit\"])");
 for (let i = 0; i < buttons.length; i++) {
-  buttons[i].addEventListener("click", function(e) {
+  buttons[i].addEventListener("click", function (e) {
     e.preventDefault();
   });
 }
 
 // Set event handlers
-document.getElementById("help-button").addEventListener("click", function() {showHelp();});
+document.getElementById("help-button").addEventListener("click", function () {
+  showHelp();
+});
 for (let input of ALL_INPUTS) {
   input.onchange = calculate;
 }
 INPUT_TROOP_COST_FACTOR.oninput = calculate;
 for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP]) {
-  input.previousElementSibling.addEventListener("click", function() {this.parentNode.querySelector("input[type=number]").stepDown();calculate();});
-  input.nextElementSibling.addEventListener("click", function() {this.parentNode.querySelector("input[type=number]").stepUp();calculate();});
+  input.previousElementSibling.addEventListener("click", function () {
+    this.parentNode.querySelector("input[type=number]").stepDown();
+    calculate();
+  });
+  input.nextElementSibling.addEventListener("click", function () {
+    this.parentNode.querySelector("input[type=number]").stepUp();
+    calculate();
+  });
   input.previousElementSibling.tabIndex = -1;
   input.nextElementSibling.tabIndex = -1;
 }
@@ -67,8 +76,8 @@ calculate();
 
 function calculate() {
   if (DEBUG_GENERAL) console.log("Calculating...");
-  if (Number(INPUT_QUALITY.value) >= Number(INPUT_TARGET_QUALITY.value)
-    && Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
+  if (Number(INPUT_QUALITY.value) >= Number(INPUT_TARGET_QUALITY.value) &&
+    Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
     showMessage("No need to upgrade!", true);
     return;
   } else {
@@ -127,7 +136,7 @@ function render(workerMessage) {
         showMessage("Could not reach target!");
       }
     }
-  } 
+  }
 
   let troopCountDiv = document.getElementById("troop-counts");
   troopCountDiv.innerHTML = "";
@@ -188,7 +197,7 @@ function showHelp() {
   document.getElementById("results").classList.add("hidden");
   document.getElementById("help-button").classList.add("hidden");
   document.getElementById("help").classList.remove("hidden");
-  document.body.addEventListener("click", hideHelp, true); 
+  document.body.addEventListener("click", hideHelp, true);
 }
 
 function hideHelp() {
@@ -197,5 +206,5 @@ function hideHelp() {
   document.getElementById("results").classList.remove("hidden");
   document.getElementById("help-button").classList.remove("hidden");
   document.getElementById("help").classList.add("hidden");
-  document.body.removeEventListener("click", hideHelp, true); 
+  document.body.removeEventListener("click", hideHelp, true);
 }
