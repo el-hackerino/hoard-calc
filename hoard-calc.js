@@ -2,8 +2,7 @@
 if (!window.Worker) {
   showMessage("Your browser does not support web workers :(", true);
   document.getElementById("main-form").classList.add("hidden");
-  document.getElementById("total-cost-container").classList.add("hidden");
-  document.getElementById("optionCheckbox").classList.add("hidden");
+  document.getElementById("results").classList.add("hidden");
   throw new Error("Your browser does not support web workers :(");
 }
 
@@ -35,6 +34,9 @@ const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
 document.getElementById("targetLevel-div").classList.add("hidden");
 document.getElementById("targetQuality-div").classList.add("hidden");
 
+// Set matching width for help content
+document.getElementById("help").style.width = document.getElementById("main-form").clientWidth + "px";
+
 // Prevent form submission
 var buttons = document.querySelectorAll("form button:not([type=\"submit\"])");
 for (let i = 0; i < buttons.length; i++) {
@@ -44,6 +46,7 @@ for (let i = 0; i < buttons.length; i++) {
 }
 
 // Set event handlers
+document.getElementById("help-button").addEventListener("click", function() {showHelp();});
 for (let input of ALL_INPUTS) {
   input.onchange = calculate;
 }
@@ -177,4 +180,20 @@ function showMessage(message, hideTable) {
 
 function hideMessage() {
   showMessage("&nbsp;", false);
+}
+
+function showHelp() {
+  document.getElementById("main-form").classList.add("hidden");
+  document.getElementById("message").classList.add("hidden");
+  document.getElementById("results").classList.add("hidden");
+  document.getElementById("help").classList.remove("hidden");
+  document.body.addEventListener("click", hideHelp, true); 
+}
+
+function hideHelp() {
+  document.getElementById("main-form").classList.remove("hidden");
+  document.getElementById("message").classList.remove("hidden");
+  document.getElementById("results").classList.remove("hidden");
+  document.getElementById("help").classList.add("hidden");
+  document.body.removeEventListener("click", hideHelp, true); 
 }

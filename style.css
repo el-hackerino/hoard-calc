@@ -6,11 +6,12 @@ html {
 	color: white;
 	font-family: 'Pavanam', Arial, Helvetica, sans-serif;
 }
-.main {
+#main {
 	width: max-content;
 	padding: 10px;
 	margin: 0 auto;
 	background-color:  rgba(20, 20, 20, 0.7);
+	position: relative;
 }
 a {
 	color: #ddd;
@@ -22,6 +23,13 @@ a {
 	font-weight: bolder;
 	color: #f4a220;
 	padding: 10px 0 22px 0;
+}
+#help-button {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	height: 38px;
+	width: 40px;
 }
 
 
@@ -226,6 +234,14 @@ input[type=checkbox] {
 	padding: 3px 8px;
 	width: max-content;
 	color: #bbb;
+}
+#help {
+	top: 50px;
+	left: 10px;
+}
+.screenshot {
+	margin: 0 auto;
+	display: block;
 }
 .hidden {
 	display: none;
