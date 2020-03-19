@@ -1,8 +1,16 @@
 /* eslint-disable no-undef */
+if (!window.Worker) {
+  showMessage("Your browser does not support web workers :(", true);
+  document.getElementById("main-form").classList.add("hidden");
+  document.getElementById("total-cost-container").classList.add("hidden");
+  document.getElementById("optionCheckbox").classList.add("hidden");
+  throw new Error("Your browser does not support web workers :(");
+}
+
 const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
 const DEBUG_GENERAL = 0;
-const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 3, 5, 10, 50];
 
+const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 3, 5, 10, 50];
 const TROOP_INPUTS = [
   document.querySelector("#t1"),
   document.querySelector("#t2"),
@@ -23,8 +31,11 @@ const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
 
+// Hide unused elements (for now)
 document.getElementById("targetLevel-div").classList.add("hidden");
 document.getElementById("targetQuality-div").classList.add("hidden");
+
+// Prevent form submission
 var buttons = document.querySelectorAll("form button:not([type=\"submit\"])");
 for (let i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener("click", function(e) {
@@ -32,30 +43,24 @@ for (let i = 0; i < buttons.length; i++) {
   });
 }
 
-if (window.Worker) {
-  var exhaustiveSearchDone = false;
-  var myWorker;
-  for (let input of ALL_INPUTS) {
-    input.onchange = calculate;
-  }
-  INPUT_TROOP_COST_FACTOR.oninput = calculate;
-  for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP]) {
-    input.previousElementSibling.addEventListener("click", function() {this.parentNode.querySelector("input[type=number]").stepDown();calculate();});
-    input.nextElementSibling.addEventListener("click", function() {this.parentNode.querySelector("input[type=number]").stepUp();calculate();});
-    input.previousElementSibling.tabIndex = -1;
-    input.nextElementSibling.tabIndex = -1;
-  }
-  initTable("main-table", MAIN_TABLE_COLUMNS);
-  if (DEBUG_EXHAUSTIVE_SINGLE_SOLUTION) {
-    initTable("main-table-2", MAIN_TABLE_COLUMNS);
-  }
-  calculate();
-} else {
-  showMessage("Your browser does not support web workers :(", true);
-  document.getElementById("main-form").classList.add("hidden");
-  document.getElementById("total-cost-container").classList.add("hidden");
-  document.getElementById("optionCheckbox").classList.add("hidden");
+// Set event handlers
+for (let input of ALL_INPUTS) {
+  input.onchange = calculate;
 }
+INPUT_TROOP_COST_FACTOR.oninput = calculate;
+for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP]) {
+  input.previousElementSibling.addEventListener("click", function() {this.parentNode.querySelector("input[type=number]").stepDown();calculate();});
+  input.nextElementSibling.addEventListener("click", function() {this.parentNode.querySelector("input[type=number]").stepUp();calculate();});
+  input.previousElementSibling.tabIndex = -1;
+  input.nextElementSibling.tabIndex = -1;
+}
+initTable("main-table", MAIN_TABLE_COLUMNS);
+if (DEBUG_EXHAUSTIVE_SINGLE_SOLUTION) {
+  initTable("main-table-2", MAIN_TABLE_COLUMNS);
+}
+var exhaustiveSearchDone = false;
+var myWorker;
+calculate();
 
 function calculate() {
   if (DEBUG_GENERAL) console.log("Calculating...");
@@ -93,23 +98,33 @@ function calculate() {
   showMessage("Calculating...", false);
 }
 
-function render(message) {
-  let solution = message.data;
-  if (solution.useQuickList && INPUT_EXHAUSTIVE.checked && !exhaustiveSearchDone) {
-    showMessage("Refining...", false);
-  } else {
-    exhaustiveSearchDone = true;
-    hideMessage();
-  } 
-  renderSolution(solution);
+function render(workerMessage) {
+  let solution = workerMessage.data;
   if (DEBUG_GENERAL) console.log("Time: " + (solution.time / 1000) + " s");
-}
 
-function renderSolution(solution) {
   if (!solution.bestSteps.length) {
     showMessage("Cannot find any useful steps!", true);
     return;
   }
+
+  if (solution.useQuickList && INPUT_EXHAUSTIVE.checked && !exhaustiveSearchDone) {
+    showMessage("Refining...", false);
+  } else {
+    exhaustiveSearchDone = true;
+    if (solution.bestQuality >= Number(INPUT_TARGET_QUALITY.value)) {
+      if (solution.bestLevel >= Number(INPUT_TARGET_LEVEL.value)) {
+        showMessage("Reached quality 10 and level 100!");
+      } else {
+        showMessage("Reached quality 10!");
+      }
+    } else {
+      if (solution.bestLevel >= Number(INPUT_TARGET_LEVEL.value)) {
+        showMessage("Reached level 100!");
+      } else {
+        showMessage("Could not reach target!");
+      }
+    }
+  } 
 
   let troopCountDiv = document.getElementById("troop-counts");
   troopCountDiv.innerHTML = "";

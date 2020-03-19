@@ -1,5 +1,5 @@
-clean up code, lint, etc
-add gold and card icons
+test run with only low initial quality
+push level if not reached target quality?
 add signature
 add instructions (help button)
 add tooltip for checkbox?
