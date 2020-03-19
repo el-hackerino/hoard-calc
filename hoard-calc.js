@@ -186,6 +186,7 @@ function showHelp() {
   document.getElementById("main-form").classList.add("hidden");
   document.getElementById("message").classList.add("hidden");
   document.getElementById("results").classList.add("hidden");
+  document.getElementById("help-button").classList.add("hidden");
   document.getElementById("help").classList.remove("hidden");
   document.body.addEventListener("click", hideHelp, true); 
 }
@@ -194,6 +195,7 @@ function hideHelp() {
   document.getElementById("main-form").classList.remove("hidden");
   document.getElementById("message").classList.remove("hidden");
   document.getElementById("results").classList.remove("hidden");
+  document.getElementById("help-button").classList.remove("hidden");
   document.getElementById("help").classList.add("hidden");
   document.body.removeEventListener("click", hideHelp, true); 
 }
