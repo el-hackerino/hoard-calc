@@ -9,7 +9,7 @@
 <body>
     <div class="main">
         <div class="title">Hoard Master</div>
-        <form>
+        <form id="main-form">
             <div class="formColumn">
                 <table>
                     <tr>
@@ -98,24 +98,24 @@
                     <input id="targetQuality" type="number" min="1" max="10" value="10">
                 </div>
             </div>
+            <div class="centered slideContainer">
+                <div class="sliderLabel">Save Gold</div>
+                <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
+                <div class="sliderLabel">Save Rare Treasure</div>
+            </div>
         </form>
-        <div class="centered slideContainer">
-            <div class="sliderLabel">Save Gold</div>
-            <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
-            <div class="sliderLabel">Save Rare Treasure</div>
-        </div>
-        <div class="centered">
+        <div id="total-cost-container" class="centered">
             <span id="totalCostLabel">Total gold cost: </span>
             <span id="totalCost"></span>
         </div>
-        <div class="centered">
+        <div id="troop-counts-container" class="centered">
             <div id="troop-counts" class="troopCounts"></div>
         </div>
         <table id="main-table" class="mainTable"></table>
         <table id="main-table-2" class="mainTable"></table>
         <table id="combo-table" class="comboTable"></table>
         <table id="test-table" class="testTable"></table>
-        <div id="message"></div>
+        <div id="message" class="centered"></div>
         <div id="optionCheckbox">
             <label for="exhaustive">Refine Search</label>
             <input id="exhaustive" type="checkbox" checked="0">

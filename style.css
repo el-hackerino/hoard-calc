@@ -163,7 +163,7 @@ input[type=checkbox] {
 	margin: 1px 5px;
 	border: solid rgb(148, 148, 148);
 	border-width: 2px 0 4px 0;
-	border-radius: 3px;
+	border-radius: 2px;
 }
 .card0 {
 	background-image: url(images/card0.png);
@@ -199,9 +199,7 @@ input[type=checkbox] {
 	text-align: center;
 	margin: 0 auto;
 }
-#message {
-	text-align: left;
-}
+
 #totalCostLabel, #totalCost {
 	font-size: larger;
 }
