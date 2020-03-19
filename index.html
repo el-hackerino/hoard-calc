@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="style.css">
 
 <body>
-    <div class="main">
+    <div id="main">
         <div class="title">Hoard Master</div>
+        <img id="help-button" src="images/help.png">
         <form id="main-form">
             <div class="formColumn">
                 <table>
@@ -107,31 +108,41 @@
             </div>
         </form>
         <div id="message" class="centered"></div>
-        <div id="total-cost-container" class="centered">
-            <span id="totalCostLabel">Total gold cost: </span>
-            <span id="totalCost"></span>
+        <div id="results">
+            <div id="total-cost-container" class="centered">
+                <span id="totalCostLabel">Total gold cost: </span>
+                <span id="totalCost"></span>
+            </div>
+            <div id="troop-counts-container" class="centered">
+                <div id="troop-counts" class="troopCounts"></div>
+            </div>
+            <table id="main-table" class="mainTable"></table>
+            <table id="main-table-2" class="mainTable"></table>
+            <table id="combo-table" class="comboTable"></table>
+            <table id="test-table" class="testTable"></table>
+            <div id="optionCheckbox" class="centered">
+                <label for="exhaustive">Refine Search</label>
+                <input id="exhaustive" type="checkbox" checked="0">
+            </div>
         </div>
-        <div id="troop-counts-container" class="centered">
-            <div id="troop-counts" class="troopCounts"></div>
-        </div>
-        <table id="main-table" class="mainTable"></table>
-        <table id="main-table-2" class="mainTable"></table>
-        <table id="combo-table" class="comboTable"></table>
-        <table id="test-table" class="testTable"></table>
-        <div id="optionCheckbox" class="centered">
-            <label for="exhaustive">Refine Search</label>
-            <input id="exhaustive" type="checkbox" checked="0">
+        <div id="help" class="hidden">
+            Set the amounts of treasure troops you have and your current hoard stats and you will get an optimized list of steps
+            for upgrading your hoard to quality 100 and level 10.<br>
+            Use the slider 
+            Your current hoard stats are here:<br>
+            <img class="screenshot" src="images/screenshot.png" width="400">
+            <br>
+            (click anywhere to dismiss)
         </div>
     </div>
     <div class="footer">
-        &copy; 
+        &copy;
         <script type="text/javascript">
             document.write("<n uers=\"znvygb:uafqzcsss@tznvy.pbz\" ery=\"absbyybj\">Ry Qhqrevab</n>".replace(/[a-zA-Z]/g, 
             function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);}));
         </script>
-        (find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>)
-    <br>Gems of War and related assets (c) Infinity Plus Two.<br>
-
+        (find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>)<br>
+        Gems of War and related assets &copy; Infinity Plus Two.<br>
     </div>
 
     <script src="constants.js"></script>

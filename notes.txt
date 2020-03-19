@@ -1,9 +1,8 @@
-test run with only low initial quality
+test run with only low initial quality? 
 push level if not reached target quality?
-add signature
 add instructions (help button)
 add tooltip for checkbox?
 add advanced/details view?
 hide refined search under advanced?
-
+replace card table with divs
 set up hosting
