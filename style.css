@@ -1,22 +1,25 @@
 html {
 	background-image: url(images/background.png);
-	background-size: 1900px;
+	background-size: 2000px;
 	background-repeat: no-repeat;
 	background-color: black;
 	color: white;
 	font-family: 'Pavanam', Arial, Helvetica, sans-serif;
 }
+
 #main {
 	width: max-content;
 	padding: 10px;
 	margin: 0 auto;
-	background-color:  rgba(20, 20, 20, 0.7);
+	background-color: rgba(20, 20, 20, 0.7);
 	position: relative;
 }
+
 a {
-	color: #ddd;
+	color: #f4a220;
 	text-decoration: none;
 }
+
 .title {
 	text-align: center;
 	font-size: xx-large;
@@ -24,6 +27,7 @@ a {
 	color: #f4a220;
 	padding: 10px 0 22px 0;
 }
+
 #help-button {
 	position: absolute;
 	top: 10px;
@@ -40,14 +44,17 @@ a {
 	padding: 0px 15px;
 	font-weight: bold;
 }
+
 .formColumn div {
 	margin: 3px;
 	text-align: right;
 }
+
 .formCell {
 	margin: 10px auto;
 	width: max-content;
 }
+
 form div table tr td {
 	text-align: center;
 }
@@ -60,6 +67,7 @@ label {
 	font-size: large;
 	text-align: center;
 }
+
 input[type=number] {
 	float: left;
 	width: 2.5em;
@@ -73,20 +81,24 @@ input[type=number] {
 	-moz-appearance: textfield;
 	appearance: textfield;
 }
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none;
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
 }
+
 .number-input {
 	border: 0;
 	display: inline-flex;
 }
+
 .number-input,
 .number-input * {
 	box-sizing: border-box;
 }
+
 .number-input button {
-	outline:none;
+	outline: none;
 	-webkit-appearance: none;
 	background-color: transparent;
 	border: none;
@@ -96,16 +108,19 @@ input[type=number]::-webkit-outer-spin-button {
 	position: relative;
 	color: white;
 }
+
 .sliderLabel {
 	padding: 17px 2px 0 2px;
 	display: inline;
 }
+
 .icon {
 	height: 20px;
 	width: 20px;
 	vertical-align: middle;
 	transform: scaleX(-1);
 }
+
 .slider {
 	vertical-align: middle;
 	-webkit-appearance: none;
@@ -115,9 +130,11 @@ input[type=number]::-webkit-outer-spin-button {
 	cursor: pointer;
 	margin: -4px;
 }
+
 input[type=checkbox] {
-	margin: 10px 0 0 0;
+	vertical-align: middle;
 }
+
 #optionCheckbox {
 	text-align: center;
 }
@@ -131,9 +148,11 @@ input[type=checkbox] {
 	align-items: center;
 	font-size: larger;
 }
+
 .troop-entry {
 	border-right: 10px;
 }
+
 .mainTable {
 	font-size: medium;
 	display: block;
@@ -142,7 +161,9 @@ input[type=checkbox] {
 	width: max-content;
 	margin: 0 auto;
 }
-.mainTable td, th {
+
+.mainTable td,
+th {
 	border: 0;
 	width: max-content;
 	padding: 3px 15px 3px 15px;
@@ -150,12 +171,15 @@ input[type=checkbox] {
 	vertical-align: middle;
 	margin: 0;
 }
+
 .mainTable th {
 	background-color: #333333;
 }
+
 .mainTable tr:nth-child(even) {
 	background-color: rgba(40, 40, 40, 0.7);
 }
+
 .mainTable tr:nth-child(odd) {
 	background-color: rgba(0, 0, 0, 0.7);
 }
@@ -171,6 +195,7 @@ input[type=checkbox] {
 	border-width: 3px 0 10px 0;
 	border-radius: 3px;
 }
+
 .card {
 	width: 30px;
 	height: 35px;
@@ -182,30 +207,37 @@ input[type=checkbox] {
 	border-width: 2px 0 4px 0;
 	border-radius: 2px;
 }
+
 .card0 {
 	background-image: url(images/card0.png);
 	border-color: #eee;
 }
+
 .card1 {
 	background-image: url(images/card1.png);
 	border-color: #54a721;
 }
+
 .card2 {
 	background-image: url(images/card2.png);
 	border-color: #1d72ff;
 }
+
 .card3 {
 	background-image: url(images/card3.png);
 	border-color: #9636e8;
 }
+
 .card4 {
 	background-image: url(images/card4.png);
 	border-color: #f4a220;
 }
+
 .card5 {
 	background-image: url(images/card5.png);
 	border-color: #13e3f6;
 }
+
 .fontSizeZero {
 	font-size: 0;
 }
@@ -216,33 +248,41 @@ input[type=checkbox] {
 	text-align: center;
 	margin: 0 auto;
 }
-#totalCostLabel, #totalCost {
+
+#totalCostLabel,
+#totalCost {
 	font-size: larger;
 }
+
 #totalCost {
 	font-weight: 1000;
 	color: #f4a220;
 }
+
 .centered {
 	padding: 10px;
 	text-align: center;
 	margin: 0 auto;
 }
+
 .footer {
-	background-color:  rgba(20, 20, 20, 0.7);
+	background-color: rgba(20, 20, 20, 0.7);
 	margin: 30px auto 200px auto;
 	padding: 3px 8px;
 	width: max-content;
 	color: #bbb;
 }
+
 #help {
 	top: 50px;
 	left: 10px;
 }
+
 .screenshot {
 	margin: 0 auto;
 	display: block;
 }
+
 .hidden {
 	display: none;
 }
@@ -253,6 +293,7 @@ input[type=checkbox] {
 	background-color: black;
 	text-align: center;
 }
+
 .highlight {
 	color: hsl(0, 100%, 50%);
 }
