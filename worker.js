@@ -1,4 +1,5 @@
-importScripts('constants.js');
+/* eslint-disable no-undef */
+importScripts("constants.js");
 
 const DEBUG = 0;
 const BUDGET_MAX = [10, 10, 36, 28, 20, 18];
@@ -21,7 +22,7 @@ onmessage = function (message) {
     let result = runTestIteration(message.data);
     postMessage(result);
   }
-}
+};
 
 function resetSolution(solution) {
   solution.reachedQuality = false;
@@ -134,7 +135,7 @@ function search(startCombo, depth, solution, combos, toLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
-      if (!reachedQuality || toLevel && !reachedLevel) { // Need additional logic after quality goal is reached?
+      if (!reachedQuality || toLevel && !reachedLevel) { // Need additional logic after quality goal is reached?
         search(c, depth + 1, solution, combos, toLevel);
       }
     }
@@ -264,9 +265,9 @@ function calculateCost(stepArray, initialXp, initialLevel, combos) {
 
 function permute(permutation) {
   var length = permutation.length,
-      result = [permutation.slice()],
-      c = new Array(length).fill(0),
-      i = 1, k, p;
+    result = [permutation.slice()],
+    c = new Array(length).fill(0),
+    i = 1, k, p;
   while (i < length) {
     if (c[i] < i) {
       k = i % 2 && c[i];
