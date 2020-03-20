@@ -135,7 +135,7 @@ function render(workerMessage) {
           showMessage("Reached quality 10 and level 100!");
         }
       } else {
-        showMessage("Reached quality 10 but couldn't reach level 100 in 14 steps");
+        showMessage("Reached quality 10 but couldn't reach level 100 :(");
       }
     } else {
       if (solution.bestLevel >= Number(INPUT_TARGET_LEVEL.value)) {
