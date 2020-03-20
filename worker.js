@@ -2,17 +2,20 @@
 importScripts("constants.js");
 
 const DEBUG = 0;
-const BUDGET_MAX = [10, 10, 36, 28, 20, 18];
-const RNG_MIN = [10, 10, 20, 20, 0, 0];
-const RNG_MAX = [10, 10, 40, 40, 18, 10];
+const BUDGET_MAX = [10, 10, 105, 80, 50, 18];
+const RNG_MIN = [10, 10, 20, 4, 2, 0];
+const RNG_MAX = [10, 10, 60, 40, 12, 8];
 const RNG_LEVEL_MIN = 30;
 const RNG_LEVEL_MAX = 100;
 const RNG_QUALITY_MIN = 3;
 const RNG_QUALITY_MAX = 7;
-const MAX_GOLD = 1000000;
+const MAX_GOLD = 10000000;
+const MAX_DEPTH = 21;
 var levelXp = [];
 var allCombos = [];
 var quickCombos = [];
+const QUICK_SEARCH_OPTIONS = {quick: true, toLevel: true, resort: false};
+const SLOW_SEARCH_OPTIONS = {quick: false, toLevel: true, resort: false};
 
 fillXpTable();
 makeCombos();
@@ -54,7 +57,7 @@ function runTestIteration(solution) {
     solution.initialLevel = Math.floor((Math.random() * (RNG_LEVEL_MAX - minLevel)) + minLevel);
   }
 
-  findSolution(solution, solution.run_tests ? 1 : solution.useQuickList, 0, 0);
+  findSolution(solution, solution.run_tests ? QUICK_SEARCH_OPTIONS : (solution.quickSearch ? QUICK_SEARCH_OPTIONS : SLOW_SEARCH_OPTIONS));
 
   if (!solution.run_tests) {
     return solution;
@@ -62,7 +65,7 @@ function runTestIteration(solution) {
 
   let slowSolution = Object.assign({}, solution);
   resetSolution(slowSolution);
-  findSolution(slowSolution, 0, 0, 0); // TODO toLevel is simply too expensive with the full combo list, maybe offer it as an option with quick list
+  findSolution(slowSolution, SLOW_SEARCH_OPTIONS); // TODO toLevel is simply too expensive with the full combo list, maybe offer it as an option with quick list
   solution.slowSolution = slowSolution;
   solution.slowTime = slowSolution.time;
   if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
@@ -76,11 +79,11 @@ function runTestIteration(solution) {
   return solution;
 }
 
-function findSolution(solution, quick, toLevel, resort) {
+function findSolution(solution, options) {
   let startTime = new Date().getTime();
-  let combos = quick ? quickCombos : allCombos;
-  search(0, 0, solution, combos, toLevel);
-  if (resort) resortSolution(solution, combos);
+  let combos = options.quick ? quickCombos : allCombos;
+  search(0, 0, solution, combos, options);
+  if (options.resort) resortSolution(solution, combos);
   // Copy combo attributes to step for simpler rendering
   for (let step of solution.bestSteps) {
     for (var prop in combos[step.combo]) {
@@ -97,7 +100,7 @@ function findSolution(solution, quick, toLevel, resort) {
   solution.time = (new Date().getTime() - startTime);
 }
 
-function search(startCombo, depth, solution, combos, toLevel) {
+function search(startCombo, depth, solution, combos, options) {
   for (let c = startCombo; c < combos.length; c++) {
     var reachedQuality = false;
     var reachedLevel = false;
@@ -129,16 +132,18 @@ function search(startCombo, depth, solution, combos, toLevel) {
           saveBestSolution(solution);
         }
       }
+      // Improved quality but didn't reach goal
       if (solution.quality > solution.bestQuality && solution.quality <= solution.goalQuality) {
         if (DEBUG) console.log("New quality: " + solution.quality);
         saveBestSolution(solution);
+      // Improved cost, same or higher quality, no goal change
       } else if ((solution.sumCost < solution.bestCost && solution.quality >= solution.bestQuality) &&
         reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
-      if (!reachedQuality || toLevel && !reachedLevel) { // Need additional logic after quality goal is reached?
-        search(c, depth + 1, solution, combos, toLevel);
+      if (!reachedQuality || options.toLevel && !reachedLevel && depth < MAX_DEPTH) {
+        search(c, depth + 1, solution, combos, options);
       }
     }
   }

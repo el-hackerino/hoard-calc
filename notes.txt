@@ -1,11 +1,10 @@
-push level if not reached target quality? seems weird not to
-test run with only low initial quality? 
-revisit full combo list again?
+Logic
+run longer test to update combos. revisit full combo list again? avg currently at 17 secs on laptop
 
-add help for checkbox?
-add advanced/details view?
-hide refined search under advanced?
+UI
+test on mobile
+
+Misc
 add alt text for cards
-
 replace card table with divs
-
+format gold number?

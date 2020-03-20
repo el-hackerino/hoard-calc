@@ -10,6 +10,7 @@
 <body>
     <div id="main">
         <div class="title">Hoard Master</div>
+        <img id="close-button" src="images/close.png">
         <img id="help-button" src="images/help.png">
         <form id="main-form">
             <div class="formColumn">
@@ -19,7 +20,7 @@
                             <div class="largeCard card0"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t1" type="number" min="0" max="100" value="10">
+                                <input id="t1" type="number" min="0" max="1000" value="10">
                                 <button tabindex="-1">+</button>
                             </div>
                         </td>
@@ -27,7 +28,7 @@
                             <div class="largeCard card1"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t2" type="number" min="0" max="100" value="10">
+                                <input id="t2" type="number" min="0" max="1000" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -35,7 +36,7 @@
                             <div class="largeCard card2"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t3" type="number" min="0" max="100" value="10">
+                                <input id="t3" type="number" min="0" max="1000" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -43,7 +44,7 @@
                             <div class="largeCard card3"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t4" type="number" min="0" max="100" value="10">
+                                <input id="t4" type="number" min="0" max="1000" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -51,7 +52,7 @@
                             <div class="largeCard card4"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t5" type="number" min="0" max="100" value="10">
+                                <input id="t5" type="number" min="0" max="1000" value="10">
                                 <button>+</button>
                             </div>
                         </td>
@@ -59,7 +60,7 @@
                             <div class="largeCard card5"></div>
                             <div class="number-input">
                                 <button>-</button>
-                                <input id="t6" type="number" min="0" max="100" value="8">
+                                <input id="t6" type="number" min="0" max="1000" value="8">
                                 <button>+</button>
                             </div>
                         </td>
@@ -142,10 +143,11 @@
                 Hoard level 100 is the highest that counts toward faction renown. Higher levels increase your troop
                 stats in the delve further
                 but are not generally considered a worthwhile investment.</p>
+            <h3>Is the hoard quality upgrade chance 100% each time?</h3>
+            <p>Yes, the tool only considers treasure troop combinations that give a 100% or higher chance of an upgrade.</p>
             <h3>Is the generated solution optimal?</h3>
             <p>The algorithm is pretty brute force and cuts a few corners. So you may be able to find a slightly better
-                solution
-                sometimes, but this should be pretty rare.</p>
+                solution sometimes, but this should be pretty rare.</p>
             <h3>I'm looking for a good guild. Any recommendations?</h3>
             <p>I'm glad you asked! <b>Throne of Odin</b> is an amazing guild family with a variety of guilds for all
                 kinds of players,
