@@ -9,8 +9,8 @@ const GOAL_QUALITY = 10;
 const GOAL_LEVEL = 100;
 
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
-const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Combos", "Slow Combos"];
-const TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "slowTime", "quickCostDiff", "combos", "slowCombos"];
+const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Diff %", "Combos", "Slow Combos"];
+const TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "slowTime", "quickCostDiff", "diffPercent", "combos", "slowCombos"];
 
 let solutions = [];
 let totalComboCounts = [];
@@ -117,6 +117,8 @@ function renderTestResults(solution) {
         comboString += ">" + step.comboId + " </span>";
         td.innerHTML += comboString;
       }
+    } else if (attribute == "diffPercent" && solution.quickCostDiff > 0) {
+      td.textContent = parseInt (solution.quickCostDiff / solution.slowSolution.bestGoldCost * 100) + "%";
     } else {
       td.textContent = solution[attribute];
     }

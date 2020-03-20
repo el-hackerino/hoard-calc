@@ -1,13 +1,7 @@
 /* eslint-disable no-undef */
-if (!window.Worker) {
-  showMessage("Your browser does not support web workers :(", true);
-  document.getElementById("main-form").classList.add("hidden");
-  document.getElementById("results").classList.add("hidden");
-  throw new Error("Your browser does not support web workers :(");
-}
-
 const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
 const DEBUG_GENERAL = 0;
+const SHOW_ADVANCED_OPTIONS = 0;
 
 const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 3, 5, 10, 50];
 const TROOP_INPUTS = [
@@ -31,9 +25,20 @@ const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
 
-// Hide unused elements (for now)
+if (!window.Worker) {
+  showMessage("Your browser does not support web workers :(", true);
+  document.getElementById("main-form").classList.add("hidden");
+  document.getElementById("results").classList.add("hidden");
+  throw new Error("Your browser does not support web workers :(");
+}
+
+// Hide unused elements
 document.getElementById("targetLevel-div").classList.add("hidden");
 document.getElementById("targetQuality-div").classList.add("hidden");
+if (!SHOW_ADVANCED_OPTIONS) {
+  document.getElementById("optionCheckbox").classList.add("hidden");
+}
+document.getElementById("close-button").classList.add("hidden");
 
 // Set matching width for help content
 document.getElementById("help").style.width = document.getElementById("main-form").clientWidth + "px";
@@ -101,10 +106,10 @@ function calculate() {
     goalQuality: Number(INPUT_TARGET_QUALITY.value),
     troopCostFactor: TROOP_COST_FACTORS[Number(INPUT_TROOP_COST_FACTOR.value)]
   };
-  solution.useQuickList = 1;
+  solution.quickSearch = 1;
   myWorker.postMessage(solution);
   if (INPUT_EXHAUSTIVE.checked) {
-    solution.useQuickList = 0;
+    solution.quickSearch = 0;
     myWorker.postMessage(solution);
   }
   showMessage("Calculating...", false);
@@ -113,27 +118,30 @@ function calculate() {
 function render(workerMessage) {
   let solution = workerMessage.data;
   if (DEBUG_GENERAL) console.log("Time: " + (solution.time / 1000) + " s");
-
   if (!solution.bestSteps.length) {
     showMessage("Cannot find any useful steps!", true);
     return;
   }
 
-  if (solution.useQuickList && INPUT_EXHAUSTIVE.checked && !exhaustiveSearchDone) {
+  if (solution.quickSearch && INPUT_EXHAUSTIVE.checked && !exhaustiveSearchDone) {
     showMessage("Refining...", false);
   } else {
     exhaustiveSearchDone = true;
     if (solution.bestQuality >= Number(INPUT_TARGET_QUALITY.value)) {
       if (solution.bestLevel >= Number(INPUT_TARGET_LEVEL.value)) {
-        showMessage("Reached quality 10 and level 100!");
+        if (solution.bestSteps.length > 1 && solution.bestSteps[solution.bestSteps.length - 2].quality == 10) {
+          showMessage("Reached quality 10 and level 100 but needed extra steps after quality 10");
+        } else {
+          showMessage("Reached quality 10 and level 100!");
+        }
       } else {
-        showMessage("Reached quality 10!");
+        showMessage("Reached quality 10 but couldn't reach level 100 in 14 steps");
       }
     } else {
       if (solution.bestLevel >= Number(INPUT_TARGET_LEVEL.value)) {
-        showMessage("Reached level 100!");
+        showMessage("Reached level 100 but couldn't reach quality 10");
       } else {
-        showMessage("Could not reach target!");
+        showMessage("Could not reach quality 10 or level 100 :(");
       }
     }
   }
@@ -148,7 +156,7 @@ function render(workerMessage) {
     troopCountDiv.innerHTML += " x " + count + "&nbsp;&nbsp;&nbsp;";
   }
 
-  const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.useQuickList ? "main-table" : "main-table-2") : "main-table";
+  const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.quickSearch ? "main-table" : "main-table-2") : "main-table";
   const table = clearTable(tableId);
 
   for (let [i, step] of solution.bestSteps.entries()) {
@@ -196,6 +204,7 @@ function showHelp() {
   document.getElementById("message").classList.add("hidden");
   document.getElementById("results").classList.add("hidden");
   document.getElementById("help-button").classList.add("hidden");
+  document.getElementById("close-button").classList.remove("hidden");
   document.getElementById("help").classList.remove("hidden");
   document.body.addEventListener("click", hideHelp, true);
 }
@@ -205,6 +214,7 @@ function hideHelp() {
   document.getElementById("message").classList.remove("hidden");
   document.getElementById("results").classList.remove("hidden");
   document.getElementById("help-button").classList.remove("hidden");
+  document.getElementById("close-button").classList.add("hidden");
   document.getElementById("help").classList.add("hidden");
   document.body.removeEventListener("click", hideHelp, true);
 }
