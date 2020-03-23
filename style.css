@@ -1,307 +1,402 @@
-html {
-	background-image: url(images/background.png);
-	background-size: 2000px;
-	background-repeat: no-repeat;
-	background-color: black;
-	color: white;
-	font-family: 'Pavanam', Arial, Helvetica, sans-serif;
-}
+ /* Extra small devices (phones, 600px and down) */
+ @media only screen and (max-width: 600px) {
+ 	html {
+ 		font-size: smaller;
+ 	}
 
-#main {
-	width: max-content;
-	padding: 10px;
-	margin: 0 auto;
-	background-color: rgba(20, 20, 20, 0.7);
-	position: relative;
-}
+ 	#main {
+ 		padding: 0;
+ 	}
 
-a {
-	color: #f4a220;
-	text-decoration: none;
-}
+ 	.title {
+		 padding: 15px 0 15px 0;
+		 font-size: x-large;
+ 	}
 
-.title {
-	text-align: center;
-	font-size: xx-large;
-	font-weight: bolder;
-	color: #f4a220;
-	padding: 10px 0 22px 0;
-}
+ 	.largeCard {
+ 		border: solid rgb(148, 148, 148);
+ 		border-width: 2px 0 6px 0;
+ 		border-radius: 2px;
+	 }
+	 
+	 .card {
+		width: 20px;
+		height: 25px;
+		margin: 1px 2px;
+		border: solid rgb(148, 148, 148);
+		border-width: 1px 0 2px 0;
+		border-radius: 2px;
+	}
 
-#help-button {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	height: 35px;
-	width: 35px;
-}
+ 	.formColumn .number-input input {
+ 		width: 25%;
+	 }
+	 
+	 .mainTable {
+		display: block;
+		width: max-content;
+	}
+	.mainTable td,
+	th {
+		padding: 2px;
+	}
+ }
 
-#close-button {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	height: 35px;
-	width: 35px;
-}
+ /* Small devices (portrait tablets and large phones, 600px and up) */
+ @media only screen and (min-width: 600px) {
+ 	#main {
+ 		padding: 10px;
+ 	}
 
+ 	.title {
+ 		padding: 15px 0 15px 0;
+ 	}
 
-.formColumn {
-	display: inline-grid;
-	vertical-align: top;
-	width: max-content;
-	padding: 0px 15px;
-	font-weight: bold;
-}
+ 	.mainTable {
+ 		font-size: medium;
+ 		display: block;
+ 	}
 
-.formColumn div {
-	margin: 3px;
-	text-align: right;
-}
+ 	.largeCard {
+ 		border: solid rgb(148, 148, 148);
+ 		border-width: 2px 0 6px 0;
+ 		border-radius: 2px;
+ 	}
+ }
 
-.formCell {
-	margin: 10px auto;
-	width: max-content;
-}
+ /* Extra large devices (large laptops and desktops, 1200px and up) */
+ @media only screen and (min-width: 800px) {
+ 	#main {
+ 		width: 640px;
+ 		padding: 10px;
+ 	}
 
-form div table tr td {
-	text-align: center;
-}
+ 	.title {
+		 padding: 10px 0 22px 0;
+		 font-size: xx-large;
+ 	}
 
+ 	.largeCard {
+ 		border: solid rgb(148, 148, 148);
+ 		border-width: 3px 0 10px 0;
+ 		border-radius: 3px;
+ 	}
+	 .card {
+		width: 30px;
+		height: 35px;
+		margin: 1px 5px;
+		border: solid rgb(148, 148, 148);
+		border-width: 2px 0 4px 0;
+		border-radius: 2px;
+	}
 
-label {
-	color: white;
-	display: inline;
-	vertical-align: middle;
-	font-size: large;
-	text-align: center;
-}
+ 	input[type="number"] {
+ 		font-size: medium;
+ 	}
 
-input[type=number] {
-	float: left;
-	width: 2.5em;
-	font-size: medium;
-	padding: 5px 0 5px 0;
-	color: white;
-	text-align: center;
-	background-color: black;
-	border: 1px solid #666;
-	-webkit-appearance: textfield;
-	-moz-appearance: textfield;
-	appearance: textfield;
-}
+ 	label {
+ 		font-size: large;
+ 	}
 
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-	-webkit-appearance: none;
-}
+ 	.mainTable {
+ 		font-size: medium;
+ 		display: block;
+	 }
+	 
+	 .mainTable td,
+	 th {
+		 padding: 3px 15px 3px 15px;
+	 }
+ }
 
-.number-input {
-	border: 0;
-	display: inline-flex;
-}
+ #troop-counts {
+ 	margin: 0 auto 10px auto;
+ 	width: max-content;
+ 	display: -webkit-flex;
+ 	display: flex;
+ 	align-items: center;
+ }
 
-.number-input,
-.number-input * {
-	box-sizing: border-box;
-}
+ .troop-entry {
+ 	border-right: 10px;
+ }
 
-.number-input button {
-	outline: none;
-	-webkit-appearance: none;
-	background-color: transparent;
-	border: none;
-	width: 1.5rem;
-	cursor: pointer;
-	margin: 0 0 3px 0;
-	position: relative;
-	color: white;
-}
+ .mainTable {
+ 	border-collapse: collapse;
+ 	border-spacing: 0;
+ 	margin: 0 auto;
+ }
 
-.sliderLabel {
-	padding: 17px 2px 0 2px;
-	display: inline;
-}
+ .mainTable td,
+ th {
+ 	border: 0;
+ 	width: max-content;
+ 	text-align: center;
+ 	vertical-align: middle;
+ 	margin: 0;
+ }
 
-.icon {
-	height: 20px;
-	width: 20px;
-	vertical-align: middle;
-	transform: scaleX(-1);
-}
+ .mainTable th {
+ 	background-color: #333333;
+ }
 
-.slider {
-	vertical-align: middle;
-	-webkit-appearance: none;
-	appearance: none;
-	width: 7em;
-	height: 2px;
-	cursor: pointer;
-	margin: -4px;
-}
+ .mainTable tr:nth-child(even) {
+ 	background-color: rgba(40, 40, 40, 0.7);
+ }
 
-input[type=checkbox] {
-	vertical-align: middle;
-}
+ .mainTable tr:nth-child(odd) {
+ 	background-color: rgba(0, 0, 0, 0.7);
+ }
 
-#optionCheckbox {
-	text-align: center;
-}
+ html {
+ 	background-image: url(images/background.png);
+ 	background-size: 2000px;
+ 	background-repeat: no-repeat;
+ 	background-color: black;
+ 	color: white;
+ 	font-family: 'Pavanam', Arial, Helvetica, sans-serif;
+ }
 
+ #main {
+ 	margin: 0 auto;
+ 	background-color: rgba(20, 20, 20, 0.7);
+ 	position: relative;
+ }
 
-#troop-counts {
-	margin: 0 auto 10px auto;
-	width: max-content;
-	display: -webkit-flex;
-	display: flex;
-	align-items: center;
-	font-size: larger;
-}
+ a {
+ 	color: #f4a220;
+ 	text-decoration: none;
+ }
 
-.troop-entry {
-	border-right: 10px;
-}
+ .title {
+ 	text-align: center;
+ 	font-weight: bolder;
+ 	color: #f4a220;
+ }
 
-.mainTable {
-	font-size: medium;
-	display: block;
-	border-collapse: collapse;
-	border-spacing: 0;
-	width: max-content;
-	margin: 0 auto;
-}
+ #help-button {
+ 	position: absolute;
+ 	top: 10px;
+ 	left: 10px;
+ 	height: auto;
+ 	width: 7%;
+ }
 
-.mainTable td,
-th {
-	border: 0;
-	width: max-content;
-	padding: 3px 15px 3px 15px;
-	text-align: center;
-	vertical-align: middle;
-	margin: 0;
-}
-
-.mainTable th {
-	background-color: #333333;
-}
-
-.mainTable tr:nth-child(even) {
-	background-color: rgba(40, 40, 40, 0.7);
-}
-
-.mainTable tr:nth-child(odd) {
-	background-color: rgba(0, 0, 0, 0.7);
-}
+ #close-button {
+ 	position: absolute;
+ 	top: 10px;
+ 	left: 10px;
+ 	height: auto;
+ 	width: 7%;
+ }
 
 
-.largeCard {
-	width: 90px;
-	height: 125px;
-	background-size: cover;
-	background-position: center;
-	margin: 0px 5px;
-	border: solid rgb(148, 148, 148);
-	border-width: 3px 0 10px 0;
-	border-radius: 3px;
-}
+ .class1 {
+ 	display: inline;
+ }
 
-.card {
-	width: 30px;
-	height: 35px;
-	background-size: cover;
-	background-position: center;
-	display: inline-block;
-	margin: 1px 5px;
-	border: solid rgb(148, 148, 148);
-	border-width: 2px 0 4px 0;
-	border-radius: 2px;
-}
+ .class2 {
+ 	display: table-cell;
+ 	padding: 3px;
+ 	text-align: center;
+ }
 
-.card0 {
-	background-image: url(images/card0.png);
-	border-color: #eee;
-}
+ .formColumn {
+ 	display: table-cell;
+ 	text-align: center;
+ 	vertical-align: top;
+ 	padding: 0px 15px;
+ 	font-weight: bold;
+ }
 
-.card1 {
-	background-image: url(images/card1.png);
-	border-color: #54a721;
-}
+ .formCell {
+ 	margin: 10px auto;
+ }
 
-.card2 {
-	background-image: url(images/card2.png);
-	border-color: #1d72ff;
-}
-
-.card3 {
-	background-image: url(images/card3.png);
-	border-color: #9636e8;
-}
-
-.card4 {
-	background-image: url(images/card4.png);
-	border-color: #f4a220;
-}
-
-.card5 {
-	background-image: url(images/card5.png);
-	border-color: #13e3f6;
-}
-
-.fontSizeZero {
-	font-size: 0;
-}
+ form div table tr td {
+ 	text-align: center;
+ }
 
 
-.centered {
-	padding: 10px;
-	text-align: center;
-	margin: 0 auto;
-}
+ label {
+ 	color: white;
+ 	display: inline;
+ 	vertical-align: middle;
+ 	text-align: center;
+ }
 
-#totalCostLabel,
-#totalCost {
-	font-size: larger;
-}
+ input[type=number] {
+ 	float: left;
+ 	width: 50%;
+ 	padding: 5px 0 5px 0;
+ 	color: white;
+ 	text-align: center;
+ 	background-color: black;
+ 	border: 1px solid #666;
+ 	-webkit-appearance: textfield;
+ 	-moz-appearance: textfield;
+ 	appearance: textfield;
+ }
 
-#totalCost {
-	font-weight: 1000;
-	color: #f4a220;
-}
+ input[type=number]::-webkit-inner-spin-button,
+ input[type=number]::-webkit-outer-spin-button {
+ 	-webkit-appearance: none;
+ }
 
-.centered {
-	padding: 10px;
-	text-align: center;
-	margin: 0 auto;
-}
+ .number-input {
+ 	border: 0;
+ 	display: flex;
+ 	text-align: center;
+ 	margin: 0 auto;
+ }
 
-.footer {
-	background-color: rgba(20, 20, 20, 0.7);
-	margin: 30px auto 200px auto;
-	padding: 3px 8px;
-	width: max-content;
-	color: #bbb;
-}
+ .number-input,
+ .number-input * {
+ 	box-sizing: border-box;
+ }
 
-#help {
-	top: 50px;
-	left: 10px;
-}
+ .number-input button {
+ 	outline: none;
+ 	-webkit-appearance: none;
+ 	background-color: transparent;
+ 	border: none;
+ 	width: 25%;
+ 	cursor: pointer;
+ 	margin: 0 0 3px 0;
+ 	padding: 0;
+ 	position: relative;
+ 	color: white;
+ }
 
-.screenshot {
-	margin: 0 auto;
-	display: block;
-}
+ .sliderLabel {
+ 	padding: 17px 2px 0 2px;
+ 	display: inline;
+ }
 
-.hidden {
-	display: none;
-}
+ .icon {
+ 	height: 20px;
+ 	width: 20px;
+ 	vertical-align: middle;
+ 	transform: scaleX(-1);
+ }
+
+ .slider {
+ 	vertical-align: middle;
+ 	-webkit-appearance: none;
+ 	appearance: none;
+ 	width: 7em;
+ 	height: 2px;
+ 	cursor: pointer;
+ 	margin: -4px;
+ }
+
+ input[type=checkbox] {
+ 	vertical-align: middle;
+ }
+
+ #optionCheckbox {
+ 	text-align: center;
+ }
 
 
-.testTable {
-	font-size: small;
-	background-color: black;
-	text-align: center;
-}
+ .largeCard {
+ 	width: 100%;
+ 	height: auto;
+ }
 
-.highlight {
-	color: hsl(0, 100%, 50%);
-}
+ .card {
+ 	background-size: cover;
+ 	background-position: center;
+ 	display: inline-block;
+ }
+
+ .card0 {
+ 	background-image: url(images/card0.png);
+ 	border-color: #eee;
+ }
+
+ .card1 {
+ 	background-image: url(images/card1.png);
+ 	border-color: #54a721;
+ }
+
+ .card2 {
+ 	background-image: url(images/card2.png);
+ 	border-color: #1d72ff;
+ }
+
+ .card3 {
+ 	background-image: url(images/card3.png);
+ 	border-color: #9636e8;
+ }
+
+ .card4 {
+ 	background-image: url(images/card4.png);
+ 	border-color: #f4a220;
+ }
+
+ .card5 {
+ 	background-image: url(images/card5.png);
+ 	border-color: #13e3f6;
+ }
+
+ .fontSizeZero {
+ 	font-size: 0;
+ }
+
+
+ .centered {
+ 	padding: 10px;
+ 	text-align: center;
+ 	margin: 0 auto;
+ }
+
+ #totalCostLabel,
+ #totalCost {
+ 	font-size: larger;
+ }
+
+ #totalCost {
+ 	font-weight: 1000;
+ 	color: #f4a220;
+ }
+
+ .centered {
+ 	padding: 10px;
+ 	text-align: center;
+ 	margin: 0 auto;
+ }
+
+ .footer {
+ 	background-color: rgba(20, 20, 20, 0.7);
+ 	margin: 30px auto 200px auto;
+ 	padding: 3px 8px;
+ 	width: max-content;
+ 	color: #bbb;
+ }
+
+ #help {
+ 	top: 50px;
+	 left: 10px;
+	 padding: 10px;
+ }
+
+ .screenshot {
+ 	margin: 0 auto;
+ 	display: block;
+ }
+
+ .hidden {
+ 	display: none;
+ }
+
+
+ .testTable {
+ 	font-size: small;
+ 	background-color: black;
+ 	text-align: center;
+ }
+
+ .highlight {
+ 	color: hsl(0, 100%, 50%);
+ }
