@@ -21,6 +21,12 @@
   .cardCell {
     padding: 2px;
   }
+  .number-input button {
+	width: 1em;
+  }
+  input[type="number"] {
+	  width: 2em;
+  }
   /* Cards */
   .largeCard {
     border-width: 2px 0 6px 0;
@@ -43,7 +49,7 @@
     font-size: x-large;
   }
   label {
-    font-size: large;
+	font-size: large;
   }
   input[type="number"] {
     font-size: medium;
@@ -63,6 +69,12 @@
   th {
     padding: 4px;
   }
+  .number-input button {
+	width: 1.2em;
+  }
+  input[type="number"] {
+	width: 2em;
+}
   /* Cards */
   .largeCard {
     border-width: 2px 0 8px 0;
@@ -111,6 +123,13 @@
   th {
     padding: 3px 15px 3px 15px;
   }
+  .number-input button {
+	width: 2.5em;
+	height: 2.8em;
+  }
+  input[type="number"] {
+	width: 2.5em;
+}
   /* Cards */
   .largeCard {
     border-width: 3px 0 10px 0;
@@ -180,9 +199,10 @@ a {
   font-weight: bold;
 }
 
-
+label {
+	display: block;
+} 
 input[type="number"] {
-  width: 2em;
   padding: 4px 0 4px 0;
   color: white;
   text-align: center;
@@ -197,19 +217,23 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+.number-input,
+.number-input * {
+  box-sizing: border-box;
+  display: inline-flex;
+}
 .number-input button {
   outline: none;
   -webkit-appearance: none;
   background-color: transparent;
   border: none;
-  width: 0.5em;
   cursor: pointer;
-  margin: 0 0 3px 0;
-  padding: 0;
+  padding: 0px 0 4px 0;
   color: white;
   vertical-align: middle;
+  align-items: center;
+  justify-content: center;
 }
-
 
 .sliderLabel {
   padding: 17px 2px 0 2px;
@@ -323,7 +347,12 @@ th {
 }
 #totalCost {
   font-weight: 1000;
+}
+.totalCostOk {
   color: #f4a220;
+}
+.totalCostExpensive {
+  color: #df0000;
 }
 
 .centered {
