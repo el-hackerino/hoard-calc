@@ -3,12 +3,12 @@ importScripts("constants.js");
 
 const DEBUG = 0;
 const BUDGET_MAX = [10, 10, 105, 80, 50, 18];
-const RNG_MIN = [10, 10, 20, 4, 2, 0];
+const RNG_MIN = [10, 10, 20, 0, 0, 0];
 const RNG_MAX = [10, 10, 60, 40, 12, 8];
-const RNG_LEVEL_MIN = 30;
+const RNG_LEVEL_MIN = 10;
 const RNG_LEVEL_MAX = 100;
-const RNG_QUALITY_MIN = 3;
-const RNG_QUALITY_MAX = 7;
+const RNG_QUALITY_MIN = 1;
+const RNG_QUALITY_MAX = 8;
 const MAX_GOLD = 10000000;
 const MAX_DEPTH = 21;
 var levelXp = [];

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const TEST_ITERATIONS = 100000;
 const DEBUG_MAXCOUNTS = 0;
-const RENDER_DIFF_ONLY = 0;
+const RENDER_DIFF_ONLY = 1;
 
 const INITIAL_XP = 0;
 const TROOP_COST_FACTOR = 1;
@@ -13,7 +13,7 @@ const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level",
 const TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "slowTime", "quickCostDiff", "diffPercent", "combos", "slowCombos"];
 
 let solutions = [];
-let totalComboCounts = [];
+let totalComboCounts = new Array(TEMPLATES.length).fill(0);
 let maxTroopCounts = [];
 let totalTime = 0;
 let totalSlowTime = 0;
@@ -70,7 +70,7 @@ function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
   let table = clearTable(tableId);
 
   // eslint-disable-next-line no-unused-vars
-  for (let [key, value] of Object.entries(totalComboCounts).filter(([key, value]) => value > 0).sort(([key, value], [key2, value2]) => value < value2)) {
+  for (let [key, value] of Object.entries(totalComboCounts).sort(([key, value], [key2, value2]) => value < value2)) {
     let tr = table.insertRow(-1);
     let td = tr.insertCell(-1);
     td.textContent = key;

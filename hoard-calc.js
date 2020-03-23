@@ -24,6 +24,7 @@ const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
 ];
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
+const EXPENSIVENESS_THRESHOLD = 500000;
 
 if (!window.Worker) {
   showMessage("Your browser does not support web workers :(", true);
@@ -127,7 +128,7 @@ function render(workerMessage) {
     if (solution.bestQuality >= Number(INPUT_TARGET_QUALITY.value)) {
       if (solution.bestLevel >= Number(INPUT_TARGET_LEVEL.value)) {
         if (solution.bestSteps.length > 1 && solution.bestSteps[solution.bestSteps.length - 2].quality == 10) {
-          showMessage("Reached quality 10 and level 100 but needed extra steps after quality 10");
+          showMessage("Reached quality 10 and level 100, needed extra steps after quality 10");
         } else {
           showMessage("Reached quality 10 and level 100!");
         }
@@ -136,7 +137,7 @@ function render(workerMessage) {
       }
     } else {
       if (solution.bestLevel >= Number(INPUT_TARGET_LEVEL.value)) {
-        showMessage("Reached level 100 but couldn't reach quality 10");
+        showMessage("Reached level 100 but couldn't reach quality 10 :(");
       } else {
         showMessage("Could not reach quality 10 or level 100 :(");
       }
@@ -177,6 +178,13 @@ function render(workerMessage) {
   }
 
   document.getElementById("totalCost").innerHTML = solution.bestGoldCost;
+  if (solution.bestGoldCost < EXPENSIVENESS_THRESHOLD) {
+    document.getElementById("totalCost").classList.add("totalCostOk");
+    document.getElementById("totalCost").classList.remove("totalCostExpensive");
+  } else {
+    document.getElementById("totalCost").classList.remove("totalCostOk");
+    document.getElementById("totalCost").classList.add("totalCostExpensive");
+  }
 }
 
 function showMessage(message, hideTable) {
