@@ -114,7 +114,7 @@
   }
   /* Padding */
   .title {
-    padding: 10px 0 22px 0;
+    padding: 20px 0 22px 0;
   }
   .cardCell {
     padding: 3px;
@@ -148,8 +148,9 @@
 
 html {
   background-image: url(images/background.png);
-  background-size: cover;
+  background-size: 2700px;
   background-repeat: no-repeat;
+  background-position-x: 20%;
   background-color: black;
   color: white;
   font-family: "Pavanam", Arial, Helvetica, sans-serif;
