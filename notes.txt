@@ -1,4 +1,1 @@
-stop bg zooming
-
-Logic
-run longer test to update combos. revisit full combo list again? avg currently at 17 secs on laptop
+run longer test to update combos.
