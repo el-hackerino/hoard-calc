@@ -179,6 +179,8 @@ a {
   padding: 0px 15px;
   font-weight: bold;
 }
+
+
 input[type="number"] {
   width: 2em;
   padding: 4px 0 4px 0;
@@ -189,6 +191,11 @@ input[type="number"] {
   -webkit-appearance: textfield;
   -moz-appearance: textfield;
   appearance: textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .number-input button {
   outline: none;
@@ -202,6 +209,8 @@ input[type="number"] {
   color: white;
   vertical-align: middle;
 }
+
+
 .sliderLabel {
   padding: 17px 2px 0 2px;
   display: inline;
