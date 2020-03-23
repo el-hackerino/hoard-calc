@@ -14,8 +14,8 @@
         <img id="close-button" src="images/close.png">
         <img id="help-button" src="images/help.png">
         <form id="main-form">
-            <div class="class1">
-                <div class="class2">
+            <div>
+                <div class="cardCell">
                     <img src="images/card0.png" class="largeCard card0">
                     <div class="number-input">
                         <button>-</button>
@@ -23,7 +23,7 @@
                         <button tabindex="-1">+</button>
                     </div>
                 </div>
-                <div class="class2">
+                <div class="cardCell">
                     <img src="images/card1.png" class="largeCard card1">
                     <div class="number-input">
                         <button>-</button>
@@ -31,7 +31,7 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="class2">
+                <div class="cardCell">
                     <img src="images/card2.png" class="largeCard card2">
                     <div class="number-input">
                         <button>-</button>
@@ -39,7 +39,7 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="class2">
+                <div class="cardCell">
                     <img src="images/card3.png" class="largeCard card3">
                     <div class="number-input">
                         <button>-</button>
@@ -47,7 +47,7 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="class2">
+                <div class="cardCell">
                     <img src="images/card4.png" class="largeCard card4">
                     <div class="number-input">
                         <button>-</button>
@@ -55,7 +55,7 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="class2">
+                <div class="cardCell">
                     <img src="images/card5.png" class="largeCard card5">
                     <div class="number-input">
                         <button>-</button>
@@ -64,8 +64,8 @@
                     </div>
                 </div>
             </div>
-            <div class="formCell">
-                <div class="formColumn">
+            <div class="formRow">
+                <div class="formCell">
                     <label for="level">Hoard Level</label>
                     <div class="number-input">
                         <button>-</button>
@@ -73,7 +73,7 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formColumn">
+                <div class="formCell">
                     <label for="quality">Hoard Quality</label>
                     <div class="number-input">
                         <button>-</button>
@@ -81,28 +81,36 @@
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formColumn">
+                <div class="formCell">
                     <label for="xp">Leftover XP</label>
                     <div class="number-input">
                         <button>-</button>
-                        <input id="xp" type="number" min="0" value="0">
+                        <input id="xp" type="number" min="0" max="500" value="0">
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formColumn" id="targetLevel-div">
+                <div class="formCell" id="targetLevel-div">
                     <label for="targetLevel">Target Hoard Level</label>
-                    <input id="targetLevel" type="number" min="0" max="100" value="100">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="targetLevel" type="number" min="0" max="100" value="100">
+                        <button>+</button>
+                    </div>
                 </div>
-                <div class="formColumn" id="targetQuality-div">
+                <div class="formCell" id="targetQuality-div">
                     <label for="targetQuality">Target Hoard Quality</label>
-                    <input id="targetQuality" type="number" min="1" max="10" value="10">
+                    <div class="number-input">
+                        <button>-</button>
+                        <input id="targetQuality" type="number" min="1" max="10" value="10">
+                        <button>+</button>
+                    </div>
                 </div>
             </div>
-            <div class="centered slideContainer">
+            <div class="centered">
                 <div class="sliderLabel">Save Gold</div>
-                <img class="icon" src="images/gold.webp">
+                <img class="sliderIcon" src="images/gold.webp">
                 <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
-                <img class="icon" src="images/cards.png">
+                <img class="sliderIcon" src="images/cards.png">
                 <div class="sliderLabel">Save Rare Treasure</div>
             </div>
         </form>
@@ -123,9 +131,22 @@
                 <label for="exhaustive">Refine Search</label>
                 <input id="exhaustive" type="checkbox">
             </div>
+            <div class="footer">
+                &copy;
+                <script type="text/javascript">
+                    document.write("<n uers=\"znvygb:uafqzcsss@tznvy.pbz\" ery=\"absbyybj\">Ry Qhqrevab</n>".replace(
+                        /[a-zA-Z]/g,
+                        function (c) {
+                            return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c -
+                            26);
+                        }));
+                </script>. Feedback is welcome!<br>
+                (find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>)<br>
+                Gems of War and related assets &copy; Infinity Plus Two.<br>
+            </div>
         </div>
         <div id="help" class="hidden">
-            <h3>What is this tool?</h3>
+            <h3>What does this tool do?</h3>
             <p>This tool finds the optimal hoard upgrade strategy for reaching hoard quality 10 and level 100 using as
                 few resources as possible.
                 Enter the amount of each treasure troop you have along with your current hoard stats to generate the
@@ -142,7 +163,7 @@
                 but are not generally considered a worthwhile investment.</p>
             <h3>Is the hoard quality upgrade chance 100% each time?</h3>
             <p>Yes, the tool only considers treasure troop combinations that give a 100% or higher chance of an upgrade.</p>
-            <h3>Is the generated solution optimal?</h3>
+            <h3>Does it always find the best possible solution?</h3>
             <p>The algorithm is pretty brute force and cuts a few corners. So you may be able to find a slightly better
                 solution sometimes, but this should be pretty rare.</p>
             <h3>I'm looking for a good guild. Any recommendations?</h3>
@@ -153,20 +174,7 @@
             <p><i>(click anywhere to dismiss)</i></p>
         </div>
     </div>
-    <div class="footer">
-        Feedback is welcome!<br>
-        &copy;
-        <script type="text/javascript">
-            document.write("<n uers=\"znvygb:uafqzcsss@tznvy.pbz\" ery=\"absbyybj\">Ry Qhqrevab</n>".replace(
-                /[a-zA-Z]/g,
-                function (c) {
-                    return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c -
-                    26);
-                }));
-        </script>
-        (find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>)<br>
-        Gems of War and related assets &copy; Infinity Plus Two.<br>
-    </div>
+
 
     <script src="constants.js"></script>
     <script src="hoard-calc.js"></script>
