@@ -40,9 +40,6 @@ if (!SHOW_ADVANCED_OPTIONS) {
 }
 document.getElementById("close-button").classList.add("hidden");
 
-// Set matching width for help content
-document.getElementById("help").style.width = document.getElementById("main-form").clientWidth + "px";
-
 // Prevent form submission
 var buttons = document.querySelectorAll("form button:not([type=\"submit\"])");
 for (let i = 0; i < buttons.length; i++) {
