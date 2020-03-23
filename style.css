@@ -21,11 +21,15 @@
   .cardCell {
     padding: 2px;
   }
+  /* Sizes */
   .number-input button {
 	width: 1em;
   }
   input[type="number"] {
 	  width: 2em;
+  }
+  .slider {
+	  width: 5em;
   }
   /* Cards */
   .largeCard {
@@ -69,11 +73,15 @@
   th {
     padding: 4px;
   }
+  /* Sizes */
   .number-input button {
 	width: 1.2em;
   }
   input[type="number"] {
 	width: 2em;
+}
+.slider {
+	width: 6em;
 }
   /* Cards */
   .largeCard {
@@ -123,12 +131,16 @@
   th {
     padding: 3px 15px 3px 15px;
   }
+  /* Sizes */
   .number-input button {
 	width: 2.5em;
 	height: 2.8em;
   }
   input[type="number"] {
 	width: 2.5em;
+}
+.slider {
+	width: 7em;
 }
   /* Cards */
   .largeCard {
@@ -243,7 +255,6 @@ input::-webkit-inner-spin-button {
   vertical-align: middle;
   -webkit-appearance: none;
   appearance: none;
-  width: 7em;
   height: 2px;
   cursor: pointer;
   margin: -4px;
