@@ -169,19 +169,12 @@ a {
   font-weight: bolder;
   color: #f4a220;
 }
-#help-button {
+#help-button, #close-button {
   position: absolute;
   top: 10px;
   left: 10px;
+  width: 26px;
   height: auto;
-  width: 7%;
-}
-#close-button {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  height: auto;
-  width: 7%;
 }
 
 .cardCell {
