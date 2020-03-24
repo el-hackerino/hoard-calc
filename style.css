@@ -3,15 +3,15 @@
   html {
     font-size: smaller;
   }
-  .title {
+  #Title {
     font-size: x-large;
   }
-  #totalCostLabel,
-  #totalCost {
+  #TotalCostLabel,
+  #TotalCost {
     font-size: larger;
   }
   /* Padding */
-  .title {
+  #Title {
     padding: 15px 0 15px 0;
   }
   .mainTable td,
@@ -22,7 +22,7 @@
     padding: 2px;
   }
   /* Sizes */
-  .number-input button {
+  .numberInput button {
 	width: 1em;
   }
   input[type="number"] {
@@ -49,7 +49,7 @@
   html {
     font-size: medium;
   }
-  .title {
+  #Title {
     font-size: x-large;
   }
   label {
@@ -58,12 +58,12 @@
   input[type="number"] {
     font-size: medium;
   }
-  #totalCostLabel,
-  #totalCost {
+  #TotalCostLabel,
+  #TotalCost {
     font-size: larger;
   }
   /* Padding */
-  .title {
+  #Title {
     padding: 18px 0 18px 0;
   }
   .cardCell {
@@ -74,7 +74,7 @@
     padding: 4px;
   }
   /* Sizes */
-  .number-input button {
+  .numberInput button {
 	width: 1.2em;
   }
   input[type="number"] {
@@ -97,14 +97,14 @@
   }
 }
 @media only screen and (min-width: 640px) {
-  #main {
+  #Main {
     width: 640px;
   }
   /* Fonts */
   html {
     font-size: medium;
   }
-  .title {
+  #Title {
     font-size: xx-large;
   }
   label {
@@ -116,12 +116,12 @@
   .mainTable {
     font-size: medium;
   }
-  #totalCostLabel,
-  #totalCost {
+  #TotalCostLabel,
+  #TotalCost {
     font-size: x-large;
   }
   /* Padding */
-  .title {
+  #Title {
     padding: 20px 0 22px 0;
   }
   .cardCell {
@@ -132,7 +132,7 @@
     padding: 3px 15px 3px 15px;
   }
   /* Sizes */
-  .number-input button {
+  .numberInput button {
 	width: 2.5em;
 	height: 2.8em;
   }
@@ -167,7 +167,7 @@ html {
   color: white;
   font-family: "Pavanam", Arial, Helvetica, sans-serif;
 }
-#main {
+#Main {
   margin: 0 auto;
   background-color: rgba(20, 20, 20, 0.7);
   position: relative;
@@ -176,12 +176,12 @@ a {
   color: #f4a220;
   text-decoration: none;
 }
-.title {
+#Title {
   text-align: center;
   font-weight: bolder;
   color: #f4a220;
 }
-#help-button, #close-button {
+#HelpButton, #CloseButton {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -223,12 +223,12 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.number-input,
-.number-input * {
+.numberInput,
+.numberInput * {
   box-sizing: border-box;
   display: inline-flex;
 }
-.number-input button {
+.numberInput button {
   outline: none;
   -webkit-appearance: none;
   background-color: transparent;
@@ -272,7 +272,7 @@ input::-webkit-inner-spin-button {
 input[type="checkbox"] {
   vertical-align: middle;
 }
-#optionCheckbox {
+#OptionCheckbox {
   text-align: center;
 }
 
@@ -315,7 +315,7 @@ input[type="checkbox"] {
   font-size: 0;
 }
 
-#troop-counts {
+#TroopCounts {
   margin: 0 auto 10px auto;
   width: max-content;
   display: -webkit-flex;
@@ -350,7 +350,7 @@ th {
 .mainTable tr:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.7);
 }
-#totalCost {
+#TotalCost {
   font-weight: 1000;
 }
 .totalCostOk {
@@ -370,7 +370,7 @@ th {
   color: #bbb;
   text-align: center;
 }
-#help {
+#Help {
   top: 10px;
   left: 10px;
   padding: 10px;

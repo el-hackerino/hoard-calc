@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const TEST_ITERATIONS = 100000;
 const DEBUG_MAXCOUNTS = 0;
-const RENDER_DIFF_ONLY = 1;
+const RENDER_DIFF_ONLY = 0;
 
 const INITIAL_XP = 0;
 const TROOP_COST_FACTOR = 1;
@@ -19,8 +19,8 @@ let totalTime = 0;
 let totalSlowTime = 0;
 
 if (window.Worker) {
-  initTable("combo-table", COMBO_TABLE_COLUMNS);
-  initTable("test-table", TEST_TABLE_COLUMNS);
+  initTable("ComboTable", COMBO_TABLE_COLUMNS);
+  initTable("TestTable", TEST_TABLE_COLUMNS);
   // TODO sorttable.makeSortable(table);
 
   const myWorker = new Worker("worker.js");
@@ -66,7 +66,7 @@ function render(message) {
 }
 
 function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
-  let tableId = "combo-table";
+  let tableId = "ComboTable";
   let table = clearTable(tableId);
 
   // eslint-disable-next-line no-unused-vars
@@ -92,7 +92,7 @@ function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
 
 function renderTestResults(solution) {
   if (!solution || RENDER_DIFF_ONLY && !solution.quickCostDiff) return;
-  let table = document.getElementById("test-table");
+  let table = document.getElementById("TestTable");
   let tr = table.insertRow(-1);
   for (let attribute of TEST_TABLE_ATTRIBUTES) {
     let td = tr.insertCell(-1);

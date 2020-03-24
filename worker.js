@@ -2,14 +2,14 @@
 importScripts("common.js");
 
 const BUDGET_MAX = [10, 10, 105, 80, 50, 18];
-const RNG_MIN = [10, 10, 20, 0, 0, 0];
+const RNG_MIN = [10, 10, 20, 10, 2, 0];
 const RNG_MAX = [10, 10, 60, 40, 12, 8];
 const RNG_LEVEL_MIN = 0;
-const RNG_LEVEL_MAX = 100;
+const RNG_LEVEL_MAX = 30;
 const RNG_QUALITY_MIN = 1;
-const RNG_QUALITY_MAX = 8;
+const RNG_QUALITY_MAX = 3;
 const MAX_GOLD = 10000000;
-const MAX_DEPTH = 21;
+const MAX_DEPTH = 10;
 var levelXp = [];
 var allCombos = [];
 var quickCombos = [];
@@ -20,7 +20,7 @@ fillXpTable();
 makeCombos();
 
 onmessage = function (message) {
-  if (DEBUG) console.log("Worker received message");
+  if (DEBUG) console.log("Worker received message: ");
   for (let i = 0; i < (message.data.run_tests ? message.data.num_tests : 1); i++) {
     let result = runTestIteration(message.data);
     postMessage(result);

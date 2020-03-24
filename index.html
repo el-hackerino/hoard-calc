@@ -9,99 +9,99 @@
     <link rel="stylesheet" href="style.css">
 
 <body>
-    <div id="main">
-        <div class="title">Hoard Master</div>
-        <img id="close-button" src="images/close.png">
-        <img id="help-button" src="images/help.png">
-        <form id="main-form">
+    <div id="Main">
+        <div id="Title">Hoard Master</div>
+        <img id="CloseButton" src="images/close.png">
+        <img id="HelpButton" src="images/help.png">
+        <form id="MainForm">
             <div>
                 <div class="cardCell" style="display: none">
                     <img src="images/card0.png" class="largeCard card0">
-                    <div class="number-input">
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="t1" type="number" min="0" max="999" value="0">
+                        <input id="T1" type="number" min="0" max="999" value="0">
                         <button tabindex="-1">+</button>
                     </div>
                 </div>
                 <div class="cardCell">
                     <img src="images/card1.png" class="largeCard card1">
-                    <div class="number-input">
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="t2" type="number" min="0" max="999" value="10">
+                        <input id="T2" type="number" min="0" max="999" value="10">
                         <button>+</button>
                     </div>
                 </div>
                 <div class="cardCell">
                     <img src="images/card2.png" class="largeCard card2">
-                    <div class="number-input">
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="t3" type="number" min="0" max="999" value="10">
+                        <input id="T3" type="number" min="0" max="999" value="10">
                         <button>+</button>
                     </div>
                 </div>
                 <div class="cardCell">
                     <img src="images/card3.png" class="largeCard card3">
-                    <div class="number-input">
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="t4" type="number" min="0" max="999" value="10">
+                        <input id="T4" type="number" min="0" max="999" value="10">
                         <button>+</button>
                     </div>
                 </div>
                 <div class="cardCell">
                     <img src="images/card4.png" class="largeCard card4">
-                    <div class="number-input">
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="t5" type="number" min="0" max="999" value="10">
+                        <input id="T5" type="number" min="0" max="999" value="10">
                         <button>+</button>
                     </div>
                 </div>
                 <div class="cardCell">
                     <img src="images/card5.png" class="largeCard card5">
-                    <div class="number-input">
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="t6" type="number" min="0" max="999" value="8">
+                        <input id="T6" type="number" min="0" max="999" value="8">
                         <button>+</button>
                     </div>
                 </div>
             </div>
             <div class="formRow">
                 <div class="formCell">
-                    <label for="level">Hoard Level</label>
-                    <div class="number-input">
+                    <label for="Level">Hoard Level</label>
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="level" type="number" min="0" max="100" value="0">
+                        <input id="Level" type="number" min="0" max="100" value="0">
                         <button>+</button>
                     </div>
                 </div>
                 <div class="formCell">
-                    <label for="quality">Hoard Quality</label>
-                    <div class="number-input">
+                    <label for="Quality">Hoard Quality</label>
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="quality" type="number" min="1" max="10" value="1">
+                        <input id="Quality" type="number" min="1" max="10" value="1">
                         <button>+</button>
                     </div>
                 </div>
                 <div class="formCell">
-                    <label for="xp">Leftover XP</label>
-                    <div class="number-input">
+                    <label for="Xp">Leftover XP</label>
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="xp" type="number" min="0" max="500" value="0">
+                        <input id="Xp" type="number" min="0" max="500" value="0">
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formCell" id="targetLevel-div">
-                    <label for="targetLevel">Target Hoard Level</label>
-                    <div class="number-input">
+                <div class="formCell" style="display: none">
+                    <label for="TargetLevel">Target Hoard Level</label>
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="targetLevel" type="number" min="0" max="100" value="100">
+                        <input id="TargetLevel" type="number" min="0" max="100" value="100">
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formCell" id="targetQuality-div">
-                    <label for="targetQuality">Target Hoard Quality</label>
-                    <div class="number-input">
+                <div class="formCell" style="display: none">
+                    <label for="TargetQuality">Target Hoard Quality</label>
+                    <div class="numberInput">
                         <button>-</button>
-                        <input id="targetQuality" type="number" min="1" max="10" value="10">
+                        <input id="TargetQuality" type="number" min="1" max="10" value="10">
                         <button>+</button>
                     </div>
                 </div>
@@ -109,27 +109,25 @@
             <div class="centered">
                 <div class="sliderLabel">Save Gold</div>
                 <img class="sliderIcon" src="images/gold.webp">
-                <input id="troopCostFactor" type="range" min="0" max="4" value="1" class="slider">
+                <input id="TroopCostFactor" type="range" min="0" max="5" value="1" class="slider">
                 <img class="sliderIcon" src="images/cards.png">
                 <div class="sliderLabel">Save Rare Treasure</div>
             </div>
         </form>
-        <div id="message" class="centered"></div>
-        <div id="results">
-            <div id="total-cost-container" class="centered">
-                <span id="totalCostLabel">Total gold cost: </span>
-                <span id="totalCost"></span>
+        <div id="Message" class="centered"></div>
+        <div id="Results">
+            <div id="TotalCostContainer" class="centered">
+                <span id="TotalCostLabel">Total gold cost: </span>
+                <span id="TotalCost"></span>
             </div>
-            <div id="troop-counts-container" class="centered">
-                <div id="troop-counts" class="troopCounts"></div>
+            <div id="TroopCountContainer" class="centered">
+                <div id="TroopCounts" class="troopCounts"></div>
             </div>
-            <table id="main-table" class="mainTable"></table>
-            <table id="main-table-2" class="mainTable"></table>
-            <table id="combo-table" class="comboTable"></table>
-            <table id="test-table" class="testTable"></table>
-            <div id="optionCheckbox" class="centered">
-                <label for="exhaustive">Refine Search</label>
-                <input id="exhaustive" type="checkbox">
+            <table id="MainTable" class="mainTable"></table>
+            <table id="MainTable2" class="mainTable"></table>
+            <div id="OptionCheckbox" class="centered">
+                <label for="Exhaustive">Refine Search</label>
+                <input id="Exhaustive" type="checkbox">
             </div>
             <div class="footer">
                 &copy;
@@ -145,7 +143,7 @@
                 Gems of War and related assets &copy; Infinity Plus Two.<br>
             </div>
         </div>
-        <div id="help" class="hidden">
+        <div id="Help" class="hidden">
             <h3>What does this tool do?</h3>
             <p>This tool finds the optimal hoard upgrade strategy for reaching hoard quality 10 and level 100 using as
                 few resources as possible.

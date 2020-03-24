@@ -4,20 +4,20 @@ const SHOW_ADVANCED_OPTIONS = 0;
 
 const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 5, 10];
 const TROOP_INPUTS = [
-  document.querySelector("#t1"),
-  document.querySelector("#t2"),
-  document.querySelector("#t3"),
-  document.querySelector("#t4"),
-  document.querySelector("#t5"),
-  document.querySelector("#t6"),
+  document.querySelector("#T1"),
+  document.querySelector("#T2"),
+  document.querySelector("#T3"),
+  document.querySelector("#T4"),
+  document.querySelector("#T5"),
+  document.querySelector("#T6"),
 ];
-const INPUT_LEVEL = document.querySelector("#level");
-const INPUT_QUALITY = document.querySelector("#quality");
-const INPUT_XP = document.querySelector("#xp");
-const INPUT_TARGET_LEVEL = document.querySelector("#targetLevel");
-const INPUT_TARGET_QUALITY = document.querySelector("#targetQuality");
-const INPUT_TROOP_COST_FACTOR = document.querySelector("#troopCostFactor");
-const INPUT_EXHAUSTIVE = document.querySelector("#exhaustive");
+const INPUT_LEVEL = document.querySelector("#Level");
+const INPUT_QUALITY = document.querySelector("#Quality");
+const INPUT_XP = document.querySelector("#Xp");
+const INPUT_TARGET_LEVEL = document.querySelector("#TargetLevel");
+const INPUT_TARGET_QUALITY = document.querySelector("#TargetQuality");
+const INPUT_TROOP_COST_FACTOR = document.querySelector("#TroopCostFactor");
+const INPUT_EXHAUSTIVE = document.querySelector("#Exhaustive");
 const ALL_INPUTS = [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP,
   INPUT_TARGET_LEVEL, INPUT_TARGET_QUALITY, INPUT_TROOP_COST_FACTOR, INPUT_EXHAUSTIVE
 ];
@@ -27,18 +27,15 @@ const EXPENSIVENESS_THRESHOLD = 500000;
 
 if (!window.Worker) {
   showMessage("Your browser does not support web workers :(", true);
-  document.getElementById("main-form").classList.add("hidden");
-  document.getElementById("results").classList.add("hidden");
+  document.getElementById("MainForm").classList.add("hidden");
+  document.getElementById("Results").classList.add("hidden");
   throw new Error("Your browser does not support web workers :(");
 }
 
-// Hide unused elements
-document.getElementById("targetLevel-div").classList.add("hidden");
-document.getElementById("targetQuality-div").classList.add("hidden");
 if (!SHOW_ADVANCED_OPTIONS) {
-  document.getElementById("optionCheckbox").classList.add("hidden");
+  document.getElementById("OptionCheckbox").classList.add("hidden");
 }
-document.getElementById("close-button").classList.add("hidden");
+document.getElementById("CloseButton").classList.add("hidden");
 
 // Prevent form submission
 var buttons = document.querySelectorAll("form button:not([type=\"submit\"])");
@@ -49,7 +46,7 @@ for (let i = 0; i < buttons.length; i++) {
 }
 
 // Set event handlers
-document.getElementById("help-button").addEventListener("click", function () {
+document.getElementById("HelpButton").addEventListener("click", function () {
   showHelp();
 });
 for (let input of ALL_INPUTS) {
@@ -68,9 +65,10 @@ for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP]) {
   input.previousElementSibling.tabIndex = -1;
   input.nextElementSibling.tabIndex = -1;
 }
-initTable("main-table", MAIN_TABLE_COLUMNS);
+
+initTable("MainTable", MAIN_TABLE_COLUMNS);
 if (DEBUG_EXHAUSTIVE_SINGLE_SOLUTION) {
-  initTable("main-table-2", MAIN_TABLE_COLUMNS);
+  initTable("MainTable2", MAIN_TABLE_COLUMNS);
 }
 var exhaustiveSearchDone = false;
 var myWorker;
@@ -143,7 +141,7 @@ function render(workerMessage) {
     }
   }
 
-  let troopCountDiv = document.getElementById("troop-counts");
+  let troopCountDiv = document.getElementById("TroopCounts");
   troopCountDiv.innerHTML = "";
   for (let [i, count] of solution.troopCounts.entries()) {
     if (!count) continue;
@@ -153,7 +151,7 @@ function render(workerMessage) {
     troopCountDiv.innerHTML += " x " + count + "&nbsp;&nbsp;&nbsp;";
   }
 
-  const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.quickSearch ? "main-table" : "main-table-2") : "main-table";
+  const tableId = DEBUG_EXHAUSTIVE_SINGLE_SOLUTION ? (solution.quickSearch ? "MainTable" : "MainTable2") : "MainTable";
   const table = clearTable(tableId);
 
   for (let [i, step] of solution.bestSteps.entries()) {
@@ -176,26 +174,26 @@ function render(workerMessage) {
     }
   }
 
-  document.getElementById("totalCost").innerHTML = solution.bestGoldCost;
+  document.getElementById("TotalCost").innerHTML = solution.bestGoldCost;
   if (solution.bestGoldCost < EXPENSIVENESS_THRESHOLD) {
-    document.getElementById("totalCost").classList.add("totalCostOk");
-    document.getElementById("totalCost").classList.remove("totalCostExpensive");
+    document.getElementById("TotalCost").classList.add("totalCostOk");
+    document.getElementById("TotalCost").classList.remove("totalCostExpensive");
   } else {
-    document.getElementById("totalCost").classList.remove("totalCostOk");
-    document.getElementById("totalCost").classList.add("totalCostExpensive");
+    document.getElementById("TotalCost").classList.remove("totalCostOk");
+    document.getElementById("TotalCost").classList.add("totalCostExpensive");
   }
 }
 
 function showMessage(message, hideTable) {
-  document.getElementById("message").innerHTML = message;
+  document.getElementById("Message").innerHTML = message;
   if (hideTable) {
-    document.getElementById("main-table").classList.add("hidden");
-    document.getElementById("main-table-2").classList.add("hidden");
-    document.getElementById("troop-counts-container").classList.add("hidden");
+    document.getElementById("MainTable").classList.add("hidden");
+    document.getElementById("MainTable2").classList.add("hidden");
+    document.getElementById("TroopCountContainer").classList.add("hidden");
   } else {
-    document.getElementById("main-table").classList.remove("hidden");
-    document.getElementById("main-table-2").classList.remove("hidden");
-    document.getElementById("troop-counts-container").classList.remove("hidden");
+    document.getElementById("MainTable").classList.remove("hidden");
+    document.getElementById("MainTable2").classList.remove("hidden");
+    document.getElementById("TroopCountContainer").classList.remove("hidden");
   }
 }
 
@@ -204,21 +202,21 @@ function hideMessage() {
 }
 
 function showHelp() {
-  document.getElementById("main-form").classList.add("hidden");
-  document.getElementById("message").classList.add("hidden");
-  document.getElementById("results").classList.add("hidden");
-  document.getElementById("help-button").classList.add("hidden");
-  document.getElementById("close-button").classList.remove("hidden");
-  document.getElementById("help").classList.remove("hidden");
+  document.getElementById("MainForm").classList.add("hidden");
+  document.getElementById("Message").classList.add("hidden");
+  document.getElementById("Results").classList.add("hidden");
+  document.getElementById("HelpButton").classList.add("hidden");
+  document.getElementById("CloseButton").classList.remove("hidden");
+  document.getElementById("Help").classList.remove("hidden");
   document.body.addEventListener("click", hideHelp, true);
 }
 
 function hideHelp() {
-  document.getElementById("main-form").classList.remove("hidden");
-  document.getElementById("message").classList.remove("hidden");
-  document.getElementById("results").classList.remove("hidden");
-  document.getElementById("help-button").classList.remove("hidden");
-  document.getElementById("close-button").classList.add("hidden");
-  document.getElementById("help").classList.add("hidden");
+  document.getElementById("MainForm").classList.remove("hidden");
+  document.getElementById("Message").classList.remove("hidden");
+  document.getElementById("Results").classList.remove("hidden");
+  document.getElementById("HelpButton").classList.remove("hidden");
+  document.getElementById("CloseButton").classList.add("hidden");
+  document.getElementById("Help").classList.add("hidden");
   document.body.removeEventListener("click", hideHelp, true);
 }
