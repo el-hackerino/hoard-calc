@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 const DEBUG_EXHAUSTIVE_SINGLE_SOLUTION = 0;
-const DEBUG_GENERAL = 0;
 const SHOW_ADVANCED_OPTIONS = 0;
 
-const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 3, 5, 10, 50];
+const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 5, 10];
 const TROOP_INPUTS = [
-  // document.querySelector("#t1"),
+  document.querySelector("#t1"),
   document.querySelector("#t2"),
   document.querySelector("#t3"),
   document.querySelector("#t4"),
@@ -78,7 +77,7 @@ var myWorker;
 calculate();
 
 function calculate() {
-  if (DEBUG_GENERAL) console.log("Calculating...");
+  if (DEBUG) console.log("Calculating...");
   if (Number(INPUT_QUALITY.value) >= Number(INPUT_TARGET_QUALITY.value) &&
     Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
     showMessage("No need to upgrade!", true);
@@ -115,7 +114,7 @@ function calculate() {
 
 function render(workerMessage) {
   let solution = workerMessage.data;
-  if (DEBUG_GENERAL) console.log("Time: " + (solution.time / 1000) + " s");
+  if (DEBUG) console.log("Time: " + (solution.time / 1000) + " s");
   if (!solution.bestSteps.length) {
     showMessage("Cannot find any useful steps!", true);
     return;

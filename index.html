@@ -15,14 +15,14 @@
         <img id="help-button" src="images/help.png">
         <form id="main-form">
             <div>
-                <!-- <div class="cardCell">
+                <div class="cardCell" style="display: none">
                     <img src="images/card0.png" class="largeCard card0">
                     <div class="number-input">
                         <button>-</button>
-                        <input id="t1" type="number" min="0" max="999" value="10">
+                        <input id="t1" type="number" min="0" max="999" value="0">
                         <button tabindex="-1">+</button>
                     </div>
-                </div> -->
+                </div>
                 <div class="cardCell">
                     <img src="images/card1.png" class="largeCard card1">
                     <div class="number-input">
@@ -109,7 +109,7 @@
             <div class="centered">
                 <div class="sliderLabel">Save Gold</div>
                 <img class="sliderIcon" src="images/gold.webp">
-                <input id="troopCostFactor" type="range" min="0" max="6" value="1" class="slider">
+                <input id="troopCostFactor" type="range" min="0" max="4" value="1" class="slider">
                 <img class="sliderIcon" src="images/cards.png">
                 <div class="sliderLabel">Save Rare Treasure</div>
             </div>
@@ -175,8 +175,8 @@
         </div>
     </div>
 
-    <script src="constants.js"></script>
-    <script src="hoard-calc.js"></script>
+    <script src="common.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>

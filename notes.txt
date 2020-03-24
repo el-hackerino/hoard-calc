@@ -1,2 +1,5 @@
+run longer test to update combos
 clean up element ids and class names
+clean up code
+clean up git history
 handle landscape mode?

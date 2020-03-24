@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+const DEBUG = 0;
+
 const TROOPS = [
   { shortName: "C", name: "Coin Purse", percent: 5, xp: 10, value: 0 },
   { shortName: "R", name: "Gold Ring", percent: 10, xp: 25, value: 100 },

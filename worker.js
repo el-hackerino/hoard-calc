@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 importScripts("constants.js");
 
-const DEBUG = 0;
 const BUDGET_MAX = [10, 10, 105, 80, 50, 18];
 const RNG_MIN = [10, 10, 20, 0, 0, 0];
 const RNG_MAX = [10, 10, 60, 40, 12, 8];
@@ -21,6 +20,7 @@ fillXpTable();
 makeCombos();
 
 onmessage = function (message) {
+  if (DEBUG) console.log("Worker received message");
   for (let i = 0; i < (message.data.run_tests ? message.data.num_tests : 1); i++) {
     let result = runTestIteration(message.data);
     postMessage(result);
