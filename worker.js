@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-importScripts("constants.js");
+importScripts("common.js");
 
 const BUDGET_MAX = [10, 10, 105, 80, 50, 18];
 const RNG_MIN = [10, 10, 20, 0, 0, 0];
