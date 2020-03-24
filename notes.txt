@@ -1,2 +1,2 @@
-run longer test to update combos
 clean up element ids and class names
+handle landscape mode?

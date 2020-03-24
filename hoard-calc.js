@@ -5,7 +5,7 @@ const SHOW_ADVANCED_OPTIONS = 0;
 
 const TROOP_COST_FACTORS = [0, 1, 1.5, 2, 3, 5, 10, 50];
 const TROOP_INPUTS = [
-  document.querySelector("#t1"),
+  // document.querySelector("#t1"),
   document.querySelector("#t2"),
   document.querySelector("#t3"),
   document.querySelector("#t4"),

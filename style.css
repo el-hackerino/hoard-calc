@@ -21,11 +21,15 @@
   .cardCell {
     padding: 2px;
   }
+  /* Sizes */
   .number-input button {
 	width: 1em;
   }
   input[type="number"] {
 	  width: 2em;
+  }
+  .slider {
+	  width: 5em;
   }
   /* Cards */
   .largeCard {
@@ -63,17 +67,21 @@
     padding: 18px 0 18px 0;
   }
   .cardCell {
-    padding: 3px;
+    padding: 4px;
   }
   .mainTable td,
   th {
     padding: 4px;
   }
+  /* Sizes */
   .number-input button {
 	width: 1.2em;
   }
   input[type="number"] {
 	width: 2em;
+}
+.slider {
+	width: 6em;
 }
   /* Cards */
   .largeCard {
@@ -117,18 +125,22 @@
     padding: 20px 0 22px 0;
   }
   .cardCell {
-    padding: 3px;
+    padding: 6px;
   }
   .mainTable td,
   th {
     padding: 3px 15px 3px 15px;
   }
+  /* Sizes */
   .number-input button {
 	width: 2.5em;
 	height: 2.8em;
   }
   input[type="number"] {
 	width: 2.5em;
+}
+.slider {
+	width: 7em;
 }
   /* Cards */
   .largeCard {
@@ -222,7 +234,7 @@ input::-webkit-inner-spin-button {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  padding: 0px 0 4px 0;
+  padding: 0px 0 2px 0;
   color: white;
   vertical-align: middle;
   align-items: center;
@@ -243,7 +255,6 @@ input::-webkit-inner-spin-button {
   vertical-align: middle;
   -webkit-appearance: none;
   appearance: none;
-  width: 7em;
   height: 2px;
   cursor: pointer;
   margin: -4px;
