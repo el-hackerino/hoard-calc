@@ -47,7 +47,7 @@ function render(message) {
   let comboCounts = solution.slowSolution.comboCounts;
   for (let c = 0; c < comboCounts.length; c++) {
     if (comboCounts[c]) {
-      totalComboCounts[c] = totalComboCounts[c] ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
+      totalComboCounts[c] = totalComboCounts[c]  ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
     }
   }
   if (DEBUG_MAXCOUNTS) {
@@ -60,7 +60,12 @@ function render(message) {
   }
   totalTime += solution.time;
   totalSlowTime += solution.slowTime;
-  renderComboStats(solutions, totalComboCounts, totalTime / solutions.length, totalSlowTime / solutions.length);
+  renderComboStats(
+    solutions,
+    totalComboCounts,
+    totalTime / solutions.length,
+    totalSlowTime / solutions.length
+  );
   renderTestResults(solution);
   if (DEBUG_MAXCOUNTS) console.log("Max troop counts: " + maxTroopCounts);
 }
@@ -70,7 +75,9 @@ function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
   let table = clearTable(tableId);
 
   // eslint-disable-next-line no-unused-vars
-  for (let [key, value] of Object.entries(totalComboCounts).sort(([key, value], [key2, value2]) => value < value2)) {
+  for (let [key, value] of Object.entries(totalComboCounts).sort(
+    ([key, value], [key2, value2]) => value < value2
+  )) {
     let tr = table.insertRow(-1);
     let td = tr.insertCell(-1);
     td.textContent = key;
@@ -91,7 +98,7 @@ function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
 }
 
 function renderTestResults(solution) {
-  if (!solution || RENDER_DIFF_ONLY && !solution.quickCostDiff) return;
+  if (!solution || (RENDER_DIFF_ONLY && !solution.quickCostDiff)) return;
   let table = document.getElementById("TestTable");
   let tr = table.insertRow(-1);
   for (let attribute of TEST_TABLE_ATTRIBUTES) {
@@ -118,7 +125,7 @@ function renderTestResults(solution) {
         td.innerHTML += comboString;
       }
     } else if (attribute == "diffPercent" && solution.quickCostDiff > 0) {
-      td.textContent = parseInt (solution.quickCostDiff / solution.slowSolution.bestGoldCost * 100) + "%";
+      td.textContent = parseInt((solution.quickCostDiff / solution.slowSolution.bestGoldCost) * 100) + "%";
     } else {
       td.textContent = solution[attribute];
     }

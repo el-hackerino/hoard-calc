@@ -13,13 +13,13 @@ const MAX_DEPTH = 10;
 var levelXp = [];
 var allCombos = [];
 var quickCombos = [];
-const QUICK_SEARCH_OPTIONS = {quick: true, toLevel: true, resort: false};
-const SLOW_SEARCH_OPTIONS = {quick: false, toLevel: true, resort: false};
+const QUICK_SEARCH_OPTIONS = { quick: true, toLevel: true, resort: false };
+const SLOW_SEARCH_OPTIONS = { quick: false, toLevel: true, resort: false };
 
 fillXpTable();
 makeCombos();
 
-onmessage = function (message) {
+onmessage = function(message) {
   if (DEBUG) console.log("Worker received message: ");
   for (let i = 0; i < (message.data.run_tests ? message.data.num_tests : 1); i++) {
     let result = runTestIteration(message.data);
@@ -48,16 +48,22 @@ function runTestIteration(solution) {
   // Randomize values
   if (solution.run_tests) {
     for (let t = 0; t < solution.budget.length; t++) {
-      solution.budget[t] = Math.floor((Math.random() * (RNG_MAX[t] - RNG_MIN[t])) + RNG_MIN[t]);
+      solution.budget[t] = Math.floor(
+        Math.random() * (RNG_MAX[t] - RNG_MIN[t]) + RNG_MIN[t]
+      );
     }
-    solution.initialQuality = Math.floor((Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN)) + RNG_QUALITY_MIN);
+    solution.initialQuality = Math.floor(
+      Math.random() * (RNG_QUALITY_MAX - RNG_QUALITY_MIN) + RNG_QUALITY_MIN
+    );
     // Get rid of unrealistically low initial level values
     let iq = solution.initialQuality;
-    let minLevel = Math.max(-.35 * iq * iq + 10 * iq + 5, RNG_LEVEL_MIN);
-    solution.initialLevel = Math.floor((Math.random() * (RNG_LEVEL_MAX - minLevel)) + minLevel);
+    let minLevel = Math.max(-0.35 * iq * iq + 10 * iq + 5, RNG_LEVEL_MIN);
+    solution.initialLevel = Math.floor(
+      Math.random() * (RNG_LEVEL_MAX - minLevel) + minLevel
+    );
   }
 
-  findSolution(solution, solution.run_tests ? QUICK_SEARCH_OPTIONS : (solution.quickSearch ? QUICK_SEARCH_OPTIONS : SLOW_SEARCH_OPTIONS));
+  findSolution(solution, solution.run_tests ? QUICK_SEARCH_OPTIONS : solution.quickSearch ? QUICK_SEARCH_OPTIONS : SLOW_SEARCH_OPTIONS);
 
   if (!solution.run_tests) {
     return solution;
@@ -71,9 +77,10 @@ function runTestIteration(solution) {
   if (solution.bestQuality >= slowSolution.bestQuality && solution.bestLevel >= slowSolution.bestLevel) {
     solution.quickCostDiff = solution.bestCost - slowSolution.bestCost;
   } else {
-    solution.quickCostDiff = solution.bestQuality + "->" + slowSolution.bestQuality +
-      ", " + solution.bestLevel + "->" + slowSolution.bestLevel +
-      ", " + solution.bestCost + "->" + slowSolution.bestCost;
+    solution.quickCostDiff =
+      solution.bestQuality + "->" + slowSolution.bestQuality + ", "
+      + solution.bestLevel + "->" + slowSolution.bestLevel + ", "
+      + solution.bestCost + "->" + slowSolution.bestCost;
   }
 
   return solution;
@@ -97,7 +104,7 @@ function findSolution(solution, options) {
     resetSolution(solution);
   }
   solution.comboCounts = countIds(solution.bestSteps);
-  solution.time = (new Date().getTime() - startTime);
+  solution.time = new Date().getTime() - startTime;
 }
 
 function search(startCombo, depth, solution, combos, options) {
@@ -136,13 +143,13 @@ function search(startCombo, depth, solution, combos, options) {
       if (solution.quality > solution.bestQuality && solution.quality <= solution.goalQuality) {
         if (DEBUG) console.log("New quality: " + solution.quality);
         saveBestSolution(solution);
-      // Improved cost, same or higher quality, no goal change
-      } else if ((solution.sumCost < solution.bestCost && solution.quality >= solution.bestQuality) &&
-        reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
+        // Improved cost, same or higher quality, no goal change
+      } else if (solution.sumCost < solution.bestCost && solution.quality >= solution.bestQuality
+        && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
-      if (!reachedQuality || options.toLevel && !reachedLevel && depth < MAX_DEPTH) {
+      if (!reachedQuality || (options.toLevel && !reachedLevel && depth < MAX_DEPTH)) {
         search(c, depth + 1, solution, combos, options);
       }
     }
@@ -224,7 +231,9 @@ function setTroopCounts(solution) {
   for (let step of solution.bestSteps) {
     for (let t = 0; t < TROOPS.length; t++) {
       if (allCombos[step.comboId].counts[t]) {
-        solution.troopCounts[t] = solution.troopCounts[t] ? solution.troopCounts[t] + allCombos[step.comboId].counts[t] : allCombos[step.comboId].counts[t];
+        solution.troopCounts[t] = solution.troopCounts[t]
+          ? solution.troopCounts[t] + allCombos[step.comboId].counts[t]
+          : allCombos[step.comboId].counts[t];
       }
     }
   }
@@ -235,7 +244,12 @@ function resortSolution(solution, combos) {
   let bestCost = MAX_GOLD;
   let bestPerm;
   for (permutation of permutations) {
-    let permCost = calculateCost(permutation, levelXp[solution.initialLevel] + solution.initialXp, solution.initialLevel, combos);
+    let permCost = calculateCost(
+      permutation,
+      levelXp[solution.initialLevel] + solution.initialXp,
+      solution.initialLevel,
+      combos
+    );
     if (permCost < bestCost) {
       bestCost = permCost;
       bestPerm = permutation;
@@ -274,7 +288,8 @@ function permute(permutation) {
     result = [permutation.slice()],
     c = new Array(length).fill(0),
     i = 1,
-    k, p;
+    k,
+    p;
   while (i < length) {
     if (c[i] < i) {
       k = i % 2 && c[i];
@@ -295,7 +310,7 @@ function permute(permutation) {
 /////////////////////////////////////////////////////////////////////////
 
 function countTroops(arr) {
-  return arr.reduce(function (acc, curr) {
+  return arr.reduce(function(acc, curr) {
     acc[curr] ? acc[curr]++ : (acc[curr] = 1);
     return acc;
   }, {});
@@ -332,7 +347,7 @@ function getCost(level, numTroops) {
 }
 
 function getTroopCost(troopArray) {
-  return troopArray.reduce(function (total, troop) {
+  return troopArray.reduce(function(total, troop) {
     return total + TROOPS[troop].value;
   }, 0);
 }
@@ -358,7 +373,7 @@ function countIds(arr) {
   let result = [];
   for (let i = 0; i < arr.length; i++) {
     if (arr[i]) {
-      result[arr[i].comboId] ? result[arr[i].comboId]++ : result[arr[i].comboId] = 1;
+      result[arr[i].comboId] ? result[arr[i].comboId]++ : (result[arr[i].comboId] = 1);
     }
   }
   return result;
