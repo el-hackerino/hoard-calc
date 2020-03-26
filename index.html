@@ -16,11 +16,11 @@
         <img id="HelpButton" src="images/help.png">
         <form id="MainForm">
             <div>
-                <div class="cardCell" style="display: none">
+                <div class="cardCell">
                     <img src="images/card0.png" class="largeCard card0">
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="T1" type="number" min="0" max="999" value="0">
+                        <input id="T1" class="narrowInput" type="number" min="0" max="999" maxlength="3" value="20">
                         <button tabindex="-1">+</button>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                     <img src="images/card1.png" class="largeCard card1">
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="T2" type="number" min="0" max="999" value="10">
+                        <input id="T2" class="narrowInput" type="number" min="0" max="999" maxlength="3" value="20">
                         <button>+</button>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                     <img src="images/card2.png" class="largeCard card2">
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="T3" type="number" min="0" max="999" value="20">
+                        <input id="T3" class="narrowInput" type="number" min="0" max="999" maxlength="3" value="20">
                         <button>+</button>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                     <img src="images/card3.png" class="largeCard card3">
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="T4" type="number" min="0" max="999" value="15">
+                        <input id="T4" class="narrowInput" type="number" min="0" max="999" maxlength="3" value="15">
                         <button>+</button>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                     <img src="images/card4.png" class="largeCard card4">
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="T5" type="number" min="0" max="999" value="10">
+                        <input id="T5" class="narrowInput" type="number" min="0" max="999" maxlength="3" value="10">
                         <button>+</button>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                     <img src="images/card5.png" class="largeCard card5">
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="T6" type="number" min="0" max="999" value="5">
+                        <input id="T6" class="narrowInput" type="number" min="0" max="999" maxlength="3" value="5">
                         <button>+</button>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                     <label for="Level">Hoard Level</label>
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="Level" type="number" min="0" max="100" value="0">
+                        <input id="Level" class="wideInput" type="number" min="0" max="1000" maxlength="4" value="0">
                         <button>+</button>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                     <label for="Quality">Hoard Quality</label>
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="Quality" type="number" min="1" max="10" value="1">
+                        <input id="Quality" class="wideInput" type="number" min="1" max="10" maxlength="3" value="1">
                         <button>+</button>
                     </div>
                 </div>
@@ -86,23 +86,15 @@
                     <label for="Xp">Leftover XP</label>
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="Xp" type="number" min="0" max="500" value="0">
+                        <input id="Xp" class="wideInput" type="number" min="0" max="1000" maxlength="3" value="0">
                         <button>+</button>
                     </div>
                 </div>
-                <div class="formCell" style="display: none">
-                    <label for="TargetLevel">Target Hoard Level</label>
+                <div class="formCell">
+                    <label for="TargetLevel">Target Level</label>
                     <div class="numberInput">
                         <button>-</button>
-                        <input id="TargetLevel" type="number" min="0" max="100" value="100">
-                        <button>+</button>
-                    </div>
-                </div>
-                <div class="formCell" style="display: none">
-                    <label for="TargetQuality">Target Hoard Quality</label>
-                    <div class="numberInput">
-                        <button>-</button>
-                        <input id="TargetQuality" type="number" min="1" max="10" value="10">
+                        <input id="TargetLevel" class="wideInput" type="number" min="0" max="1000" maxlength="4" value="100">
                         <button>+</button>
                     </div>
                 </div>
@@ -110,39 +102,39 @@
             <div class="centered">
                 <div class="sliderLabel">Save Gold</div>
                 <img class="sliderIcon" src="images/gold.png">
-                <input id="TroopCostFactor" type="range" min="0" max="5" value="1" class="slider">
+                <input id="TroopCostFactor" type="range" min="0" max="8" value="1" class="slider">
                 <img class="sliderIcon" src="images/cards.png">
                 <div class="sliderLabel">Save Rare Treasure</div>
             </div>
         </form>
-        <div id="Message" class="centered"></div>
+
+        <div id="MessageContainer" class="centered"><span id="Spinner" class="ringSpinner"></span> <span id="Message"></span></div>
         <div id="Results">
             <div id="TotalCostContainer" class="centered">
                 <span id="TotalCostLabel">Total gold cost: </span>
                 <span id="TotalCost"></span>
+                <img id="LowFidelityIndicator" src="images/warning.png" title="Low fidelity mode to improve performance.">
             </div>
             <div id="TroopCountContainer" class="centered">
                 <div id="TroopCounts" class="troopCounts"></div>
             </div>
             <table id="MainTable" class="mainTable"></table>
             <table id="MainTable2" class="mainTable"></table>
-            <div id="OptionCheckbox" class="centered">
-                <label for="Exhaustive">Refine Search</label>
-                <input id="Exhaustive" type="checkbox">
-            </div>
-            <div class="footer">
-                &copy;
-                <script type="text/javascript">
-                    document.write("<n uers=\"znvygb:uafqzcsss@tznvy.pbz\" ery=\"absbyybj\">Ry Qhqrevab</n>".replace(
-                        /[a-zA-Z]/g,
-                        function (c) {
-                            return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
-                        }));
-                </script>. Feedback is welcome!<br>
-                (find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>)<br>
-                Gems of War and related assets &copy; Infinity Plus Two.<br>
-            </div>
         </div>
+
+        <div id="Footer">
+            &copy;
+            <script type="text/javascript">
+                document.write("<n uers=\"znvygb:uafqzcsss@tznvy.pbz\" ery=\"absbyybj\">Ry Qhqrevab</n>".replace(
+                    /[a-zA-Z]/g,
+                    function (c) {
+                        return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+                    }));
+            </script>. Feedback is welcome!<br>
+            (find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>)<br>
+            Gems of War and related assets &copy; Infinity Plus Two.<br>
+        </div>
+
         <div id="Help" class="hidden">
             <h3>What does this tool do?</h3>
             <p>This tool finds the optimal hoard upgrade strategy for reaching hoard quality 10 and level 100 using as few resources as possible.
@@ -154,9 +146,10 @@
             <h3>Why quality 10 and level 100?</h3>
             <p>Hoard quality 10 gives you the highest treasure chest upgrades each time you run the delve, maximizing your rewards.
                 Hoard level 100 is the highest one that counts toward faction renown. Higher levels increase your troop stats in the delve further
-                but are not generally considered a worthwhile investment.</p>
-            <h3>Is the hoard quality upgrade chance 100% each time?</h3>
-            <p>Yes, the tool only considers treasure troop combinations that give a 100% or higher chance of an upgrade.</p>
+                but are generally considered a late-game investment mostly for beating high level delves with all-faction teams.</p>
+            <h3>How do you handle the hoard quality upgrade chance?</h3>
+            <p>Most of the troop combinations shown will upgrade the quality 100% of the time. For troop combinations that don't give a 100%
+                chance of upgrading the quality, no upgrade is assumed.</p>
             <h3>Does it always find the best possible solution?</h3>
             <p>The algorithm is pretty brute force and cuts a few corners to stay fast. So you may be able to find a slightly better
                 solution in rare cases.</p>

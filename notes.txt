@@ -1,1 +1,38 @@
-handle landscape mode?
+
+reevaluate troop cost factor values
+skipping combos 0 and 1 after a few steps is a major perf boost. when to use it?
+- high target levels need quick list anyway
+- low level, low cost factor (0 only), sufficient high-level troops (determine amount empirically)
+- also find bounds for low level and low cost factor empirically
+
+slow but actually uses c and r: 100,70,20,10,5,1 0,1,0,110 (factor 1)
+
+idea: do rough calc first, run precise calc to refine;
+give up on refinement if it takes too long? Maybe just add a stop button?
+
+idea: option to force a few purse/coin combos first?
+
+idea: accelerate rough calc by combining combos into one "troop"
+
+limit max budget for purses + coins unless going for a high level (where lo-fi is needed anyway)
+
+idea: two stages of warnings - red when lo-fi, yellow when unfinished hi-fi
+
+scrap slider? why ever save troops? can limit budget manually -> sometimes adding sacred treasure is inefficient
+alt: slider actually also increses purse/ring budget
+
+help:
+
+how does refinement work?
+how does saving treasure work?
+how to improve performance?
+are purses/rings worth using at the beginning?
+- it IS possible to save some gold by starting off with some purses and rings, but it's never a significant amount
+  (verify) unless you're low on high-value troops and are spending a lot of gold anyway. In such cases, waiting
+  to get just a few genie's lamps or sacred treasures can save hundreds of thousands of gold.
+only if you are low on higher-value troops.
+
+
+verify:
+- skipping combos 0+1 after a few steps (or just limiting the budget?) if enough better troops - formula?
+- 

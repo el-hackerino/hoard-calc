@@ -21,15 +21,21 @@
   .cardCell {
     padding: 2px;
   }
+  .formCell {
+    padding: 0px 5px;
+  }
   /* Sizes */
   .numberInput button {
-	width: 1em;
+    width: 1em;
   }
-  input[type="number"] {
-	  width: 2em;
+  .narrowInput {
+    width: 2em;
+  }
+  .wideInput {
+    width: 3em;
   }
   .slider {
-	  width: 5em;
+    width: 5em;
   }
   /* Cards */
   .largeCard {
@@ -53,7 +59,7 @@
     font-size: x-large;
   }
   label {
-	font-size: large;
+    font-size: large;
   }
   input[type="number"] {
     font-size: medium;
@@ -69,20 +75,26 @@
   .cardCell {
     padding: 4px;
   }
+  .formCell {
+    padding: 0px 8px;
+  }
   .mainTable td,
   th {
     padding: 4px;
   }
   /* Sizes */
   .numberInput button {
-	width: 1.2em;
+    width: 1.2em;
   }
-  input[type="number"] {
-	width: 2em;
-}
-.slider {
-	width: 6em;
-}
+  .narrowInput {
+    width: 2em;
+  }
+  .wideInput {
+    width: 3em;
+  }
+  .slider {
+    width: 6em;
+  }
   /* Cards */
   .largeCard {
     border-width: 2px 0 8px 0;
@@ -127,21 +139,27 @@
   .cardCell {
     padding: 6px;
   }
+  .formCell {
+    padding: 0px 15px;
+  }
   .mainTable td,
   th {
     padding: 3px 15px 3px 15px;
   }
   /* Sizes */
   .numberInput button {
-	width: 2.5em;
-	height: 2.8em;
+    width: 2.5em;
+    height: 2.8em;
   }
-  input[type="number"] {
-	width: 2.5em;
-}
-.slider {
-	width: 7em;
-}
+  .narrowInput {
+    width: 2.5em;
+  }
+  .wideInput {
+    width: 3em;
+  }
+  .slider {
+    width: 7em;
+  }
   /* Cards */
   .largeCard {
     border-width: 3px 0 10px 0;
@@ -181,7 +199,8 @@ a {
   font-weight: bolder;
   color: #f4a220;
 }
-#HelpButton, #CloseButton {
+#HelpButton,
+#CloseButton {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -201,13 +220,12 @@ a {
   display: table-cell;
   text-align: center;
   vertical-align: top;
-  padding: 0px 15px;
   font-weight: bold;
 }
 
 label {
-	display: block;
-} 
+  display: block;
+}
 input[type="number"] {
   padding: 4px 0 4px 0;
   color: white;
@@ -352,21 +370,24 @@ th {
 }
 #TotalCost {
   font-weight: 1000;
-}
-.totalCostOk {
   color: #f4a220;
 }
-.totalCostExpensive {
-  color: #df0000;
+#LowFidelityIndicator {
+  width: 6pt;
+  vertical-align: text-top;
+  padding-top: 1px;
 }
 
 .centered {
-  padding: 8px;
+  padding: 10px;
   text-align: center;
   margin: 0 auto;
 }
-.footer {
-  padding: 10px;
+#MessageContainer {
+  margin: 10px 0;
+}
+#Footer {
+  padding: 20px;
   color: #bbb;
   text-align: center;
 }
@@ -381,6 +402,25 @@ th {
 }
 .hidden {
   display: none;
+}
+.blurred {
+  filter: blur(.5rem);
+}
+.ringSpinner {
+  animation: ringSpinner 1s steps(12) infinite;
+  width: 16px;
+  height: 16px;
+  background-image: url(images/loading.png);
+  vertical-align: middle;
+  margin-bottom: 3px;
+}
+@keyframes ringSpinner {
+  from {
+    background-position: 0px 0px;
+  }
+  to {
+    background-position: 0px -192px;
+  }
 }
 
 .testTable {

@@ -1,36 +1,40 @@
 /* eslint-disable no-undef */
-const TEST_ITERATIONS = 100000;
-const DEBUG_MAXCOUNTS = 0;
+const TEST_ITERATIONS = 10000;
+const RUN_SECONDARY_SEARCH = false;
 const RENDER_DIFF_ONLY = 0;
 
 const INITIAL_XP = 0;
-const TROOP_COST_FACTOR = 1;
+const TROOP_COST_FACTOR = 0;
 const GOAL_QUALITY = 10;
 const GOAL_LEVEL = 100;
 
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
-const TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Diff %", "Combos", "Slow Combos"];
-const TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "slowTime", "quickCostDiff", "diffPercent", "combos", "slowCombos"];
-
+var TEST_TABLE_COLUMNS, TEST_TABLE_ATTRIBUTES;
+if (RUN_SECONDARY_SEARCH) {
+  TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Diff %", "Combos", "Slow Combos"];
+  TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "secondaryTime", "quickCostDiff", "diffPercent", "combos", "slowCombos"];
+} else {
+  TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Combos"];
+  TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "combos"];
+}
 let solutions = [];
 let totalComboCounts = new Array(TEMPLATES.length).fill(0);
-let maxTroopCounts = [];
 let totalTime = 0;
-let totalSlowTime = 0;
+let totalsecondaryTime = 0;
 
 if (window.Worker) {
   initTable("ComboTable", COMBO_TABLE_COLUMNS);
-  initTable("TestTable", TEST_TABLE_COLUMNS);
-  // TODO sorttable.makeSortable(table);
+  sorttable.makeSortable(initTable("TestTable", TEST_TABLE_COLUMNS));
 
   const myWorker = new Worker("worker.js");
   myWorker.onmessage = render;
   let solution = {
-    run_tests: 1,
-    num_tests: TEST_ITERATIONS,
+    runTests: 1,
+    numTests: TEST_ITERATIONS,
+    runSecondarySearch: RUN_SECONDARY_SEARCH,
     initialXp: INITIAL_XP,
-    goalLevel: GOAL_LEVEL,
-    goalQuality: GOAL_QUALITY,
+    targetLevel: GOAL_LEVEL,
+    targetQuality: GOAL_QUALITY,
     troopCostFactor: TROOP_COST_FACTOR,
     budget: [0, 0, 0, 0, 0, 0]
   };
@@ -44,36 +48,28 @@ function render(message) {
   let solution = message.data;
   solutions.push(solution);
   // Count used combos
-  let comboCounts = solution.slowSolution.comboCounts;
+  let detailsFromSolution = RUN_SECONDARY_SEARCH ? solution.secondarySolution : solution;
+  let comboCounts = detailsFromSolution.comboCounts;
   for (let c = 0; c < comboCounts.length; c++) {
     if (comboCounts[c]) {
       totalComboCounts[c] = totalComboCounts[c]  ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
     }
   }
-  if (DEBUG_MAXCOUNTS) {
-    // Save max troop counts
-    for (let t = 0; t < solution.troopCounts.length; t++) {
-      if (solution.troopCounts[t]) {
-        maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], solution.troopCounts[t]) : solution.troopCounts[t];
-      }
-    }
-  }
   totalTime += solution.time;
-  totalSlowTime += solution.slowTime;
+  totalsecondaryTime += solution.secondaryTime;
   renderComboStats(
     solutions,
     totalComboCounts,
     totalTime / solutions.length,
-    totalSlowTime / solutions.length
+    totalsecondaryTime / solutions.length
   );
   renderTestResults(solution);
-  if (DEBUG_MAXCOUNTS) console.log("Max troop counts: " + maxTroopCounts);
 }
 
-function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
+function renderComboStats(solutions, totalComboCounts, avgTime, avgSecondaryTime) {
   let tableId = "ComboTable";
   let table = clearTable(tableId);
-
+  
   // eslint-disable-next-line no-unused-vars
   for (let [key, value] of Object.entries(totalComboCounts).sort(
     ([key, value], [key2, value2]) => value < value2
@@ -91,10 +87,15 @@ function renderComboStats(solutions, totalComboCounts, avgTime, avgslowTime) {
     td = tr.insertCell(-1);
     td.textContent = TEMPLATES[Number(key)][1] ? "" : "x";
   }
-  let tr = table.insertRow(-1);
-  let td = tr.insertCell(-1);
+
+  let tfoot = document.createElement("tfoot");
+  let td = document.createElement("td");
   td.colSpan = 4;
-  td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgslowTime);
+  td.textContent = solutions.length + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgSecondaryTime);
+  tfoot.appendChild(td);
+  table.appendChild(tfoot);
+
+  sorttable.makeSortable(table);
 }
 
 function renderTestResults(solution) {
@@ -116,7 +117,7 @@ function renderTestResults(solution) {
       }
     } else if (attribute == "slowCombos") {
       td.innerHTML = "";
-      for (let step of solution.slowSolution.bestSteps) {
+      for (let step of solution.secondarySolution.bestSteps) {
         let comboString = "<span";
         if (!TEMPLATES[Number(step.comboId)][1]) {
           comboString += " class='highlight'";
@@ -125,7 +126,7 @@ function renderTestResults(solution) {
         td.innerHTML += comboString;
       }
     } else if (attribute == "diffPercent" && solution.quickCostDiff > 0) {
-      td.textContent = parseInt((solution.quickCostDiff / solution.slowSolution.bestGoldCost) * 100) + "%";
+      td.textContent = parseInt((solution.quickCostDiff / solution.secondarySolution.bestGoldCost) * 100) + "%";
     } else {
       td.textContent = solution[attribute];
     }
