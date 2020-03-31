@@ -1,21 +1,21 @@
 /* eslint-disable no-undef */
-const TEST_ITERATIONS = 10000;
-const RUN_SECONDARY_SEARCH = false;
+const TEST_ITERATIONS = 1000;
+const RUN_SECONDARY_SEARCH = 1;
 const RENDER_DIFF_ONLY = 0;
 
 const INITIAL_XP = 0;
 const TROOP_COST_FACTOR = 0;
-const GOAL_QUALITY = 10;
-const GOAL_LEVEL = 100;
-
+const TARGET_QUALITY = 10;
+const TARGET_LEVEL = 100;
+  
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
 var TEST_TABLE_COLUMNS, TEST_TABLE_ATTRIBUTES;
 if (RUN_SECONDARY_SEARCH) {
-  TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Diff %", "Combos", "Slow Combos"];
-  TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "secondaryTime", "quickCostDiff", "diffPercent", "combos", "slowCombos"];
+  TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Target Level", "Gold", "Level", "Quality", "Time", "Slow", "Diff", "Diff %", "Combos", "Slow Combos"];
+  TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel", "bestQuality", "time", "secondaryTime", "quickCostDiff", "diffPercent", "combos", "slowCombos"];
 } else {
-  TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Gold", "Level", "Quality", "Time", "Combos"];
-  TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "bestCost", "bestLevel", "bestQuality", "time", "combos"];
+  TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Target Level", "Gold", "Level", "Quality", "Time", "Combos"];
+  TEST_TABLE_ATTRIBUTES = ["budget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel", "bestQuality", "time", "combos"];
 }
 let solutions = [];
 let totalComboCounts = new Array(TEMPLATES.length).fill(0);
@@ -33,8 +33,8 @@ if (window.Worker) {
     numTests: TEST_ITERATIONS,
     runSecondarySearch: RUN_SECONDARY_SEARCH,
     initialXp: INITIAL_XP,
-    targetLevel: GOAL_LEVEL,
-    targetQuality: GOAL_QUALITY,
+    targetLevel: TARGET_LEVEL,
+    targetQuality: TARGET_QUALITY,
     troopCostFactor: TROOP_COST_FACTOR,
     budget: [0, 0, 0, 0, 0, 0]
   };
@@ -46,6 +46,8 @@ if (window.Worker) {
 
 function render(message) {
   let solution = message.data;
+  if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestGoldCost);
+  if (!solution.final) return;
   solutions.push(solution);
   // Count used combos
   let detailsFromSolution = RUN_SECONDARY_SEARCH ? solution.secondarySolution : solution;
@@ -126,9 +128,10 @@ function renderTestResults(solution) {
         td.innerHTML += comboString;
       }
     } else if (attribute == "diffPercent" && solution.quickCostDiff > 0) {
-      td.textContent = parseInt((solution.quickCostDiff / solution.secondarySolution.bestGoldCost) * 100) + "%";
+      td.textContent = parseInt((solution.quickCostDiff / solution.secondarySolution.bestGoldCost) * 100);
     } else {
       td.textContent = solution[attribute];
     }
   }
+  sorttable.makeSortable(table);
 }

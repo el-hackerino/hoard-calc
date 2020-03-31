@@ -75,7 +75,7 @@ var myWorker;
 calculate();
 
 function calculate() {
-  if (DEBUG) console.log("Calculating...");
+  if (DEBUG) console.log("Calculating.........................................................");
   // for (let timeout of timeouts) {
   //   clearTimeout(timeout);
   // }
@@ -123,6 +123,7 @@ function calculate() {
 function render(workerMessage) {
   let solution = workerMessage.data;
   if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestGoldCost);
+  if (DEBUG) console.log(solution);
   if (!solution.bestSteps.length) {
     showMessage("Cannot find any useful steps!", true, false);
     return;
