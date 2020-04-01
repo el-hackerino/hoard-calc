@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const DEBUG_SINGLE_SOLUTION = 0;
 const TARGET_QUALITY = 10;
+const STOP_THRESHOLD = 4000;
 
 const TROOP_COST_FACTORS = [0, 100, 150, 200, 500, 1000, 5000, 20000, 100000];
 const TROOP_INPUTS = [
@@ -26,6 +27,7 @@ const ALL_INPUTS = [
 ];
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
+var resultMessage;
 
 if (!window.Worker) {
   showMessage("Your browser does not support web workers :(", true, false);
@@ -64,6 +66,7 @@ for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP, INPUT_
   input.previousElementSibling.tabIndex = -1;
   input.nextElementSibling.tabIndex = -1;
 }
+document.getElementById("StopButton").onclick = stop;
 
 initTable("MainTable", MAIN_TABLE_COLUMNS);
 if (DEBUG_SINGLE_SOLUTION) {
@@ -115,43 +118,31 @@ function calculate() {
   //     myWorker.postMessage(solution);
   //   }
   // }, LOW_FIDELITY_TIMEOUT));
-  showMessage("Calculating...", false, true);
+  showMessage("Calculating...", false, true, false);
   document.getElementById("Results").classList.add("blurred");
+  document.getElementById("InterruptIndicator").classList.add("hidden");
+}
+
+function stop() {
+  if (myWorker) myWorker.terminate();
+  showMessage(resultMessage, false, false, false);
+  document.getElementById("InterruptIndicator").classList.remove("hidden");
 }
 
 function render(workerMessage) {
   let solution = workerMessage.data;
   if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestGoldCost);
   if (!solution.bestSteps.length) {
-    showMessage("Cannot find any useful steps!", true, false);
+    showMessage("Cannot find any useful steps!", true, false, false);
     return;
   }
 
-  showMessage("Refining...", false, true);
+  showMessage("Refining...", false, true, solution.time > STOP_THRESHOLD);
   document.getElementById("Results").classList.remove("blurred");
 
+  updateResultMessage(solution);
   if (solution.final) {
-    primarySearchDone = true;
-    if (solution.bestQuality >= solution.targetQuality) {
-      if (solution.bestLevel >= solution.targetLevel) {
-        if (
-          solution.bestSteps.length > 1 &&
-          solution.bestSteps[solution.bestSteps.length - 2].quality == 10
-        ) {
-          showMessage("Reached quality 10 and level " + solution.targetLevel + ", needed extra steps after quality 10", false, false);
-        } else {
-          showMessage("Reached quality 10 and level " + solution.targetLevel + "!", false, false);
-        }
-      } else {
-        showMessage("Reached quality 10 but couldn't reach level " + solution.targetLevel + " :(", false, false);
-      }
-    } else {
-      if (solution.bestLevel >= solution.targetLevel) {
-        showMessage("Reached level " + solution.targetLevel + " but couldn't reach quality 10 :(", false, false);
-      } else {
-        showMessage("Could not reach quality 10 or level " + solution.targetLevel + " :(", false, false);
-      }
-    }
+    showMessage(resultMessage, false, false, false);
   }
 
   let troopCountDiv = document.getElementById("TroopCounts");
@@ -189,24 +180,45 @@ function render(workerMessage) {
 
   document.getElementById("TotalCostContainer").classList.remove("hidden");
   document.getElementById("TotalCost").innerHTML = solution.bestGoldCost;
-  if (solution.lowFidelity) {
-    document.getElementById("LowFidelityIndicator").classList.remove("hidden");
-  } else {
-    document.getElementById("LowFidelityIndicator").classList.add("hidden");
+}
+
+function updateResultMessage(solution) {
+  if (solution.bestQuality >= solution.targetQuality) {
+    if (solution.bestLevel >= solution.targetLevel) {
+      if (solution.bestSteps.length > 1 &&
+        solution.bestSteps[solution.bestSteps.length - 2].quality == 10) {
+        resultMessage = "Reached quality 10 and level " + solution.targetLevel + ", needed extra steps after quality 10";
+      }
+      else {
+        resultMessage = "Reached quality 10 and level " + solution.targetLevel + "!";
+      }
+    }
+    else {
+      resultMessage = "Reached quality 10 but couldn't reach level " + solution.targetLevel + " :(";
+    }
+  }
+  else {
+    if (solution.bestLevel >= solution.targetLevel) {
+      resultMessage = "Reached level " + solution.targetLevel + " but couldn't reach quality 10 :(";
+    }
+    else {
+      resultMessage = "Could not reach quality 10 or level " + solution.targetLevel + " :(";
+    }
   }
 }
 
-function showMessage(message, hideTable, showSpinner) {
+function showMessage(message, hideTable, showSpinner, showStopButton) {
   if (message) document.getElementById("Message").innerHTML = message;
-  if (hideTable) {
-    document.getElementById("Results").classList.add("hidden");
+  toggleElement("Results", !hideTable);
+  toggleElement("StopButton", showStopButton);
+  document.getElementById("Spinner").style.display = showSpinner ? "inline-block" : "none";
+}
+
+function toggleElement(elementId, status) {
+  if (status) {
+    document.getElementById(elementId).classList.remove("hidden");
   } else {
-    document.getElementById("Results").classList.remove("hidden");
-  }
-  if (showSpinner) {
-    document.getElementById("Spinner").style.display = "inline-block";
-  } else {
-    document.getElementById("Spinner").style.display = "none";
+    document.getElementById(elementId).classList.add("hidden");
   }
 }
 

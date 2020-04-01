@@ -1,27 +1,27 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
+const MAX_REFINEMENT_LEVEL = 2;
 const BUDGET_MAX = [200, 200, 999, 999, 999, 999];
-const RNG_MIN = [10, 10, 20, 10, 0, 0];
-const RNG_MAX = [10, 15, 40, 30, 10, 8];
-const RNG_IN_LEVEL_MIN = 0;
-const RNG_IN_LEVEL_MAX = 40;
-const RNG_TARGET_LEVEL_MIN = 100;
-const RNG_TARGET_LEVEL_MAX = 100;
-const RNG_IN_QUALITY_MIN = 1;
-const RNG_IN_QUALITY_MAX = 4;
 const MAX_GOLD = 1000000000;
 const MAX_DEPTH = 1000;
 const UPDATE_INTERVAL = 3000;
 var levelXp = [];
 var allCombos = [[], [], []];
 var lastUpdateTime;
-var bestSolution;
 const SEARCH_OPTIONS = [
-  { refinementLevel: 0, toLevel: true, resort: false, skipLow: false },
-  { refinementLevel: 1, toLevel: true, resort: false, skipLow: false },
-  { refinementLevel: 2, toLevel: true, resort: false, skipLow: false }
+  { refinementLevel: 0, toLevel: true, resort: false},
+  { refinementLevel: 1, toLevel: true, resort: false},
+  { refinementLevel: 2, toLevel: true, resort: false}
 ];
+const RNG_MIN = [0, 10, 20, 10, 0, 0];
+const RNG_MAX = [0, 200, 200, 100, 100, 100];
+const RNG_IN_LEVEL_MIN = 0;
+const RNG_IN_LEVEL_MAX = 0;
+const RNG_TARGET_LEVEL_MIN = 100;
+const RNG_TARGET_LEVEL_MAX = 500;
+const RNG_IN_QUALITY_MIN = 5;
+const RNG_IN_QUALITY_MAX = 10;
 
 fillXpTable();
 makeCombos();
@@ -37,8 +37,10 @@ onmessage = function(message) {
 
 function runTestIteration(solution) {
   resetSolution(solution);
-  // Randomize budget and target
+  solution.initialBudget = [...solution.budget];
+
   if (solution.runTests) {
+    // Randomize budget and target
     for (let t = 0; t < solution.budget.length; t++) {
       solution.budget[t] = Math.floor(
         Math.random() * (RNG_MAX[t] - RNG_MIN[t]) + RNG_MIN[t]
@@ -59,36 +61,32 @@ function runTestIteration(solution) {
     solution.targetLevel = Math.floor(
       Math.random() * (RNG_TARGET_LEVEL_MAX - RNG_TARGET_LEVEL_MIN) + RNG_TARGET_LEVEL_MIN
     );
-    console.log(solution);
   }
-  solution.initialBudget = [...solution.budget];
 
   if (!solution.runTests) {
-    for (let refinementLevel = 0; refinementLevel <= 2; refinementLevel++) {
+    for (let refinementLevel = 0; refinementLevel <= MAX_REFINEMENT_LEVEL; refinementLevel++) {
       if (DEBUG) console.log("Starting refinement level " + refinementLevel + " with " + allCombos[SEARCH_OPTIONS[refinementLevel].refinementLevel].length + " combos");
       findSolution(solution, SEARCH_OPTIONS[refinementLevel]);
       if (DEBUG) console.log("Done with refinement level " + refinementLevel + ", best solution so far:");
       if (DEBUG) console.log(solution);
-      postMessage(bestSolution);
+      postMessage(solution);
     }
   } else {
-    findSolution(solution, PRIMARY_SEARCH_OPTIONS);
-    if (!solution.runSecondarySearch) {
-      solution.final = true;
-      return solution;
-    }
-    let secondarySolution = Object.assign({}, solution);
-    resetSolution(secondarySolution);
-    findSolution(secondarySolution, SECONDARY_SEARCH_OPTIONS);
-    solution.secondarySolution = secondarySolution;
-    solution.secondaryTime = secondarySolution.time;
-    if (solution.bestQuality >= secondarySolution.bestQuality && solution.bestLevel >= secondarySolution.bestLevel) {
-      solution.quickCostDiff = solution.bestCost - secondarySolution.bestCost;
-    } else {
-      solution.quickCostDiff =
-        solution.bestQuality + "->" + secondarySolution.bestQuality + ", "
-        + solution.bestLevel + "->" + secondarySolution.bestLevel + ", "
-        + solution.bestCost + "->" + secondarySolution.bestCost;
+    findSolution(solution, SEARCH_OPTIONS[0]);
+    if (solution.runSecondarySearch) {
+      let secondarySolution = Object.assign({}, solution);
+      resetSolution(secondarySolution);
+      findSolution(secondarySolution, SEARCH_OPTIONS[1]);
+      solution.secondarySolution = secondarySolution;
+      solution.secondaryTime = secondarySolution.time;
+      if (solution.bestQuality >= secondarySolution.bestQuality && solution.bestLevel >= secondarySolution.bestLevel) {
+        solution.quickCostDiff = solution.bestCost - secondarySolution.bestCost;
+      } else {
+        solution.quickCostDiff =
+          solution.bestQuality + "->" + secondarySolution.bestQuality + ", "
+          + solution.bestLevel + "->" + secondarySolution.bestLevel + ", "
+          + solution.bestCost + "->" + secondarySolution.bestCost;
+      }
     }
   }
   solution.final = true;
@@ -96,6 +94,7 @@ function runTestIteration(solution) {
 }
 
 function resetSolution(solution) {
+  solution.startTime = new Date().getTime();
   solution.reachedQuality = false;
   solution.reachedLevel = false;
   solution.steps = [];
@@ -114,7 +113,6 @@ function resetSolution(solution) {
 }
 
 function findSolution(solution, options) {
-  solution.startTime = new Date().getTime();
   lastUpdateTime = solution.startTime;
   solution.combos = allCombos[options.refinementLevel];
   search(0, 0, solution, options);
@@ -140,14 +138,12 @@ function prepSolution(options, solution) {
 }
 
 function search(startCombo, depth, solution, options) {
-  //console.log("Start combo: " + startCombo + " at depth " + depth);
   if (new Date().getTime() - lastUpdateTime > UPDATE_INTERVAL) {
     lastUpdateTime = new Date().getTime();
     prepSolution(options, solution);
-    postMessage(bestSolution);
+    postMessage(solution);
   }
   for (let comboNumber = startCombo; comboNumber < solution.combos.length; comboNumber++) {
-    //console.log("comboNumber: " + comboNumber);
     var reachedQuality = false;
     var reachedLevel = false;
     solution.iterations++;
@@ -155,10 +151,7 @@ function search(startCombo, depth, solution, options) {
     if (solution.steps[depth]) {
       subtractFromTotal(solution, solution.combos[solution.steps[depth].combo]);
     }
-    solution.steps[depth] = {
-      combo: comboNumber,
-      comboId: solution.combos[comboNumber].id
-    };
+    solution.steps[depth] = {combo: comboNumber, comboId: solution.combos[comboNumber].id};
     solution.lastInsert = depth;
     addToTotal(solution, solution.combos[comboNumber]);
 
@@ -208,7 +201,6 @@ function saveBestSolution(solution) {
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
   solution.bestCombos = solution.combos;
   solution.troopCounts = [...solution.troopTotals];
-  bestSolution = solution;
 }
 
 function calculateStats(solution) {
@@ -274,6 +266,9 @@ function budgetFits(solution) {
   }
   return true;
 }
+
+// Resorting
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function resortSolution(solution) {
   let permutations = permute(solution.bestSteps);
@@ -343,7 +338,8 @@ function permute(permutation) {
   return result;
 }
 
-/////////////////////////////////////////////////////////////////////////
+// Misc 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function countTroops(arr) {
   return arr.reduce(function(acc, curr) {
@@ -397,7 +393,7 @@ function makeCombos() {
     combo.percent = combo.troops.reduce(sumPercent, 0);
     combo.xp = combo.troops.reduce(sumXp, 0);
     combo.counts = countTroops(combo.troops);
-    for (let refinementLevel = 0; refinementLevel <= 2; refinementLevel++) {
+    for (let refinementLevel = 0; refinementLevel <= MAX_REFINEMENT_LEVEL; refinementLevel++) {
       if (template[1] <= refinementLevel) {
         allCombos[refinementLevel].push(combo);
       }

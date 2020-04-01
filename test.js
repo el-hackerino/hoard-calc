@@ -1,13 +1,12 @@
 /* eslint-disable no-undef */
 const TEST_ITERATIONS = 1000;
-const RUN_SECONDARY_SEARCH = 1;
+const RUN_SECONDARY_SEARCH = 0;
 const RENDER_DIFF_ONLY = 0;
 
 const INITIAL_XP = 0;
 const TROOP_COST_FACTOR = 0;
 const TARGET_QUALITY = 10;
-const TARGET_LEVEL = 100;
-  
+
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
 var TEST_TABLE_COLUMNS, TEST_TABLE_ATTRIBUTES;
 if (RUN_SECONDARY_SEARCH) {
@@ -28,16 +27,17 @@ if (window.Worker) {
 
   const myWorker = new Worker("worker.js");
   myWorker.onmessage = render;
+
   let solution = {
     runTests: 1,
     numTests: TEST_ITERATIONS,
     runSecondarySearch: RUN_SECONDARY_SEARCH,
     initialXp: INITIAL_XP,
-    targetLevel: TARGET_LEVEL,
     targetQuality: TARGET_QUALITY,
     troopCostFactor: TROOP_COST_FACTOR,
     budget: [0, 0, 0, 0, 0, 0]
   };
+
   console.log("Calculating...");
   myWorker.postMessage(solution);
 } else {

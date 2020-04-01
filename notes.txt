@@ -5,24 +5,15 @@ skipping combos 0 and 1 after a few steps is a major perf boost. when to use it?
 - low level, low cost factor (0 only), sufficient high-level troops (determine amount empirically)
 - also find bounds for low level and low cost factor empirically
 
-slow but actually uses c and r: 100,70,20,10,5,1 0,1,0,110 (factor 1)
-
 give up on refinement if it takes too long? Maybe just add a stop button?
 
 2 scenarios: only care about 10/100 or want high levels and don't care about quality?
 
-limit max budget for purses + coins unless going for a high level (where lo-fi is needed anyway)
-
-idea: two stages of warnings - red when lo-fi, yellow when unfinished hi-fi
-
 reevaluate troop cost factor values
-scrap slider? why ever save troops? can limit budget manually -> sometimes adding sacred treasure is inefficient
-alt: slider actually also increses purse/ring budget
 
-idea for refinement: add combos to calc gradually until too slow
+scrap slider? why ever save troops? can limit budget manually -> sometimes adding sacred treasure is inefficient
 
 help:
-
 how does refinement work?
 how does saving treasure work?
 how to improve performance?
@@ -32,10 +23,32 @@ are purses/rings worth using at the beginning?
   to get just a few genie's lamps or sacred treasures can save hundreds of thousands of gold.
 only if you are low on higher-value troops.
 
-
 verify:
-- skipping combos 0+1 after a few steps (or just limiting the budget?) if enough better troops - formula?
-- why first solution shown is alwazs some 3k 1step thing
+- why first solution shown is always some 3k 1step thing
 
-check solution.troopCounts vs troopTotals
-recheck large car width vs main div
+
+
+slow but actually uses c and r: 100,70,20,10,5,1 0,1,0,110 (factor 1)
+
+Combo	Troops	Freq	Slow13	KKKK	556	
+5	  PPPPP	380	x
+31	SS	  253	x
+19	SKK	   66	
+12	KKKKK	 29	x
+14	GKKP   16	
+20	SGP	   13	
+16	GGPP	 12	
+6	  KPPPP	  9	
+26	SGG	    8	
+17	GGKK	5	
+22	GGGGG	5	x
+7	  KKPPR	4	
+18	GGGR	4	
+28	SSSSS	4	x
+25	GGGG	3	
+29	SSSS	3	
+21	GGGGK	2	
+15	GKKK	1	
+23	GGGK	1	
+24	SGGG	1	
+30	SSS	1	

@@ -108,12 +108,16 @@
             </div>
         </form>
 
-        <div id="MessageContainer" class="centered"><span id="Spinner" class="ringSpinner"></span> <span id="Message"></span></div>
+        <div id="MessageContainer" class="centered">
+            <span id="Spinner" class="ringSpinner"></span>
+            <span id="Message"></span>
+            <button id="StopButton">Stop</button>
+        </div>
         <div id="Results">
             <div id="TotalCostContainer" class="centered">
                 <span id="TotalCostLabel">Total gold cost: </span>
                 <span id="TotalCost"></span>
-                <img id="LowFidelityIndicator" src="images/warning.png" title="Low fidelity mode to improve performance.">
+                <img id="InterruptIndicator" src="images/warning.png" title="Calculation was interrupted">
             </div>
             <div id="TroopCountContainer" class="centered">
                 <div id="TroopCounts" class="troopCounts"></div>
@@ -130,8 +134,9 @@
                     function (c) {
                         return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
                     }));
-            </script>. Feedback is welcome!<br>
-            (find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>)<br>
+            </script>. Discord: El Duderino#1966<br>
+            Feedback is welcome!<br>
+            Find me on the <a href="https://discord.gg/qcgPh7a">Throne of Odin Discord server</a>.<br>
             Gems of War and related assets &copy; Infinity Plus Two.<br>
         </div>
 
