@@ -51,7 +51,7 @@ function render(message) {
   solutions.push(solution);
   // Count used combos
   let detailsFromSolution = RUN_SECONDARY_SEARCH ? solution.secondarySolution : solution;
-  let comboCounts = detailsFromSolution.comboCounts;
+  let comboCounts = detailsFromSolution.bestComboCounts;
   for (let c = 0; c < comboCounts.length; c++) {
     if (comboCounts[c]) {
       totalComboCounts[c] = totalComboCounts[c]  ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];

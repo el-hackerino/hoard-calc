@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 const DEBUG_SINGLE_SOLUTION = 0;
 const TARGET_QUALITY = 10;
-const LOW_FIDELITY_TIMEOUT = 500000;
 
 const TROOP_COST_FACTORS = [0, 100, 150, 200, 500, 1000, 5000, 20000, 100000];
 const TROOP_INPUTS = [
@@ -123,7 +122,6 @@ function calculate() {
 function render(workerMessage) {
   let solution = workerMessage.data;
   if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestGoldCost);
-  if (DEBUG) console.log(solution);
   if (!solution.bestSteps.length) {
     showMessage("Cannot find any useful steps!", true, false);
     return;
