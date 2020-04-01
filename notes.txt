@@ -1,4 +1,6 @@
 
+calculate sum of available xp against requested level, only run slow mode if close
+looks like more than 5 rings at start are unlikely unless we're really squeezing
 
 skipping combos 0 and 1 after a few steps is a major perf boost. when to use it?
 - high target levels need quick list anyway

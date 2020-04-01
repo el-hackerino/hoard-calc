@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const DEBUG_SINGLE_SOLUTION = 0;
 const TARGET_QUALITY = 10;
-const STOP_THRESHOLD = 4000;
+const STOP_THRESHOLD = 10000;
 
 const TROOP_COST_FACTORS = [0, 100, 150, 200, 500, 1000, 5000, 20000, 100000];
 const TROOP_INPUTS = [
@@ -73,15 +73,10 @@ if (DEBUG_SINGLE_SOLUTION) {
   initTable("MainTable2", MAIN_TABLE_COLUMNS);
 }
 var myWorker;
-// var timeouts = [];
 calculate();
 
 function calculate() {
   if (DEBUG) console.log("Calculating.........................................................");
-  // for (let timeout of timeouts) {
-  //   clearTimeout(timeout);
-  // }
-  // timeouts = [];
   if (Number(INPUT_QUALITY.value) >= TARGET_QUALITY
     && Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
     showMessage("No need to upgrade!", true, false);
@@ -104,20 +99,10 @@ function calculate() {
     initialXp: Number(INPUT_XP.value),
     targetLevel: Number(INPUT_TARGET_LEVEL.value),
     targetQuality: TARGET_QUALITY,
-    troopCostFactor: TROOP_COST_FACTORS[Number(INPUT_TROOP_COST_FACTOR.value)]
+    troopCostFactor: TROOP_COST_FACTORS[Number(INPUT_TROOP_COST_FACTOR.value)],
+    maxRefinementLevel: MAX_REFINEMENT_LEVEL
   };
   myWorker.postMessage(solution);
-  // timeouts.push(setTimeout(function() {
-  //   if (DEBUG) console.log("Timeout!");
-  //   if (!primarySearchDone) {
-  //     if (DEBUG) console.log("Low fidelity!");
-  //     if (myWorker) myWorker.terminate();
-  //     myWorker = new Worker("worker.js");
-  //     myWorker.onmessage = render;
-  //     solution.secondarySearch = 1;
-  //     myWorker.postMessage(solution);
-  //   }
-  // }, LOW_FIDELITY_TIMEOUT));
   showMessage("Calculating...", false, true, false);
   document.getElementById("Results").classList.add("blurred");
   document.getElementById("InterruptIndicator").classList.add("hidden");
@@ -186,23 +171,23 @@ function updateResultMessage(solution) {
   if (solution.bestQuality >= solution.targetQuality) {
     if (solution.bestLevel >= solution.targetLevel) {
       if (solution.bestSteps.length > 1 &&
-        solution.bestSteps[solution.bestSteps.length - 2].quality == 10) {
-        resultMessage = "Reached quality 10 and level " + solution.targetLevel + ", needed extra steps after quality 10";
+        solution.bestSteps[solution.bestSteps.length - 2].quality == TARGET_QUALITY) {
+        resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + ", extra steps just to level up";
       }
       else {
-        resultMessage = "Reached quality 10 and level " + solution.targetLevel + "!";
+        resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + "!";
       }
     }
     else {
-      resultMessage = "Reached quality 10 but couldn't reach level " + solution.targetLevel + " :(";
+      resultMessage = "Reached quality " + TARGET_QUALITY + " but couldn't reach level " + solution.targetLevel + " :(";
     }
   }
   else {
     if (solution.bestLevel >= solution.targetLevel) {
-      resultMessage = "Reached level " + solution.targetLevel + " but couldn't reach quality 10 :(";
+      resultMessage = "Reached level " + solution.targetLevel + " but couldn't reach quality " + TARGET_QUALITY + " :(";
     }
     else {
-      resultMessage = "Could not reach quality 10 or level " + solution.targetLevel + " :(";
+      resultMessage = "Could not reach quality " + TARGET_QUALITY + " or level " + solution.targetLevel + " :(";
     }
   }
 }

@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
-const MAX_REFINEMENT_LEVEL = 2;
 const BUDGET_MAX = [200, 200, 999, 999, 999, 999];
 const MAX_GOLD = 1000000000;
 const MAX_DEPTH = 1000;
@@ -64,7 +63,7 @@ function runTestIteration(solution) {
   }
 
   if (!solution.runTests) {
-    for (let refinementLevel = 0; refinementLevel <= MAX_REFINEMENT_LEVEL; refinementLevel++) {
+    for (let refinementLevel = 0; refinementLevel <= solution.maxRefinementLevel; refinementLevel++) {
       if (DEBUG) console.log("Starting refinement level " + refinementLevel + " with " + allCombos[SEARCH_OPTIONS[refinementLevel].refinementLevel].length + " combos");
       findSolution(solution, SEARCH_OPTIONS[refinementLevel]);
       if (DEBUG) console.log("Done with refinement level " + refinementLevel + ", best solution so far:");
