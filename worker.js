@@ -9,9 +9,9 @@ var levelXp = [];
 var allCombos = [[], [], []];
 var lastUpdateTime;
 const SEARCH_OPTIONS = [
-  { refinementLevel: 0, toLevel: true, resort: false},
-  { refinementLevel: 1, toLevel: true, resort: false},
-  { refinementLevel: 2, toLevel: true, resort: false}
+  { refinementLevel: 1, maxLevel: 1, resort: 0},
+  { refinementLevel: 1, maxLevel: 1, resort: 0},
+  { refinementLevel: 2, maxLevel: 1, resort: 0}
 ];
 const RNG_MIN = [0, 10, 20, 10, 0, 0];
 const RNG_MAX = [0, 200, 200, 100, 100, 100];
@@ -62,6 +62,14 @@ function runTestIteration(solution) {
     );
   }
 
+  // Determine if we are in "spend everything" mode
+  let targetXp = levelXp[solution.targetLevel];
+  let availableXp = solution.budget.slice(2).reduce(( acc, cur, i ) => (acc + TROOPS[i + 2].xp * cur), 0);
+  let noRingsXp = availableXp / targetXp;
+  if (DEBUG) console.log("XP factor without rings: " + noRingsXp);
+  // Don't do the exhaustive refinement if we're good without rings
+  if (noRingsXp >= 1) solution.maxRefinementLevel = 1;
+
   if (!solution.runTests) {
     for (let refinementLevel = 0; refinementLevel <= solution.maxRefinementLevel; refinementLevel++) {
       if (DEBUG) console.log("Starting refinement level " + refinementLevel + " with " + allCombos[SEARCH_OPTIONS[refinementLevel].refinementLevel].length + " combos");
@@ -94,8 +102,8 @@ function runTestIteration(solution) {
 
 function resetSolution(solution) {
   solution.startTime = new Date().getTime();
-  solution.reachedQuality = false;
-  solution.reachedLevel = false;
+  solution.reachedQuality = solution.initialQuality >= solution.targetQuality;
+  solution.reachedLevel = solution.initialLevel >= solution.targetLevel;
   solution.steps = [];
   solution.bestSteps = [];
   solution.bestCost = MAX_GOLD;
@@ -165,7 +173,7 @@ function search(startCombo, depth, solution, options) {
           saveBestSolution(solution);
         }
       }
-      if (solution.sumLevel >= solution.targetLevel) {
+      if (solution.level >= solution.targetLevel) {
         reachedLevel = true;
         if (!solution.reachedLevel) {
           if (DEBUG) console.log("Reached target level!");
@@ -173,17 +181,23 @@ function search(startCombo, depth, solution, options) {
           saveBestSolution(solution);
         }
       }
-      // Improved quality but didn't reach goal
       if (solution.quality > solution.bestQuality && solution.quality <= solution.targetQuality) {
+        // Improved quality but didn't reach goal
         if (DEBUG) console.log("New quality: " + solution.quality);
         saveBestSolution(solution);
+      } else if (options.maxLevel && solution.level > solution.bestLevel && solution.level <= solution.targetLevel) {
+        // Improved level but didn't reach goal
+        if (DEBUG) console.log("New level: " + solution.level);
+        saveBestSolution(solution);
+      } else if (solution.sumCost < solution.bestCost
+        && solution.quality >= solution.bestQuality
+        && (!options.maxLevel || solution.level >= solution.bestLevel)
         // Improved cost, same or higher quality, no goal change
-      } else if (solution.sumCost < solution.bestCost && solution.quality >= solution.bestQuality
         && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost + "(" + solution.sumGoldCost + ")");
         saveBestSolution(solution);
       }
-      if (!reachedQuality || (options.toLevel && !reachedLevel && depth < MAX_DEPTH)) {
+      if (!reachedQuality || (!reachedLevel && depth < MAX_DEPTH)) {
         search(comboNumber, depth + 1, solution, options);
       }
     }
@@ -194,7 +208,7 @@ function search(startCombo, depth, solution, options) {
 
 function saveBestSolution(solution) {
   solution.bestQuality = solution.quality;
-  solution.bestLevel = solution.sumLevel;
+  solution.bestLevel = solution.level;
   solution.bestCost = solution.sumCost;
   solution.bestGoldCost = solution.sumGoldCost;
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
@@ -233,7 +247,7 @@ function calculateStats(solution) {
   step.extraXp = step.sumXp - levelXp[step.level];
   solution.quality = step.quality;
   solution.sumXp = step.sumXp;
-  solution.sumLevel = step.level;
+  solution.level = step.level;
   solution.sumCost = step.sumCost;
   solution.sumGoldCost = step.sumGoldCost;
 }
@@ -269,7 +283,10 @@ function budgetFits(solution) {
 // Resorting
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// TODO: Can't deal with different combo lists
 function resortSolution(solution) {
+  if (!solution.bestSteps) return;
+  console.log("Permutations: " + solution.bestSteps.length + "!");
   let permutations = permute(solution.bestSteps);
   let bestCost = MAX_GOLD;
   let bestPerm;
@@ -348,7 +365,7 @@ function countTroops(arr) {
 }
 
 function fillXpTable() {
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i <= 1000; i++) {
     levelXp[i] = 0.5 * i + 0.5 * i * i;
   }
 }
@@ -393,7 +410,7 @@ function makeCombos() {
     combo.xp = combo.troops.reduce(sumXp, 0);
     combo.counts = countTroops(combo.troops);
     for (let refinementLevel = 0; refinementLevel <= MAX_REFINEMENT_LEVEL; refinementLevel++) {
-      if (template[1] <= refinementLevel) {
+      if (template[1].includes(refinementLevel)) {
         allCombos[refinementLevel].push(combo);
       }
     }

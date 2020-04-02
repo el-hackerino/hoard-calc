@@ -118,7 +118,7 @@ function render(workerMessage) {
   let solution = workerMessage.data;
   if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestGoldCost);
   if (!solution.bestSteps.length) {
-    showMessage("Cannot find any useful steps!", true, false, false);
+    if (solution.final) showMessage("Cannot find any useful steps!", true, false, false);
     return;
   }
 
@@ -127,6 +127,7 @@ function render(workerMessage) {
 
   updateResultMessage(solution);
   if (solution.final) {
+
     showMessage(resultMessage, false, false, false);
   }
 
@@ -170,13 +171,13 @@ function render(workerMessage) {
 function updateResultMessage(solution) {
   if (solution.bestQuality >= solution.targetQuality) {
     if (solution.bestLevel >= solution.targetLevel) {
-      if (solution.bestSteps.length > 1 &&
-        solution.bestSteps[solution.bestSteps.length - 2].quality == TARGET_QUALITY) {
-        resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + ", extra steps just to level up";
-      }
-      else {
-        resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + "!";
-      }
+      // if (solution.bestSteps.length > 1 &&
+      //   solution.bestSteps[solution.bestSteps.length - 2].quality == TARGET_QUALITY) {
+      //   resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + ", extra steps just to level up";
+      // }
+      // else {
+      resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + "!";
+      // }
     }
     else {
       resultMessage = "Reached quality " + TARGET_QUALITY + " but couldn't reach level " + solution.targetLevel + " :(";
