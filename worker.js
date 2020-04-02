@@ -9,7 +9,7 @@ var levelXp = [];
 var allCombos = [[], [], []];
 var lastUpdateTime;
 const SEARCH_OPTIONS = [
-  { refinementLevel: 1, maxLevel: 1, resort: 0},
+  { refinementLevel: 0, maxLevel: 1, resort: 0},
   { refinementLevel: 1, maxLevel: 1, resort: 0},
   { refinementLevel: 2, maxLevel: 1, resort: 0}
 ];
@@ -185,7 +185,7 @@ function search(startCombo, depth, solution, options) {
         // Improved quality but didn't reach goal
         if (DEBUG) console.log("New quality: " + solution.quality);
         saveBestSolution(solution);
-      } else if (options.maxLevel && solution.level > solution.bestLevel && solution.level <= solution.targetLevel) {
+      } else if (options.maxLevel && solution.level > solution.bestLevel && !reachedLevel && reachedQuality) {
         // Improved level but didn't reach goal
         if (DEBUG) console.log("New level: " + solution.level);
         saveBestSolution(solution);
