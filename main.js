@@ -169,25 +169,25 @@ function render(workerMessage) {
 }
 
 function updateResultMessage(solution) {
-  if (solution.bestQuality >= solution.targetQuality) {
+  if (solution.initialQuality >= solution.targetQuality) {
     if (solution.bestLevel >= solution.targetLevel) {
-      // if (solution.bestSteps.length > 1 &&
-      //   solution.bestSteps[solution.bestSteps.length - 2].quality == TARGET_QUALITY) {
-      //   resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + ", extra steps just to level up";
-      // }
-      // else {
-      resultMessage = "Reached quality " + TARGET_QUALITY + " and level " + solution.targetLevel + "!";
-      // }
+      resultMessage = "Reached level " + solution.targetLevel + "!";
+    } else {
+      resultMessage = "Could not reach level " + solution.targetLevel + " :(";
     }
-    else {
-      resultMessage = "Reached quality " + TARGET_QUALITY + " but couldn't reach level " + solution.targetLevel + " :(";
+  } else if (solution.bestQuality >= solution.targetQuality) {
+    resultMessage = "Reached quality " + TARGET_QUALITY;
+    if (solution.initialLevel >= solution.targetLevel) {
+      resultMessage += "!";
+    } else if (solution.bestLevel >= solution.targetLevel) {
+      resultMessage += " and level " + solution.targetLevel + "!";
+    } else {
+      resultMessage += " but couldn't reach level " + solution.targetLevel + " :(";
     }
-  }
-  else {
+  } else {
     if (solution.bestLevel >= solution.targetLevel) {
       resultMessage = "Reached level " + solution.targetLevel + " but couldn't reach quality " + TARGET_QUALITY + " :(";
-    }
-    else {
+    } else {
       resultMessage = "Could not reach quality " + TARGET_QUALITY + " or level " + solution.targetLevel + " :(";
     }
   }

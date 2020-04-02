@@ -1,10 +1,7 @@
 
 give up on refinement if it takes too long? Maybe just add a stop button?
 
-reevaluate troop cost factor values
-
-scrap slider? why ever save troops? can limit budget manually -> sometimes adding sacred treasure is inefficient
-
+improve "use all treasure" case: separate logic that strings everything together? Stop when used all in solution?
 
 
 help:
