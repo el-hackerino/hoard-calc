@@ -4,7 +4,6 @@ const RUN_SECONDARY_SEARCH = 0;
 const RENDER_DIFF_ONLY = 0;
 
 const INITIAL_XP = 0;
-const TROOP_COST_FACTOR = 0;
 const TARGET_QUALITY = 10;
 
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
@@ -34,7 +33,6 @@ if (window.Worker) {
     runSecondarySearch: RUN_SECONDARY_SEARCH,
     initialXp: INITIAL_XP,
     targetQuality: TARGET_QUALITY,
-    troopCostFactor: TROOP_COST_FACTOR,
     budget: [0, 0, 0, 0, 0, 0]
   };
 
@@ -46,7 +44,7 @@ if (window.Worker) {
 
 function render(message) {
   let solution = message.data;
-  if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestGoldCost);
+  if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestCost);
   if (!solution.final) return;
   solutions.push(solution);
   // Count used combos
@@ -128,7 +126,7 @@ function renderTestResults(solution) {
         td.innerHTML += comboString;
       }
     } else if (attribute == "diffPercent" && solution.quickCostDiff > 0) {
-      td.textContent = parseInt((solution.quickCostDiff / solution.secondarySolution.bestGoldCost) * 100);
+      td.textContent = parseInt((solution.quickCostDiff / solution.secondarySolution.bestCost) * 100);
     } else {
       td.textContent = solution[attribute];
     }

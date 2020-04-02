@@ -34,9 +34,6 @@
   .wideInput {
     width: 3em;
   }
-  .slider {
-    width: 5em;
-  }
   /* Cards */
   .largeCard {
     border-width: 2px 0 6px 0;
@@ -91,9 +88,6 @@
   }
   .wideInput {
     width: 3em;
-  }
-  .slider {
-    width: 6em;
   }
   /* Cards */
   .largeCard {
@@ -156,9 +150,6 @@
   }
   .wideInput {
     width: 3em;
-  }
-  .slider {
-    width: 7em;
   }
   /* Cards */
   .largeCard {
@@ -257,35 +248,6 @@ input::-webkit-inner-spin-button {
   vertical-align: middle;
   align-items: center;
   justify-content: center;
-}
-
-.sliderLabel {
-  padding: 17px 2px 0 2px;
-  display: inline;
-}
-.sliderIcon {
-  height: 20px;
-  width: 20px;
-  vertical-align: middle;
-  transform: scaleX(-1);
-}
-.slider {
-  vertical-align: middle;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 2px;
-  cursor: pointer;
-  margin: -4px;
-}
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  background: #eee;
-  border-radius: 100%;
-  border: 1px solid #888;
-  cursor: pointer;
 }
 input[type="checkbox"] {
   vertical-align: middle;
@@ -387,7 +349,7 @@ th {
   margin: 0 auto;
 }
 #MessageContainer {
-  margin: 10px 0;
+  margin: 25px 0 10px 0;
 }
 #StopButton {
   background-color: black;

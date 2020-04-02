@@ -107,7 +107,6 @@ function resetSolution(solution) {
   solution.steps = [];
   solution.bestSteps = [];
   solution.bestCost = MAX_GOLD;
-  solution.bestGoldCost = MAX_GOLD;
   solution.bestLevel = solution.initialLevel;
   solution.bestQuality = solution.initialQuality;
   solution.bestComboCounts = [];
@@ -194,7 +193,7 @@ function search(startCombo, depth, solution, options) {
         && (!options.maxLevel || solution.level >= solution.bestLevel)
         // Improved cost, same or higher quality, no goal change
         && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
-        if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost + "(" + solution.sumGoldCost + ")");
+        if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
       if (!reachedQuality || (!reachedLevel && depth < MAX_DEPTH)) {
@@ -210,7 +209,6 @@ function saveBestSolution(solution) {
   solution.bestQuality = solution.quality;
   solution.bestLevel = solution.level;
   solution.bestCost = solution.sumCost;
-  solution.bestGoldCost = solution.sumGoldCost;
   solution.bestSteps = JSON.parse(JSON.stringify(solution.steps));
   solution.bestCombos = solution.combos;
   solution.troopCounts = [...solution.troopTotals];
@@ -218,20 +216,18 @@ function saveBestSolution(solution) {
 
 function calculateStats(solution) {
   let step = solution.steps[solution.lastInsert];
-  let prevQuality, prevXp, prevLevel, prevCost, prevGoldCost;
+  let prevQuality, prevXp, prevLevel, prevCost;
   if (solution.lastInsert == 0) {
     prevQuality = solution.initialQuality;
     prevXp = levelXp[solution.initialLevel] + solution.initialXp;
     prevLevel = solution.initialLevel;
     prevCost = 0;
-    prevGoldCost = 0;
   } else {
     let prevStep = solution.steps[solution.lastInsert - 1];
     prevQuality = prevStep.quality;
     prevXp = prevStep.sumXp;
     prevLevel = prevStep.level;
     prevCost = prevStep.sumCost;
-    prevGoldCost = prevStep.sumGoldCost;
   }
   step.quality = prevQuality;
   if (solution.combos[step.combo].percent >= 100 && prevQuality < 10) {
@@ -241,15 +237,12 @@ function calculateStats(solution) {
   step.level = getLevel(prevLevel, step.sumXp);
   step.cost = getCost(prevLevel, solution.combos[step.combo].troops.length);
 
-  step.troopCost = getTroopCost(solution.combos[step.combo].troops) * solution.troopCostFactor;
-  step.sumCost = prevCost + step.cost + step.troopCost;
-  step.sumGoldCost = prevGoldCost + step.cost;
+  step.sumCost = prevCost + step.cost;
   step.extraXp = step.sumXp - levelXp[step.level];
   solution.quality = step.quality;
   solution.sumXp = step.sumXp;
   solution.level = step.level;
   solution.sumCost = step.sumCost;
-  solution.sumGoldCost = step.sumGoldCost;
 }
 
 function addToTotal(solution, combo) {
@@ -303,7 +296,7 @@ function resortSolution(solution) {
     }
   }
   solution.bestSteps = bestPerm;
-  solution.bestGoldCost = bestCost;
+  solution.bestCost = bestCost;
   recalculate(solution);
 }
 
@@ -392,12 +385,6 @@ function getLevel(level, newXp) {
 
 function getCost(level, numTroops) {
   return (600 + 200 * level) * numTroops;
-}
-
-function getTroopCost(troopArray) {
-  return troopArray.reduce(function(total, troop) {
-    return total + TROOPS[troop].value;
-  }, 0);
 }
 
 function makeCombos() {

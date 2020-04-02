@@ -3,7 +3,6 @@ const DEBUG_SINGLE_SOLUTION = 0;
 const TARGET_QUALITY = 10;
 const STOP_THRESHOLD = 10000;
 
-const TROOP_COST_FACTORS = [0, 100, 150, 200, 500, 1000, 5000, 20000, 100000];
 const TROOP_INPUTS = [
   document.querySelector("#T1"),
   document.querySelector("#T2"),
@@ -16,14 +15,12 @@ const INPUT_LEVEL = document.querySelector("#Level");
 const INPUT_QUALITY = document.querySelector("#Quality");
 const INPUT_XP = document.querySelector("#Xp");
 const INPUT_TARGET_LEVEL = document.querySelector("#TargetLevel");
-const INPUT_TROOP_COST_FACTOR = document.querySelector("#TroopCostFactor");
 const ALL_INPUTS = [
   ...TROOP_INPUTS,
   INPUT_LEVEL,
   INPUT_QUALITY,
   INPUT_XP,
-  INPUT_TARGET_LEVEL,
-  INPUT_TROOP_COST_FACTOR,
+  INPUT_TARGET_LEVEL
 ];
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
@@ -53,7 +50,6 @@ document.getElementById("HelpButton").addEventListener("click", function() {
 for (let input of ALL_INPUTS) {
   input.onchange = calculate;
 }
-INPUT_TROOP_COST_FACTOR.oninput = calculate;
 for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP, INPUT_TARGET_LEVEL]) {
   input.previousElementSibling.addEventListener("click", function() {
     this.parentNode.querySelector("input[type=number]").stepDown();
@@ -99,7 +95,6 @@ function calculate() {
     initialXp: Number(INPUT_XP.value),
     targetLevel: Number(INPUT_TARGET_LEVEL.value),
     targetQuality: TARGET_QUALITY,
-    troopCostFactor: TROOP_COST_FACTORS[Number(INPUT_TROOP_COST_FACTOR.value)],
     maxRefinementLevel: MAX_REFINEMENT_LEVEL
   };
   myWorker.postMessage(solution);
@@ -116,7 +111,7 @@ function stop() {
 
 function render(workerMessage) {
   let solution = workerMessage.data;
-  if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestGoldCost);
+  if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestCost);
   if (!solution.bestSteps.length) {
     if (solution.final) showMessage("Cannot find any useful steps!", true, false, false);
     return;
@@ -165,7 +160,7 @@ function render(workerMessage) {
   }
 
   document.getElementById("TotalCostContainer").classList.remove("hidden");
-  document.getElementById("TotalCost").innerHTML = solution.bestGoldCost;
+  document.getElementById("TotalCost").innerHTML = solution.bestCost;
 }
 
 function updateResultMessage(solution) {
