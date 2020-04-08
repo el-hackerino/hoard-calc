@@ -1,7 +1,20 @@
+new logic:
 
-give up on refinement if it takes too long? Maybe just add a stop button?
+run string search
+if reached quality: make combo list with all combos from solution plus all "stringy" ones and run regular search with that
+  and the solution as budget
+  OR maybe
+  try squeezing the solution around to spread the troops a bit (not sure)
+else run regular search BUT if we can't reach more goals, keep the string solution
 
-improve "use all treasure" case: separate logic that strings everything together? Stop when used all in solution?
+
+
+can't reach anything -> string
+can reach level but string can't reach quality -> brute force lvl1, should be pretty fast
+can reach level and quality with string -> additional brute force IF have extra troops?
+Sometimes string can't reach Q but brute can't reach level (although in some cases both can be reached)! -> Add "ignore quality" option? how to reach both?
+
+
 
 
 help:
@@ -13,3 +26,11 @@ are purses/rings worth using at the beginning?
   (verify) unless you're low on high-value troops and are spending a lot of gold anyway. In such cases, waiting
   to get just a few genie's lamps or sacred treasures can save hundreds of thousands of gold.
 only if you are low on higher-value troops.
+
+
+maybe:
+add quality upgrade percentage display for <100%
+add "export link" with all values
+
+
+Scrapped the "Save rare treasure" slider. I decided that it wasn't clear how it worked and it was too inconsistent to be really useful.

@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-const DEBUG_SINGLE_SOLUTION = 0;
 const TARGET_QUALITY = 10;
 const STOP_THRESHOLD = 10000;
 
@@ -122,7 +121,6 @@ function render(workerMessage) {
 
   updateResultMessage(solution);
   if (solution.final) {
-
     showMessage(resultMessage, false, false, false);
   }
 
@@ -159,8 +157,8 @@ function render(workerMessage) {
     }
   }
 
-  document.getElementById("TotalCostContainer").classList.remove("hidden");
-  document.getElementById("TotalCost").innerHTML = solution.bestCost;
+  const totalCostId = DEBUG_SINGLE_SOLUTION ? solution.secondarySearch ? "TotalCost2" : "TotalCost" : "TotalCost2";
+  document.getElementById(totalCostId).innerHTML = solution.bestCost;
 }
 
 function updateResultMessage(solution) {
