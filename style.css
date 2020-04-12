@@ -6,8 +6,8 @@
   #Title {
     font-size: x-large;
   }
-  #TotalCostLabel,
-  #TotalCost {
+  .totalCostLabel,
+  .totalCost {
     font-size: larger;
   }
   /* Padding */
@@ -61,8 +61,8 @@
   input[type="number"] {
     font-size: medium;
   }
-  #TotalCostLabel,
-  #TotalCost {
+  .totalCostLabel,
+  .totalCost {
     font-size: larger;
   }
   /* Padding */
@@ -122,8 +122,8 @@
   .mainTable {
     font-size: medium;
   }
-  #TotalCostLabel,
-  #TotalCost {
+  .totalCostLabel,
+  .totalCost {
     font-size: x-large;
   }
   /* Padding */
@@ -295,7 +295,7 @@ input[type="checkbox"] {
   font-size: 0;
 }
 
-#TroopCounts {
+.troopCounts {
   margin: 0 auto 10px auto;
   width: max-content;
   display: -webkit-flex;
@@ -330,11 +330,11 @@ th {
 .mainTable tr:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.7);
 }
-#TotalCost {
+.totalCost {
   font-weight: 1000;
   color: #f4a220;
 }
-#TotalCostLabel, #TotalCost {
+.totalCostLabel, .totalCost {
   vertical-align: middle;
 }
 #InterruptIndicator {
@@ -404,4 +404,10 @@ th {
 }
 .highlight {
   color: hsl(0, 100%, 50%);
+}
+.highlightGreen {
+  color: #0a0;
+}
+.lowlight {
+  color: #666;
 }

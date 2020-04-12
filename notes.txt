@@ -11,11 +11,19 @@ else run regular search BUT if we can't reach more goals, keep the string soluti
 
 can't reach anything -> string
 can reach level but string can't reach quality -> brute force lvl1, should be pretty fast
-can reach level and quality with string -> additional brute force IF have extra troops?
+can reach level and quality with string -> additional brute force IF have extra troops? it definitely can be better
+
 Sometimes string can't reach Q but brute can't reach level (although in some cases both can be reached)! -> Add "ignore quality" option? how to reach both?
+50, 15, 5, 4, 8; 0, 1, 0, 120
+
+50,4,10,3,10; 0,1,0,118
+
+timeout doesnt work?
+0,33,169,29,15,14; 20,2,0,216
 
 
 
+- recheck label sizes on small screens
 
 help:
 how does refinement work?

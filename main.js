@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
-const TARGET_QUALITY = 10;
-const STOP_THRESHOLD = 10000;
+const SHOW_STOP_BUTTON_AFTER = 10000;
 
 const TROOP_INPUTS = [
   document.querySelector("#T1"),
@@ -63,9 +62,10 @@ for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP, INPUT_
 }
 document.getElementById("StopButton").onclick = stop;
 
-initTable("MainTable", MAIN_TABLE_COLUMNS);
+initTable("MainTable1", MAIN_TABLE_COLUMNS);
 if (DEBUG_SINGLE_SOLUTION) {
   initTable("MainTable2", MAIN_TABLE_COLUMNS);
+  initTable("MainTable3", MAIN_TABLE_COLUMNS);
 }
 var myWorker;
 calculate();
@@ -93,8 +93,6 @@ function calculate() {
     initialLevel: Number(INPUT_LEVEL.value),
     initialXp: Number(INPUT_XP.value),
     targetLevel: Number(INPUT_TARGET_LEVEL.value),
-    targetQuality: TARGET_QUALITY,
-    maxRefinementLevel: MAX_REFINEMENT_LEVEL
   };
   myWorker.postMessage(solution);
   showMessage("Calculating...", false, true, false);
@@ -116,7 +114,7 @@ function render(workerMessage) {
     return;
   }
 
-  showMessage("Refining...", false, true, solution.time > STOP_THRESHOLD);
+  showMessage("Refining...", false, true, solution.time > SHOW_STOP_BUTTON_AFTER);
   document.getElementById("Results").classList.remove("blurred");
 
   updateResultMessage(solution);
@@ -124,7 +122,8 @@ function render(workerMessage) {
     showMessage(resultMessage, false, false, false);
   }
 
-  let troopCountDiv = document.getElementById("TroopCounts");
+  const troopCountDivId = "TroopCounts" + solution.testType;
+  let troopCountDiv = document.getElementById(troopCountDivId);
   troopCountDiv.innerHTML = "";
   for (let [i, count] of solution.troopCounts.entries()) {
     if (!count) continue;
@@ -134,7 +133,7 @@ function render(workerMessage) {
     troopCountDiv.innerHTML += " x " + count + "&nbsp;&nbsp;&nbsp;";
   }
 
-  const tableId = DEBUG_SINGLE_SOLUTION ? solution.secondarySearch ? "MainTable2" : "MainTable" : "MainTable";
+  const tableId = "MainTable" + solution.testType;
   const table = clearTable(tableId);
 
   for (let [i, step] of solution.bestSteps.entries()) {
@@ -157,7 +156,7 @@ function render(workerMessage) {
     }
   }
 
-  const totalCostId = DEBUG_SINGLE_SOLUTION ? solution.secondarySearch ? "TotalCost2" : "TotalCost" : "TotalCost2";
+  const totalCostId = "TotalCost" + solution.testType;
   document.getElementById(totalCostId).innerHTML = solution.bestCost;
 }
 
