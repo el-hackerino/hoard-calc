@@ -4,6 +4,7 @@ const DEBUG_SINGLE_SOLUTION = 1;
 const DEBUG_MAXCOUNTS = 1;
 const MAX_REFINEMENT_LEVEL = 1;
 const TARGET_QUALITY = 10;
+const URL_SEPARATOR = "|";
 
 const TROOPS = [
   { shortName: "C", name: "Coin Purse",       percent: 5,  xp: 10 },
@@ -104,4 +105,13 @@ function clearTable(id) {
     table.removeChild(table.tFoot);
   }
   return table;
+}
+
+function createUrlParams(solution) {
+  let paramString = "";
+  for (let num of [...solution.budget, solution.initialLevel, solution.initialQuality, solution.initialXp, solution.targetLevel]) {
+    paramString += num + URL_SEPARATOR;
+  }
+  paramString = paramString.slice(0, paramString.length - 1);
+  return paramString;
 }

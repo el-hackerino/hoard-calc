@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
-const BUDGET_MAX = [0, 5, 40, 50, 35, 18];
+const BUDGET_MAX = [0, 3, 30, 40, 30, 18];
 const INITIAL_GOLD = 1000000000;
 const MAX_DEPTH = 20;
 const UPDATE_INTERVAL = 3000;

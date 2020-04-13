@@ -12,10 +12,9 @@ const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
 var TEST_TABLE_COLUMNS, TEST_TABLE_ATTRIBUTES;
 if (RUN_SECONDARY_SEARCH) {
   TEST_TABLE_COLUMNS = ["Budget", "In L", "In Q", "Target L", "Gold", "L",
-    "Q", "Time", "Gold 2", "L 2", "Q 2", "Time 2", "Diff", "Diff %", "Combos", "Combos 2"];
+    "Q", "Time", "Gold 2", "L 2", "Q 2", "Time 2", "Diff", "Diff %", "Combos"];
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel",
-    "bestQuality", "time", "bestCost2", "bestLevel2", "bestQuality2", "time2", "costDiff", "diffPercent", "combos",
-    "combos2"];
+    "bestQuality", "time", "bestCost2", "bestLevel2", "bestQuality2", "time2", "costDiff", "diffPercent", "combos2"];
 } else {
   TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Target Level", "Gold", "Level", "Quality", "Time", "Combos"];
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel", "bestQuality", "time", "combos"];
@@ -63,11 +62,11 @@ function render(message) {
   }
   let solution1 = currentSolutions[solution.id][COMPARE_SOLUTION_TYPE_1];
   let solution2 = currentSolutions[solution.id][COMPARE_SOLUTION_TYPE_2];
-  console.log("Received so far:");
-  console.log(solution1);
-  console.log(solution2);
+  if (DEBUG) console.log("Received so far:");
+  if (DEBUG) console.log(solution1);
+  if (DEBUG) console.log(solution2);
   if (!solution1 || !solution2 || !solution1.final || !solution2.final) {
-    console.log("Not done yet, returning");
+    if (DEBUG) console.log("Not done yet, returning");
     return;
   }
   if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestCost);
@@ -102,7 +101,7 @@ function render(message) {
         totalComboCounts[c] = totalComboCounts[c]  ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
       }
     }
-    console.log("Counted combos: " + totalComboCounts);
+    if (DEBUG) console.log("Counted combos: " + totalComboCounts);
     // Save max troop counts
     if (DEBUG_MAXCOUNTS) {
       for (let t = 0; t < detailsFromSolution.troopCounts.length; t++) {
@@ -155,11 +154,9 @@ function renderTestResults(solution1, solution2) {
   let tr = table.insertRow(-1);
   for (let attribute of TEST_TABLE_ATTRIBUTES) {
     let td = tr.insertCell(-1);
-    if (attribute == "budget") {
-      td.textContent = "";
-      for (let troopNr of solution1.budget) {
-        td.textContent += troopNr += ", ";
-      }
+    if (attribute == "initialBudget") {
+      td.innerHTML = "<a href=\"" + window.location.href.split("?")[0].replace("test", "index") + "?"
+        + createUrlParams(solution1) + "\">" + solution1.initialBudget + "</a>";
     } else if (attribute == "combos") {
       td.innerHTML = "";
       // for (let step of solution.bestSteps) {

@@ -74,20 +74,11 @@ function prepare() {
 }
 
 function processUrlParams() {
-  let params = window.location.search.slice(1).split("|");
+  let params = window.location.search.slice(1).split(URL_SEPARATOR);
   console.log(params);
   for (let [i, input] of ALL_INPUTS.entries()) {
     input.value = params[i];
   }
-}
-
-function createUrl(solution) {
-  let paramString = "";
-  for (let num of [...solution.budget, solution.initialLevel, solution.initialQuality, solution.initialXp, solution.targetLevel]) {
-    paramString += num + "|";
-  }
-  paramString = paramString.slice(0, paramString.length - 1);
-  document.getElementById("PermaLink").innerHTML = "<a href=\"" + window.location.href.split("?")[0] + "?" + paramString + "\">Link to this page</a>";
 }
 
 function calculate() {
@@ -115,11 +106,15 @@ function calculate() {
     initialXp: Number(INPUT_XP.value),
     targetLevel: Number(INPUT_TARGET_LEVEL.value),
   };
-  createUrl(solution);
+  updatePermaLink(createUrlParams(solution));
   myWorker.postMessage(solution);
   showMessage("Calculating...", false, true, false);
   document.getElementById("Results").classList.add("blurred");
   document.getElementById("InterruptIndicator").classList.add("hidden");
+}
+
+function updatePermaLink(paramString) {
+  document.getElementById("PermaLink").innerHTML = "<a href=\"" + window.location.href.split("?")[0] + "?" + paramString + "\">Link to this result</a>";
 }
 
 function stop() {
