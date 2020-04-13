@@ -1,28 +1,28 @@
-new logic:
-
-run string search
-if reached quality: make combo list with all combos from solution plus all "stringy" ones and run regular search with that
-  and the solution as budget
-  OR maybe
-  try squeezing the solution around to spread the troops a bit (not sure)
-else run regular search BUT if we can't reach more goals, keep the string solution
-
-
-
 can't reach anything -> string
 can reach level but string can't reach quality -> brute force lvl1, should be pretty fast
 can reach level and quality with string -> additional brute force IF have extra troops? it definitely can be better
 
-Sometimes string can't reach Q but brute can't reach level (although in some cases both can be reached)! -> Add "ignore quality" option? how to reach both?
+
+Sometimes string can't reach Q but brute can't reach level (although in some cases both can be reached)!
+ -> Add "ignore quality" option? how to reach both? actual new case of this?
+Probably need the checkbox for cases where we cant each level anyway
 50, 15, 5, 4, 8; 0, 1, 0, 120
 
 50,4,10,3,10; 0,1,0,118
 
-timeout doesnt work?
-0,33,169,29,15,14; 20,2,0,216
+high level, still improvement with BF:
+0,74,41,23,36,28	43	1	129
+0,20,80,95,61,38	64	1	130
+0,57,70,39,37,15	86	1	133	422000	152	9	 6	479800	153	10	14435	Q+			      5 11 22 22 22 22 22 22 22 
+0,71,27,76,41, 0	75	1	134	840000	153	10	2	720800	134	10	7639	119200	16		5 5 5 5 8 15 15 15 15 
+0,16,89,22,3,1	58	5	134	2154600	134	10	1340	273000	89	10	1711	1881600	689		5 5 5 5 11 
+took forever:
+0,18,49,88,29,8	52	2	125	434800	136	10	4	385400	125	10	60020	49400	12		0 5 13 15 22 22 22 22 
+0,95,64,21,50,7	32	1	118	269200	118	7	2	378600	118	10	41441	Q+			0 5 5 6 15 17 22 22 22 
+low level, timeout with BF:            
+0,89,71,96,34,14	46	4	125
 
-
-
+- if step 2 is worse, go back to result from 1; try to refine step 2 further overall
 - recheck label sizes on small screens
 
 help:

@@ -15,7 +15,7 @@
     padding: 15px 0 15px 0;
   }
   .mainTable td,
-  th {
+  .mainTable th {
     padding: 2px;
   }
   .cardCell {
@@ -76,7 +76,7 @@
     padding: 0px 8px;
   }
   .mainTable td,
-  th {
+  .mainTable th {
     padding: 4px;
   }
   /* Sizes */
@@ -137,7 +137,7 @@
     padding: 0px 15px;
   }
   .mainTable td,
-  th {
+  .mainTable th {
     padding: 3px 15px 3px 15px;
   }
   /* Sizes */
@@ -314,7 +314,7 @@ input[type="checkbox"] {
   width: max-content;
 }
 .mainTable td,
-th {
+.mainTable th {
   border: 0;
   width: max-content;
   text-align: center;
@@ -401,12 +401,22 @@ th {
   font-size: small;
   background-color: black;
   text-align: center;
+  border-collapse: collapse;
 }
-.highlight {
+.testTable td, .testTable th {
+  padding: 2px;
+}
+.testTable tr:nth-child(even) {
+  background-color: rgb(36, 36, 36);
+}
+.highlightRed {
   color: hsl(0, 100%, 50%);
 }
 .highlightGreen {
   color: #0a0;
+}
+.highlightBlue {
+  color: rgb(112, 164, 233);
 }
 .lowlight {
   color: #666;

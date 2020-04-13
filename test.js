@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const TEST_ITERATIONS = 1;
+const TEST_ITERATIONS = 1000;
 const RUN_SECONDARY_SEARCH = 1;
 const DETAILS_FROM_SOLUTION_TYPE = 3;
 const COMPARE_SOLUTION_TYPE_1 = 2;
@@ -11,20 +11,23 @@ const INITIAL_XP = 0;
 const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
 var TEST_TABLE_COLUMNS, TEST_TABLE_ATTRIBUTES;
 if (RUN_SECONDARY_SEARCH) {
-  TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Target Level", "Gold", "Level",
-    "Quality", "Time", "Gold 2", "Level 2", "Quality 2", "Time 2", "Diff", "Diff %", "Combos", "Combos 2", "Result", "Result 2"];
+  TEST_TABLE_COLUMNS = ["Budget", "In L", "In Q", "Target L", "Gold", "L",
+    "Q", "Time", "Gold 2", "L 2", "Q 2", "Time 2", "Diff", "Diff %", "Combos", "Combos 2"];
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel",
     "bestQuality", "time", "bestCost2", "bestLevel2", "bestQuality2", "time2", "costDiff", "diffPercent", "combos",
-    "slowCombos", "final", "final2"];
+    "combos2"];
 } else {
   TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Target Level", "Gold", "Level", "Quality", "Time", "Combos"];
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel", "bestQuality", "time", "combos"];
 }
+const IMPROVED_QUALITY = "Q+";
+const IMPROVED_LEVEL = "L+";
 let numSolutions = 0;
 let currentSolutions = [];
 let totalComboCounts = new Array(TEMPLATES.length).fill(0);
 let totalTime = 0;
 let totalsecondaryTime = 0;
+let maxTroopCounts = [];
 
 if (window.Worker) {
   initTable("ComboTable", COMBO_TABLE_COLUMNS);
@@ -49,13 +52,13 @@ if (window.Worker) {
 
 function render(message) {
   let solution = message.data;
-  console.log("Received:");
-  console.log(solution);
+  if (DEBUG) console.log("Received:");
+  if (DEBUG) console.log(solution);
   if (!currentSolutions[solution.id]) currentSolutions[solution.id] = [];
   if (solution.final) {
     currentSolutions[solution.id][solution.testType] = solution;
   } else {
-    console.log("Intermediate update, returning");
+    if (DEBUG) console.log("Intermediate update, returning");
     return;
   }
   let solution1 = currentSolutions[solution.id][COMPARE_SOLUTION_TYPE_1];
@@ -69,27 +72,16 @@ function render(message) {
   }
   if (DEBUG) console.log("Time: " + solution.time / 1000 + " s, " + solution.iterations + " iterations, best cost: " + solution.bestCost);
   numSolutions++;
-  // Count used combos
-  let detailsFromSolution = currentSolutions[solution.id][DETAILS_FROM_SOLUTION_TYPE];
-  if (detailsFromSolution) {
-    let comboCounts = detailsFromSolution.bestComboCounts;
-    for (let c = 0; c < comboCounts.length; c++) {
-      if (comboCounts[c]) {
-        totalComboCounts[c] = totalComboCounts[c]  ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
-      }
-    }
-  }
 
   // Calculate differences
-
-  if (solution1.bestQuality >= solution2.bestQuality
-    && (solution1.bestLevel >= solution1.targetLevel || solution1.bestLevel >= solution2.bestLevel)) {
-    solution1.costDiff = solution1.bestCost - solution2.bestCost;
-  } else {
-    solution1.costDiff =
-      solution1.bestQuality + "->" + solution2.bestQuality + ", "
-      + solution1.bestLevel + "->" + solution2.bestLevel + ", "
-      + solution1.bestCost + "->" + solution2.bestCost;
+  if (solution1.bestQuality == solution2.bestQuality) {
+    if (!solution1.reachedLevel && solution2.bestLevel > solution1.bestLevel) {
+      solution1.costDiff = IMPROVED_LEVEL;
+    } else {
+      solution1.costDiff = solution1.bestCost - solution2.bestCost;
+    }
+  } else if (solution2.bestQuality >= solution1.bestQuality) {
+    solution1.costDiff = IMPROVED_QUALITY;
   }
   solution1.final2 = solution2.final;
   solution1.time2 = solution2.time;
@@ -99,6 +91,27 @@ function render(message) {
 
   totalTime += solution1.time;
   totalsecondaryTime += solution2.time;
+
+  // Gather statistics
+  let detailsFromSolution = currentSolutions[solution.id][DETAILS_FROM_SOLUTION_TYPE];
+  if (detailsFromSolution && (solution1.costDiff > 0 || solution1.costDiff == IMPROVED_QUALITY || solution1.costDiff == IMPROVED_LEVEL)) {
+    // Count used combos
+    let comboCounts = detailsFromSolution.bestComboCounts;
+    for (let c = 0; c < comboCounts.length; c++) {
+      if (comboCounts[c]) {
+        totalComboCounts[c] = totalComboCounts[c]  ? totalComboCounts[c] + comboCounts[c] : comboCounts[c];
+      }
+    }
+    console.log("Counted combos: " + totalComboCounts);
+    // Save max troop counts
+    if (DEBUG_MAXCOUNTS) {
+      for (let t = 0; t < detailsFromSolution.troopCounts.length; t++) {
+        if (detailsFromSolution.troopCounts[t]) {
+          maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], detailsFromSolution.troopCounts[t]) : detailsFromSolution.troopCounts[t];
+        }
+      }
+    }
+  }
 
   renderComboStats(
     numSolutions,
@@ -130,15 +143,10 @@ function renderComboStats(numIterations, totalComboCounts, avgTime, avgSecondary
     td = tr.insertCell(-1);
     td.textContent = TEMPLATES[Number(key)][1] ? "" : "x";
   }
-
-  let tfoot = document.createElement("tfoot");
-  let td = document.createElement("td");
-  td.colSpan = 4;
-  td.textContent = numIterations + " iterations, avg time: " + parseInt(avgTime) + " ms, avg slow time: " + parseInt(avgSecondaryTime);
-  tfoot.appendChild(td);
-  table.appendChild(tfoot);
-
   sorttable.makeSortable(table);
+
+  document.getElementById("Stats").textContent = numIterations + " iterations, avg time 1: " + parseInt(avgTime)
+    + " ms, avg time 2: " + parseInt(avgSecondaryTime) + " ms" + ", max troop counts: " + maxTroopCounts;
 }
 
 function renderTestResults(solution1, solution2) {
@@ -158,12 +166,12 @@ function renderTestResults(solution1, solution2) {
       //   let comboString = "<span>" + step.comboId + " </span>";
       //   td.innerHTML += comboString;
       // }
-    } else if (attribute == "slowCombos" && solution1.bestMethod == "brute") {
+    } else if (attribute == "combos2" && solution2.bestMethod == "brute") {
       td.innerHTML = "";
       for (let step of solution2.bestSteps) {
         let comboString = "<span";
         // if (!TEMPLATES[Number(step.comboId)][1]) {
-        //   comboString += " class='highlight'";
+        //   comboString += " class='highlightRed'";
         // }
         comboString += ">" + step.comboId + " </span>";
         td.innerHTML += comboString;
@@ -173,16 +181,26 @@ function renderTestResults(solution1, solution2) {
     } else {
       td.textContent = solution1[attribute];
     }
-    if (attribute == "bestLevel2" && solution1.bestLevel < solution2.bestLevel
-      || attribute == "bestQuality2" && solution1.bestQuality < solution2.bestQuality) {
+    if (["bestCost2", "bestLevel2", "bestQuality2", "time2", "costDiff", "diffPercent", "combos2"].includes(attribute)) {
+      if (solution1.costDiff <= 0) {
+        td.classList.add("lowlight");
+      } else {
+        td.classList.add("highlightBlue");
+      } 
+    }
+    if (attribute == "bestQuality2" && solution1.bestQuality < solution2.bestQuality
+      || attribute == "costDiff" && solution1.costDiff > 0) {
+      td.classList.remove("highlightBlue");
       td.classList.add("highlightGreen");
     }
-    if (attribute == "final" && solution1[attribute] == "timeout"
-      || attribute == "final2" && solution1[attribute] == "timeout") {
-      td.classList.add("highlight");
-    }
-    if (solution1.costDiff == 0 && ["bestCost2", "bestLevel2", "bestQuality2", "slowCombos"].includes(attribute)) {
-      td.classList.add("lowlight");
+    if (attribute == "time" && solution1.final == "timeout"
+      || attribute == "time2" && solution1.final2 == "timeout"
+      || attribute == "level" && solution1.reachedLevel == false
+      || attribute == "quality" && solution1.reachedQuality == false) {
+      td.classList.remove("highlightBlue");
+      td.classList.remove("highlightGreen");
+      td.classList.remove("lowlight");
+      td.classList.add("highlightRed");
     }
   }
   sorttable.makeSortable(table);

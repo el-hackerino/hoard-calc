@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
-const BUDGET_MAX = [10, 10, 40, 40, 40, 18];
+const BUDGET_MAX = [0, 5, 40, 50, 35, 18];
 const INITIAL_GOLD = 1000000000;
 const MAX_DEPTH = 20;
 const UPDATE_INTERVAL = 3000;
@@ -10,12 +10,12 @@ var levelXp = [];
 var allCombos = [[], [], []];
 var lastUpdateTime;
 const SEARCH_OPTIONS = {maxLevel: 1, resort: 0};
-const RNG_MIN = [0, 10, 20, 10, 0, 0];
-const RNG_MAX = [0, 200, 200, 100, 100, 100];
+const RNG_MIN = [0, 10, 20, 5, 0, 0];
+const RNG_MAX = [0, 100, 100, 100, 60, 40];
 const RNG_IN_LEVEL_MIN = 0;
-const RNG_IN_LEVEL_MAX = 0;
-const RNG_TARGET_LEVEL_MIN = 100;
-const RNG_TARGET_LEVEL_MAX = 300;
+const RNG_IN_LEVEL_MAX = 100;
+const RNG_TARGET_LEVEL_MIN = 110;
+const RNG_TARGET_LEVEL_MAX = 135;
 const RNG_IN_QUALITY_MIN = 1;
 const RNG_IN_QUALITY_MAX = 10;
 
@@ -83,13 +83,13 @@ function runTestIteration(solution, i) {
   solution.id = i;
   randomize(solution);
   resetSolution(solution, true, false);
-
+  // Step 1 -----------------------------------------------------------------------------
   solution.testType = 1;
   stringModeSearch(solution);
   if (!solution.final) solution.final = "complete";
   if (DEBUG) console.log(solution);
   postMessage(solution);
-
+  // Step 2 -----------------------------------------------------------------------------
   solution.final = 0;
   if (DEBUG_SINGLE_SOLUTION) solution.testType = 2;
   if (!solution.reachedQuality) { // Always do this?
@@ -97,20 +97,22 @@ function runTestIteration(solution, i) {
   }
   solution.bestCost = INITIAL_GOLD;
   solution.budget = [...solution.troopCounts];
+  // Special case: excess STs
+  if (!solution.reachedQuality && solution.initialBudget[5] >= 18) {
+    solution.budget[5] = 18;
+  }
   solution.troopTotals = [0, 0, 0, 0, 0, 0];
   solution.steps = [];
   makeCombosFromDraft(solution);
-  //resetSolution(solution, false, true);
-  // if (DEBUG) console.log(solution);
   lastUpdateTime = solution.startTime;
-  solution.method = "brute";
+  solution.method = "bruteString";
   search(0, 0, solution, SEARCH_OPTIONS);
-  // if (DEBUG) console.log(solution);
   if (solution.bestCombos) prepSolution(SEARCH_OPTIONS, solution);
   if (!solution.final) solution.final = "complete";
-  if (solution.final != "timeout") postMessage(solution);
-  // If solution got worse, keep old solution!!
-
+  if (DEBUG) console.log(solution);
+  postMessage(solution);
+  // TODO If solution got worse, keep old solution!!
+  // Step 3 -----------------------------------------------------------------------------
   // Regular brute search
   solution.final = 0;
   if (DEBUG_SINGLE_SOLUTION) solution.testType = 3;
@@ -118,13 +120,12 @@ function runTestIteration(solution, i) {
   for (let [i, value] of solution.budget.entries()) {
     solution.budget[i] = Math.min(BUDGET_MAX[i], Number(value));
   }
-  // if (DEBUG) console.log(solution.budget);
+  solution.reachedLevel = solution.initialLevel >= solution.targetLevel;
   resetSolution(solution, false, true);
   bruteForceSearch(solution, 1, solution.maxRefinementLevel, SEARCH_OPTIONS, "brute");
-  // if (DEBUG) console.log(solution);
-
   if (!solution.final) solution.final = "complete";
-  if (solution.final != "timeout") postMessage(solution);
+  postMessage(solution);
+  // ------------------------------------------------------------------------------------
 }
 
 function bruteForceSearch(solution, minRefLevel, maxRefLevel, options, method) {
@@ -221,25 +222,24 @@ function stringModeSearch(solution) {
 function search(startCombo, depth, solution, options) {
   // console.log("Search: " + startCombo + ", " + depth);
   if (solution.final) {
-    console.log("RETURNING");
+    console.log("Returning after timeout");
     return;
   }
   if (new Date().getTime() - lastUpdateTime > UPDATE_INTERVAL) {
-    console.log("Sending...");
     lastUpdateTime = new Date().getTime();
     prepSolution(options, solution);
     if (lastUpdateTime - solution.startTime > TIME_LIMIT) {
       solution.final = "timeout";
       console.log("Timeout!");
+      return;
+    } else {
+      postMessage(solution);
     }
-    console.log(solution);
-    postMessage(solution);
-    return;
   }
 
   for (let comboNumber = startCombo; comboNumber < solution.combos.length; comboNumber++) {
     if (solution.final) {
-      console.log("RETURNING");
+      console.log("Returning after timeout");
       return;
     }
     // console.log(solution.combos[comboNumber]);
@@ -315,7 +315,7 @@ function saveBestSolution(solution) {
 function prepSolution(options, solution) {
   // console.log("prepSolution");
   // console.log(solution);
-  if (solution.bestMethod == "brute") {
+  if (solution.bestMethod.startsWith("brute")) {
     if (options && options.resort) resortSolution(solution, solution.combos);
     // Copy combo attributes to step for simpler rendering
     for (let step of solution.bestSteps) {
@@ -396,23 +396,23 @@ function budgetFits(solution) {
 
 function randomize(solution) {
   if (solution.runTests) {
-    solution.budget = [0, 36, 53, 13, 68, 71];
-    solution.initialLevel = 24;
-    solution.initialQuality = 7;
-    solution.targetLevel = 117;
+    // solution.budget = [0, 36, 53, 13, 68, 71];
+    // solution.initialLevel = 24;
+    // solution.initialQuality = 7;
+    // solution.targetLevel = 117;
     // Randomize budget and target
-    // for (let t = 0; t < solution.budget.length; t++) {
-    //   solution.budget[t] = Math.floor(Math.random() * (RNG_MAX[t] - RNG_MIN[t]) + RNG_MIN[t]);
-    // }
-    // solution.initialQuality = Math.floor(Math.random() * (RNG_IN_QUALITY_MAX - RNG_IN_QUALITY_MIN) + RNG_IN_QUALITY_MIN);
-    // //Get rid of unrealistically low initial level values
-    // let iq = solution.initialQuality;
-    // let minLevel = Math.max(-0.35 * iq * iq + 10 * iq + 5, RNG_IN_LEVEL_MIN);
-    // solution.initialLevel = Math.floor(Math.random() * (RNG_IN_LEVEL_MAX - minLevel) + minLevel);
-    // // solution.initialLevel = Math.floor(
-    // //   Math.random() * (RNG_IN_LEVEL_MAX - RNG_IN_LEVEL_MIN) + RNG_IN_LEVEL_MIN
-    // // );
-    // solution.targetLevel = Math.floor(Math.random() * (RNG_TARGET_LEVEL_MAX - RNG_TARGET_LEVEL_MIN) + RNG_TARGET_LEVEL_MIN);
+    for (let t = 0; t < solution.budget.length; t++) {
+      solution.budget[t] = Math.floor(Math.random() * (RNG_MAX[t] - RNG_MIN[t]) + RNG_MIN[t]);
+    }
+    solution.initialQuality = Math.floor(Math.random() * (RNG_IN_QUALITY_MAX - RNG_IN_QUALITY_MIN) + RNG_IN_QUALITY_MIN);
+    //Get rid of unrealistically low initial level values
+    let iq = solution.initialQuality;
+    let minLevel = Math.max(-0.35 * iq * iq + 10 * iq + 5, RNG_IN_LEVEL_MIN);
+    solution.initialLevel = Math.floor(Math.random() * (RNG_IN_LEVEL_MAX - minLevel) + minLevel);
+    // solution.initialLevel = Math.floor(
+    //   Math.random() * (RNG_IN_LEVEL_MAX - RNG_IN_LEVEL_MIN) + RNG_IN_LEVEL_MIN
+    // );
+    solution.targetLevel = Math.floor(Math.random() * (RNG_TARGET_LEVEL_MAX - RNG_TARGET_LEVEL_MIN) + RNG_TARGET_LEVEL_MIN);
   }
 }
 

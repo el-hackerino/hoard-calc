@@ -23,52 +23,72 @@ const ALL_INPUTS = [
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
 var resultMessage;
-
-if (!window.Worker) {
-  showMessage("Your browser does not support web workers :(", true, false);
-  document.getElementById("MainForm").classList.add("hidden");
-  document.getElementById("Results").classList.add("hidden");
-  throw new Error("Your browser does not support web workers :(");
-}
-
-document.getElementById("CloseButton").classList.add("hidden");
-
-// Prevent form submission
-var buttons = document.querySelectorAll("form button:not([type=\"submit\"])");
-for (let i = 0; i < buttons.length; i++) {
-  buttons[i].addEventListener("click", function(e) {
-    e.preventDefault();
-  });
-}
-
-// Set event handlers
-document.getElementById("HelpButton").addEventListener("click", function() {
-  showHelp();
-});
-for (let input of ALL_INPUTS) {
-  input.onchange = calculate;
-}
-for (let input of [...TROOP_INPUTS, INPUT_LEVEL, INPUT_QUALITY, INPUT_XP, INPUT_TARGET_LEVEL]) {
-  input.previousElementSibling.addEventListener("click", function() {
-    this.parentNode.querySelector("input[type=number]").stepDown();
-    calculate();
-  });
-  input.nextElementSibling.addEventListener("click", function() {
-    this.parentNode.querySelector("input[type=number]").stepUp();
-    calculate();
-  });
-  input.previousElementSibling.tabIndex = -1;
-  input.nextElementSibling.tabIndex = -1;
-}
-document.getElementById("StopButton").onclick = stop;
-
-initTable("MainTable1", MAIN_TABLE_COLUMNS);
-if (DEBUG_SINGLE_SOLUTION) {
-  initTable("MainTable2", MAIN_TABLE_COLUMNS);
-  initTable("MainTable3", MAIN_TABLE_COLUMNS);
-}
 var myWorker;
+
+prepare();
+processUrlParams();
 calculate();
+
+function prepare() {
+  if (!window.Worker) {
+    showMessage("Your browser does not support web workers :(", true, false);
+    document.getElementById("MainForm").classList.add("hidden");
+    document.getElementById("Results").classList.add("hidden");
+    throw new Error("Your browser does not support web workers :(");
+  }
+  document.getElementById("CloseButton").classList.add("hidden");
+
+  // Prevent form submission
+  var buttons = document.querySelectorAll("form button:not([type=\"submit\"])");
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener("click", function (e) {
+      e.preventDefault();
+    });
+  }
+
+  // Set event handlers
+  document.getElementById("HelpButton").addEventListener("click", function () {
+    showHelp();
+  });
+  for (let input of ALL_INPUTS) {
+    input.onchange = calculate;
+    input.previousElementSibling.addEventListener("click", function () {
+      this.parentNode.querySelector("input[type=number]").stepDown();
+      calculate();
+    });
+    input.nextElementSibling.addEventListener("click", function () {
+      this.parentNode.querySelector("input[type=number]").stepUp();
+      calculate();
+    });
+    input.previousElementSibling.tabIndex = -1;
+    input.nextElementSibling.tabIndex = -1;
+  }
+  document.getElementById("StopButton").onclick = stop;
+
+  // Init tables
+  initTable("MainTable1", MAIN_TABLE_COLUMNS);
+  if (DEBUG_SINGLE_SOLUTION) {
+    initTable("MainTable2", MAIN_TABLE_COLUMNS);
+    initTable("MainTable3", MAIN_TABLE_COLUMNS);
+  }
+}
+
+function processUrlParams() {
+  let params = window.location.search.slice(1).split("|");
+  console.log(params);
+  for (let [i, input] of ALL_INPUTS.entries()) {
+    input.value = params[i];
+  }
+}
+
+function createUrl(solution) {
+  let paramString = "";
+  for (let num of [...solution.budget, solution.initialLevel, solution.initialQuality, solution.initialXp, solution.targetLevel]) {
+    paramString += num + "|";
+  }
+  paramString = paramString.slice(0, paramString.length - 1);
+  document.getElementById("PermaLink").innerHTML = "<a href=\"" + window.location.href.split("?")[0] + "?" + paramString + "\">Link to this page</a>";
+}
 
 function calculate() {
   if (DEBUG) console.log("Calculating.........................................................");
@@ -79,6 +99,7 @@ function calculate() {
   } else {
     hideMessage();
   }
+  
   if (myWorker) myWorker.terminate();
   myWorker = new Worker("worker.js");
   myWorker.onmessage = render;
@@ -94,6 +115,7 @@ function calculate() {
     initialXp: Number(INPUT_XP.value),
     targetLevel: Number(INPUT_TARGET_LEVEL.value),
   };
+  createUrl(solution);
   myWorker.postMessage(solution);
   showMessage("Calculating...", false, true, false);
   document.getElementById("Results").classList.add("blurred");
