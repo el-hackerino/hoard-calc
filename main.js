@@ -100,7 +100,7 @@ function calculate() {
   }
   let solution = {
     runTests: false,
-    budget: budget,
+    initialBudget: budget,
     initialQuality: Number(INPUT_QUALITY.value),
     initialLevel: Number(INPUT_LEVEL.value),
     initialXp: Number(INPUT_XP.value),

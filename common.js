@@ -109,7 +109,7 @@ function clearTable(id) {
 
 function createUrlParams(solution) {
   let paramString = "";
-  for (let num of [...solution.budget, solution.initialLevel, solution.initialQuality, solution.initialXp, solution.targetLevel]) {
+  for (let num of [...solution.initialBudget, solution.initialLevel, solution.initialQuality, solution.initialXp, solution.targetLevel]) {
     paramString += num + URL_SEPARATOR;
   }
   paramString = paramString.slice(0, paramString.length - 1);

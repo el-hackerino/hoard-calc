@@ -396,13 +396,9 @@ function budgetFits(solution) {
 
 function randomize(solution) {
   if (solution.runTests) {
-    // solution.budget = [0, 36, 53, 13, 68, 71];
-    // solution.initialLevel = 24;
-    // solution.initialQuality = 7;
-    // solution.targetLevel = 117;
     // Randomize budget and target
-    for (let t = 0; t < solution.budget.length; t++) {
-      solution.budget[t] = Math.floor(Math.random() * (RNG_MAX[t] - RNG_MIN[t]) + RNG_MIN[t]);
+    for (let t = 0; t < solution.initialBudget.length; t++) {
+      solution.initialBudget[t] = Math.floor(Math.random() * (RNG_MAX[t] - RNG_MIN[t]) + RNG_MIN[t]);
     }
     solution.initialQuality = Math.floor(Math.random() * (RNG_IN_QUALITY_MAX - RNG_IN_QUALITY_MIN) + RNG_IN_QUALITY_MIN);
     //Get rid of unrealistically low initial level values
@@ -420,7 +416,7 @@ function resetSolution(solution, initial, limitBudget) {
   if (initial) { // || !solution.reachedQuality || !solution.reachedLevel) {
     solution.maxRefinementLevel = MAX_REFINEMENT_LEVEL;
     solution.targetQuality = TARGET_QUALITY;
-    solution.initialBudget = [...solution.budget];
+    solution.budget = [...solution.initialBudget];
     solution.startTime = new Date().getTime();
     solution.reachedQuality = solution.initialQuality >= solution.targetQuality;
     solution.reachedLevel = solution.initialLevel >= solution.targetLevel;

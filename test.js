@@ -40,7 +40,7 @@ if (window.Worker) {
     numTests: TEST_ITERATIONS,
     runSecondarySearch: RUN_SECONDARY_SEARCH,
     initialXp: INITIAL_XP,
-    budget: [0, 0, 0, 0, 0, 0]
+    initialBudget: [0, 0, 0, 0, 0, 0]
   };
 
   console.log("Calculating...");
