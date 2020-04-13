@@ -13,9 +13,9 @@ const SEARCH_OPTIONS = {maxLevel: 1, resort: 0};
 const RNG_MIN = [0, 10, 20, 5, 0, 0];
 const RNG_MAX = [0, 100, 100, 100, 60, 40];
 const RNG_IN_LEVEL_MIN = 0;
-const RNG_IN_LEVEL_MAX = 100;
-const RNG_TARGET_LEVEL_MIN = 110;
-const RNG_TARGET_LEVEL_MAX = 135;
+const RNG_IN_LEVEL_MAX = 130;
+const RNG_TARGET_LEVEL_MIN = 100;
+const RNG_TARGET_LEVEL_MAX = 140;
 const RNG_IN_QUALITY_MIN = 1;
 const RNG_IN_QUALITY_MAX = 10;
 
@@ -39,7 +39,7 @@ function makeCombosFromDraft(solution) {
     exactComboAdded = false;
     // if (DEBUG) console.log(step.troops);
     if (step.troops[0] > lastTroopBatchAdded) {
-      if (lastTroopBatchAdded >= 0  && !arrayHasJustOneUniqueElement(step.troops)) {
+      if (arrayIsDiverse(step.troops) && lastTroopBatchAdded >= 0 || step.troops[0] > step.troops[step.troops.length - 1]) {
         let combo = makeCombo(step.troops, id);
         if (DEBUG) console.log("adding combo: " + combo.troops);
         solution.combos.push(combo);
@@ -54,7 +54,7 @@ function makeCombosFromDraft(solution) {
           id++;
         }
       } while (lastTroopBatchAdded < step.troops[0]);
-      if (!exactComboAdded && !arrayHasJustOneUniqueElement(step.troops)) {
+      if (!exactComboAdded && arrayIsDiverse(step.troops) && step.troops[0] < step.troops[step.troops.length - 1]) {
         let combo = makeCombo(step.troops, id);
         if (DEBUG) console.log("adding combo: " + combo.troops);
         solution.combos.push(combo);
@@ -63,9 +63,9 @@ function makeCombosFromDraft(solution) {
   }
 }
 
-function arrayHasJustOneUniqueElement(array) {
+function arrayIsDiverse(array) {
   let set = new Set(array);
-  return set.size == 1;
+  return set.size > 1;
 }
 
 function makeCombo(troops, id) {

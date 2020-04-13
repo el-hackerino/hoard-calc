@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const DEBUG = 0;
+const DEBUG = 1;
 const DEBUG_SINGLE_SOLUTION = 1;
 const DEBUG_MAXCOUNTS = 1;
 const MAX_REFINEMENT_LEVEL = 1;
