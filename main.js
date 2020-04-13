@@ -75,9 +75,10 @@ function prepare() {
 
 function processUrlParams() {
   let params = window.location.search.slice(1).split(URL_SEPARATOR);
-  console.log(params);
-  for (let [i, input] of ALL_INPUTS.entries()) {
-    input.value = params[i];
+  if (params && params.length == 9) {
+    for (let [i, input] of ALL_INPUTS.entries()) {
+      input.value = params[i];
+    }
   }
 }
 
