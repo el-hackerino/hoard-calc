@@ -5,7 +5,7 @@ const BUDGET_MAX = [0, 2, 40, 50, 40, 18];
 const INITIAL_GOLD = 1000000000;
 const MAX_DEPTH = 9;
 const UPDATE_INTERVAL = 3000;
-const TIME_LIMIT = 300000;
+const TIME_LIMIT = 5000;
 var levelXp = [];
 var allCombos = [[], [], []];
 var lastUpdateTime;
@@ -14,7 +14,7 @@ const RNG_MIN = [0, 10, 20, 5, 0, 0];
 const RNG_MAX = [0, 100, 100, 100, 60, 18];
 const RNG_IN_LEVEL_MIN = 0;
 const RNG_IN_LEVEL_MAX = 0;
-const RNG_TARGET_LEVEL_MIN = 140;
+const RNG_TARGET_LEVEL_MIN = 100;
 const RNG_TARGET_LEVEL_MAX = 200;
 const RNG_IN_QUALITY_MIN = 1;
 const RNG_IN_QUALITY_MAX = 1;
@@ -119,20 +119,20 @@ function runTestIteration(solution, i) {
     if (DEBUG) console.log(solution);
     postMessage(solution);
   }
-  // TODO If solution got worse, keep old solution!!
+  // TODO If solution got worse, keep old solution!! (does this still happen?)
   // Step 3 -----------------------------------------------------------------------------
   // Regular brute search
-  solution.final = 0;
-  if (DEBUG_SINGLE_SOLUTION) solution.testType = 3;
-  solution.budget = [...solution.initialBudget];
-  for (let [i, value] of solution.budget.entries()) {
-    solution.budget[i] = Math.min(BUDGET_MAX[i], Number(value));
-  }
-  solution.reachedLevel = solution.initialLevel >= solution.targetLevel;
-  resetSolution(solution, false, true);
-  bruteForceSearch(solution, 1, solution.maxRefinementLevel, SEARCH_OPTIONS, "brute", MAX_DEPTH);
-  if (!solution.final) solution.final = "complete";
-  postMessage(solution);
+  // solution.final = 0;
+  // if (DEBUG_SINGLE_SOLUTION) solution.testType = 3;
+  // solution.budget = [...solution.initialBudget];
+  // for (let [i, value] of solution.budget.entries()) {
+  //   solution.budget[i] = Math.min(BUDGET_MAX[i], Number(value));
+  // }
+  // solution.reachedLevel = solution.initialLevel >= solution.targetLevel;
+  // resetSolution(solution, false, true);
+  // bruteForceSearch(solution, 1, solution.maxRefinementLevel, SEARCH_OPTIONS, "brute", MAX_DEPTH);
+  // if (!solution.final) solution.final = "complete";
+  // postMessage(solution);
   // ------------------------------------------------------------------------------------
   // TODO do final comparison of solutions, last one may be bad
 }
