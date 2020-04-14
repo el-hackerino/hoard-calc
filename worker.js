@@ -1,21 +1,21 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
-const BUDGET_MAX = [0, 3, 30, 40, 30, 18];
+const BUDGET_MAX = [0, 2, 30, 40, 30, 18];
 const INITIAL_GOLD = 1000000000;
-const MAX_DEPTH = 20;
+const MAX_DEPTH = 9;
 const UPDATE_INTERVAL = 3000;
-const TIME_LIMIT = 60000;
+const TIME_LIMIT = 300000;
 var levelXp = [];
 var allCombos = [[], [], []];
 var lastUpdateTime;
 const SEARCH_OPTIONS = {maxLevel: 1, resort: 0};
 const RNG_MIN = [0, 10, 20, 5, 0, 0];
-const RNG_MAX = [0, 100, 100, 100, 60, 40];
+const RNG_MAX = [0, 100, 100, 100, 60, 18];
 const RNG_IN_LEVEL_MIN = 0;
 const RNG_IN_LEVEL_MAX = 130;
 const RNG_TARGET_LEVEL_MIN = 100;
-const RNG_TARGET_LEVEL_MAX = 140;
+const RNG_TARGET_LEVEL_MAX = 150;
 const RNG_IN_QUALITY_MIN = 1;
 const RNG_IN_QUALITY_MAX = 10;
 
@@ -106,7 +106,7 @@ function runTestIteration(solution, i) {
   makeCombosFromDraft(solution);
   lastUpdateTime = solution.startTime;
   solution.method = "bruteString";
-  search(0, 0, solution, SEARCH_OPTIONS);
+  search(0, 0, solution, SEARCH_OPTIONS, 999);
   if (solution.bestCombos) prepSolution(SEARCH_OPTIONS, solution);
   if (!solution.final) solution.final = "complete";
   if (DEBUG) console.log(solution);
@@ -122,20 +122,20 @@ function runTestIteration(solution, i) {
   }
   solution.reachedLevel = solution.initialLevel >= solution.targetLevel;
   resetSolution(solution, false, true);
-  bruteForceSearch(solution, 1, solution.maxRefinementLevel, SEARCH_OPTIONS, "brute");
+  bruteForceSearch(solution, 1, solution.maxRefinementLevel, SEARCH_OPTIONS, "brute", MAX_DEPTH);
   if (!solution.final) solution.final = "complete";
   postMessage(solution);
   // ------------------------------------------------------------------------------------
 }
 
-function bruteForceSearch(solution, minRefLevel, maxRefLevel, options, method) {
+function bruteForceSearch(solution, minRefLevel, maxRefLevel, options, method, maxDepth) {
   solution.method = method;
   if (DEBUG) console.log("Set method: " + solution.method);
   lastUpdateTime = solution.startTime;
   for (let refinementLevel = minRefLevel; refinementLevel <= maxRefLevel; refinementLevel++) {
     if (DEBUG) console.log("Starting refinement level " + refinementLevel + " with " + allCombos[refinementLevel].length + " combos");
     solution.combos = allCombos[refinementLevel];
-    search(0, 0, solution, options);
+    search(0, 0, solution, options, maxDepth);
     if (DEBUG) console.log("Done with refinement level " + refinementLevel + ", best solution so far:");
     if (DEBUG) console.log(solution);
   }
@@ -219,7 +219,7 @@ function stringModeSearch(solution) {
   prepSolution(undefined, solution);
 }
 
-function search(startCombo, depth, solution, options) {
+function search(startCombo, depth, solution, options, maxDepth) {
   // console.log("Search: " + startCombo + ", " + depth);
   if (solution.final) {
     console.log("Returning after timeout");
@@ -291,8 +291,8 @@ function search(startCombo, depth, solution, options) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
       }
-      if (!reachedQuality || (!reachedLevel && depth < MAX_DEPTH)) {
-        search(comboNumber, depth + 1, solution, options);
+      if ((!reachedQuality || !reachedLevel) && depth < maxDepth - 1) {
+        search(comboNumber, depth + 1, solution, options, maxDepth);
       }
     }
   }
@@ -402,7 +402,7 @@ function randomize(solution) {
     }
     solution.initialQuality = Math.floor(Math.random() * (RNG_IN_QUALITY_MAX - RNG_IN_QUALITY_MIN) + RNG_IN_QUALITY_MIN);
     //Get rid of unrealistically low initial level values
-    let iq = solution.initialQuality;
+    let iq = solution.initialQuality - 1;
     let minLevel = Math.max(-0.35 * iq * iq + 10 * iq + 5, RNG_IN_LEVEL_MIN);
     solution.initialLevel = Math.floor(Math.random() * (RNG_IN_LEVEL_MAX - minLevel) + minLevel);
     // solution.initialLevel = Math.floor(

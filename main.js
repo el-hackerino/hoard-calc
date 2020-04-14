@@ -95,7 +95,7 @@ function calculate() {
   if (myWorker) myWorker.terminate();
   myWorker = new Worker("worker.js");
   myWorker.onmessage = render;
-  var budget = [];
+  var budget = []; 
   for (let [i, input] of TROOP_INPUTS.entries()) {
     budget[i] = input.value;
   }
@@ -115,7 +115,7 @@ function calculate() {
 }
 
 function updatePermaLink(paramString) {
-  document.getElementById("PermaLink").innerHTML = "<a href=\"" + window.location.href.split("?")[0] + "?" + paramString + "\">Link to this result</a>";
+  document.getElementById("PermaLink").innerHTML = "<a href=\"" + window.location.href.split("?")[0] + "?" + paramString + "\">Link to this hoard</a>";
 }
 
 function stop() {

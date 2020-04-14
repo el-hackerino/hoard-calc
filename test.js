@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const TEST_ITERATIONS = 1000;
+const TEST_ITERATIONS = 10000;
 const RUN_SECONDARY_SEARCH = 1;
 const DETAILS_FROM_SOLUTION_TYPE = 3;
 const COMPARE_SOLUTION_TYPE_1 = 2;
@@ -12,15 +12,15 @@ const COMBO_TABLE_COLUMNS = ["Combo", "Troops", "Freq", "Slow"];
 var TEST_TABLE_COLUMNS, TEST_TABLE_ATTRIBUTES;
 if (RUN_SECONDARY_SEARCH) {
   TEST_TABLE_COLUMNS = ["Budget", "In L", "In Q", "Target L", "Gold", "L",
-    "Q", "Time", "Gold 2", "L 2", "Q 2", "Time 2", "Diff", "Diff %", "Combos"];
+    "Q", "Time", "Gold 2", "L 2", "Q 2", "Time 2", "Diff", "Diff %", "Combos", "Length"];
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel",
-    "bestQuality", "time", "bestCost2", "bestLevel2", "bestQuality2", "time2", "costDiff", "diffPercent", "combos2"];
+    "bestQuality", "time", "bestCost2", "bestLevel2", "bestQuality2", "time2", "costDiff", "diffPercent", "combos2", "length"];
 } else {
   TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Target Level", "Gold", "Level", "Quality", "Time", "Combos"];
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel", "bestQuality", "time", "combos"];
 }
-const IMPROVED_QUALITY = "Q+";
-const IMPROVED_LEVEL = "L+";
+const IMPROVED_QUALITY = "1";
+const IMPROVED_LEVEL = "2";
 let numSolutions = 0;
 let currentSolutions = [];
 let totalComboCounts = new Array(TEMPLATES.length).fill(0);
@@ -74,13 +74,21 @@ function render(message) {
 
   // Calculate differences
   if (solution1.bestQuality == solution2.bestQuality) {
-    if (!solution1.reachedLevel && solution2.bestLevel > solution1.bestLevel) {
-      solution1.costDiff = IMPROVED_LEVEL;
-    } else {
+    if (!solution1.reachedLevel) {
+      if (solution2.bestLevel > solution1.bestLevel) {
+        solution1.costDiff = IMPROVED_LEVEL;
+      } else if (solution2.bestLevel == solution1.bestLevel) {
+        solution1.costDiff = solution1.bestCost - solution2.bestCost;
+      }
+    } else if (solution2.reachedLevel) {
       solution1.costDiff = solution1.bestCost - solution2.bestCost;
+    } else {
+      solution1.costDiff = -1;
     }
   } else if (solution2.bestQuality >= solution1.bestQuality) {
     solution1.costDiff = IMPROVED_QUALITY;
+  } else {
+    solution1.costDiff = -1;
   }
   solution1.final2 = solution2.final;
   solution1.time2 = solution2.time;
@@ -149,7 +157,7 @@ function renderComboStats(numIterations, totalComboCounts, avgTime, avgSecondary
 }
 
 function renderTestResults(solution1, solution2) {
-  if (!solution1 || (RENDER_DIFF_ONLY && !solution1.costDiff)) return;
+  if (!solution1 || (RENDER_DIFF_ONLY && solution1.costDiff <= 0 && solution1.costDiff != IMPROVED_QUALITY && solution1.costDiff != IMPROVED_LEVEL)) return;
   let table = document.getElementById("TestTable");
   let tr = table.insertRow(-1);
   for (let attribute of TEST_TABLE_ATTRIBUTES) {
@@ -167,14 +175,16 @@ function renderTestResults(solution1, solution2) {
       td.innerHTML = "";
       for (let step of solution2.bestSteps) {
         let comboString = "<span";
-        // if (!TEMPLATES[Number(step.comboId)][1]) {
-        //   comboString += " class='highlightRed'";
-        // }
+        if (TEMPLATES[Number(step.comboId)][1].includes(2)) {
+          comboString += " class='highlightRed'";
+        }
         comboString += ">" + step.comboId + " </span>";
         td.innerHTML += comboString;
       }
     } else if (attribute == "diffPercent" && solution1.costDiff > 0) {
       td.textContent = parseInt((solution1.costDiff / solution2.bestCost) * 100);
+    } else if (attribute == "length") {
+      td.textContent = solution2.bestSteps.length;
     } else {
       td.textContent = solution1[attribute];
     }
@@ -186,7 +196,7 @@ function renderTestResults(solution1, solution2) {
       } 
     }
     if (attribute == "bestQuality2" && solution1.bestQuality < solution2.bestQuality
-      || attribute == "costDiff" && solution1.costDiff > 0) {
+      || attribute == "costDiff" && solution1.costDiff > 1) {
       td.classList.remove("highlightBlue");
       td.classList.add("highlightGreen");
     }

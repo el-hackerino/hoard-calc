@@ -404,9 +404,9 @@ input[type="checkbox"] {
   border-collapse: collapse;
 }
 .testTable td, .testTable th {
-  padding: 2px;
+  padding: 2px 4px;
 }
-.testTable tr:nth-child(even) {
+.testTable tr:nth-child(odd) {
   background-color: rgb(36, 36, 36);
 }
 .highlightRed {
