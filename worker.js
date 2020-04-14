@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
-const BUDGET_MAX = [0, 2, 30, 40, 30, 18];
+const BUDGET_MAX = [0, 2, 40, 50, 40, 18];
 const INITIAL_GOLD = 1000000000;
 const MAX_DEPTH = 9;
 const UPDATE_INTERVAL = 3000;
@@ -13,11 +13,11 @@ const SEARCH_OPTIONS = {maxLevel: 1, resort: 0};
 const RNG_MIN = [0, 10, 20, 5, 0, 0];
 const RNG_MAX = [0, 100, 100, 100, 60, 18];
 const RNG_IN_LEVEL_MIN = 0;
-const RNG_IN_LEVEL_MAX = 130;
-const RNG_TARGET_LEVEL_MIN = 100;
-const RNG_TARGET_LEVEL_MAX = 150;
+const RNG_IN_LEVEL_MAX = 0;
+const RNG_TARGET_LEVEL_MIN = 140;
+const RNG_TARGET_LEVEL_MAX = 200;
 const RNG_IN_QUALITY_MIN = 1;
-const RNG_IN_QUALITY_MAX = 10;
+const RNG_IN_QUALITY_MAX = 1;
 
 fillXpTable();
 makeCombos();
@@ -33,8 +33,14 @@ onmessage = function(message) {
 function makeCombosFromDraft(solution) {
   let id = 0;
   solution.combos = [];
-  let lastTroopBatchAdded = -1;
+  let lastTroopBatchAdded = 0;
   let exactComboAdded;
+  if (solution.bestSteps.length == 1) {
+    let combo = makeCombo(solution.bestSteps[0].troops, id);
+    if (DEBUG) console.log("adding only combo: " + combo.troops);
+    solution.combos.push(combo);
+    return;
+  }
   for (let step of solution.bestSteps) {
     exactComboAdded = false;
     // if (DEBUG) console.log(step.troops);
@@ -47,12 +53,14 @@ function makeCombosFromDraft(solution) {
       }
       do {
         lastTroopBatchAdded++;
-        for (let amount = 5; amount > (5 - lastTroopBatchAdded); amount--) {
+        let amount = 5;
+        do {
           let combo = makeCombo(new Array(amount).fill(lastTroopBatchAdded), id);
           if (DEBUG) console.log("adding batch combo: " + combo.troops);
           solution.combos.push(combo);
           id++;
-        }
+          amount--;
+        } while (amount > (6 - lastTroopBatchAdded) || lastTroopBatchAdded > 2 && amount > (4 - lastTroopBatchAdded));
       } while (lastTroopBatchAdded < step.troops[0]);
       if (!exactComboAdded && arrayIsDiverse(step.troops) && step.troops[0] < step.troops[step.troops.length - 1]) {
         let combo = makeCombo(step.troops, id);
@@ -92,25 +100,25 @@ function runTestIteration(solution, i) {
   // Step 2 -----------------------------------------------------------------------------
   solution.final = 0;
   if (DEBUG_SINGLE_SOLUTION) solution.testType = 2;
-  if (!solution.reachedQuality) { // Always do this?
-    if (DEBUG) console.log("String didn't reach quality");
+  if (solution.reachedLevel) { // TODO find cutoff where this gets too slow
+    if (DEBUG) console.log("Reached level, refine string-based solution");
+    solution.bestCost = INITIAL_GOLD;
+    solution.budget = [...solution.troopCounts];
+    // Special case: excess STs
+    if (!solution.reachedQuality && solution.initialBudget[5] >= 18) {
+      solution.budget[5] = 18;
+    }
+    solution.troopTotals = [0, 0, 0, 0, 0, 0];
+    solution.steps = [];
+    makeCombosFromDraft(solution);
+    lastUpdateTime = solution.startTime;
+    solution.method = "bruteString";
+    search(0, 0, solution, SEARCH_OPTIONS, solution.bestSteps.length + (solution.targetQuality - solution.bestQuality));
+    if (solution.bestCombos) prepSolution(SEARCH_OPTIONS, solution);
+    if (!solution.final) solution.final = "complete";
+    if (DEBUG) console.log(solution);
+    postMessage(solution);
   }
-  solution.bestCost = INITIAL_GOLD;
-  solution.budget = [...solution.troopCounts];
-  // Special case: excess STs
-  if (!solution.reachedQuality && solution.initialBudget[5] >= 18) {
-    solution.budget[5] = 18;
-  }
-  solution.troopTotals = [0, 0, 0, 0, 0, 0];
-  solution.steps = [];
-  makeCombosFromDraft(solution);
-  lastUpdateTime = solution.startTime;
-  solution.method = "bruteString";
-  search(0, 0, solution, SEARCH_OPTIONS, 999);
-  if (solution.bestCombos) prepSolution(SEARCH_OPTIONS, solution);
-  if (!solution.final) solution.final = "complete";
-  if (DEBUG) console.log(solution);
-  postMessage(solution);
   // TODO If solution got worse, keep old solution!!
   // Step 3 -----------------------------------------------------------------------------
   // Regular brute search
@@ -126,6 +134,7 @@ function runTestIteration(solution, i) {
   if (!solution.final) solution.final = "complete";
   postMessage(solution);
   // ------------------------------------------------------------------------------------
+  // TODO do final comparison of solutions, last one may be bad
 }
 
 function bruteForceSearch(solution, minRefLevel, maxRefLevel, options, method, maxDepth) {
@@ -216,6 +225,8 @@ function stringModeSearch(solution) {
     prevCost = prevStep.sumCost;
   }
   saveBestSolution(solution);
+  solution.reachedLevel = solution.bestLevel >= solution.targetLevel;
+  solution.reachedQuality = solution.bestQuality >= solution.targetQuality;
   prepSolution(undefined, solution);
 }
 

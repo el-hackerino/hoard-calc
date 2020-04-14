@@ -202,8 +202,10 @@ function renderTestResults(solution1, solution2) {
     }
     if (attribute == "time" && solution1.final == "timeout"
       || attribute == "time2" && solution1.final2 == "timeout"
-      || attribute == "level" && solution1.reachedLevel == false
-      || attribute == "quality" && solution1.reachedQuality == false) {
+      || attribute == "bestLevel" && solution1.reachedLevel == false
+      || attribute == "bestLevel2" && solution2.reachedLevel == false
+      || attribute == "bestQuality" && solution1.reachedQuality == false
+      || attribute == "bestQuality2" && solution2.reachedQuality == false) {
       td.classList.remove("highlightBlue");
       td.classList.remove("highlightGreen");
       td.classList.remove("lowlight");
