@@ -144,7 +144,7 @@ function bruteForceSearch(solution, minRefLevel, maxRefLevel, options, method, m
 
 function stringModeSearch(solution) {
   solution.method = "string";
-  let targetXp = levelXp[solution.targetLevel];
+  let targetXp = levelXp[solution.targetLevel] - levelXp[solution.initialLevel];
   //let availableXp = solution.budget.slice(1).reduce(( acc, cur, i ) => (acc + TROOPS[i + 1].xp * cur), 0);
 
   // Create a "string" of troops to use
