@@ -70,6 +70,8 @@ function prepare() {
   if (DEBUG_SINGLE_SOLUTION) {
     initTable("MainTable2", MAIN_TABLE_COLUMNS);
     initTable("MainTable3", MAIN_TABLE_COLUMNS);
+  } else {
+    document.getElementById("Debug").style.display = "none";
   }
 }
 
@@ -140,7 +142,7 @@ function render(workerMessage) {
     showMessage(resultMessage, false, false, false);
   }
 
-  const troopCountDivId = "TroopCounts" + solution.testType;
+  const troopCountDivId = "TroopCounts" + (DEBUG_SINGLE_SOLUTION ? solution.method : "1");
   let troopCountDiv = document.getElementById(troopCountDivId);
   troopCountDiv.innerHTML = "";
   for (let [i, count] of solution.troopCounts.entries()) {
@@ -151,7 +153,7 @@ function render(workerMessage) {
     troopCountDiv.innerHTML += " x " + count + "&nbsp;&nbsp;&nbsp;";
   }
 
-  const tableId = "MainTable" + solution.testType;
+  const tableId = "MainTable" + (DEBUG_SINGLE_SOLUTION ? solution.method : "1");
   const table = clearTable(tableId);
 
   for (let [i, step] of solution.bestSteps.entries()) {
@@ -174,7 +176,7 @@ function render(workerMessage) {
     }
   }
 
-  const totalCostId = "TotalCost" + solution.testType;
+  const totalCostId = "TotalCost" + (DEBUG_SINGLE_SOLUTION ? solution.method : "1");
   document.getElementById(totalCostId).innerHTML = solution.bestCost;
 }
 

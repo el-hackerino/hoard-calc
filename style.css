@@ -409,6 +409,12 @@ input[type="checkbox"] {
 .testTable tr:nth-child(odd) {
   background-color: rgb(36, 36, 36);
 }
+.testTable tr:nth-child(even) td.alternate {
+  background-color: #001b25;
+}
+.testTable tr:nth-child(odd) td.alternate {
+  background-color: #002f41;
+}
 .highlightRed {
   color: hsl(0, 100%, 50%);
 }
@@ -420,4 +426,7 @@ input[type="checkbox"] {
 }
 .lowlight {
   color: #666;
+}
+.skipped {
+  color: #000;
 }
