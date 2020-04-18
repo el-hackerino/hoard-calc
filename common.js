@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-const DEBUG = 0;
-const DEBUG_SINGLE_SOLUTION = 0;
+const DEBUG = 1;
+const DEBUG_SINGLE_SOLUTION = 1;
 const TARGET_QUALITY = 10;
 const URL_SEPARATOR = "|";
 
@@ -14,7 +14,7 @@ const TROOPS = [
 ];
 
 const TEMPLATES = [
-//  [[1,1,1,1,1], [1  ]], // 100,  0
+  [[1,1,1,1,1], [1  ]], // 100,  0
   [[2,2,2,2,2], [1  ]], // 100,  0
   [[3,2,2,2,2], [1,2  ]], // 105,  1
   [[3,3,2,2,1], [1,2  ]], // 100,  2 opens new levels

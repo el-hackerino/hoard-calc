@@ -13,7 +13,7 @@ if (RUN_SECONDARY_SEARCH) {
   TEST_TABLE_COLUMNS = ["Budget", "In L", "In Q", "Target L", "Gold", "L", "Q", "Time", 
     "Gold 2", "L 2", "Q 2", "Time 2", "Diff", "Diff %"];
   if (COMPARE_3_TYPES) TEST_TABLE_COLUMNS = [...TEST_TABLE_COLUMNS, "Gold 3", "L 3", "Q 3", "Time 3", "Diff 2", "Diff % 2"];
-  TEST_TABLE_COLUMNS = [...TEST_TABLE_COLUMNS, "Combos", "Length"];
+  TEST_TABLE_COLUMNS = [...TEST_TABLE_COLUMNS, "Combos", "Length", "Troops", "Method"];
 
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel",
     "bestQuality", "time", "bestCost2", "bestLevel2", "bestQuality2", "time2", "costDiff", "diffPercent"];
@@ -22,7 +22,7 @@ if (RUN_SECONDARY_SEARCH) {
   } else {
     TEST_TABLE_ATTRIBUTES = [...TEST_TABLE_ATTRIBUTES, "combos2"];
   }
-  TEST_TABLE_ATTRIBUTES = [...TEST_TABLE_ATTRIBUTES, "length"];
+  TEST_TABLE_ATTRIBUTES = [...TEST_TABLE_ATTRIBUTES, "length", "troopCounts", "bestMethod"];
 } else {
   TEST_TABLE_COLUMNS = ["Budget", "In Level", "In Quality", "Target Level", "Gold", "Level", "Quality", "Time", "Combos"];
   TEST_TABLE_ATTRIBUTES = ["initialBudget", "initialLevel", "initialQuality", "targetLevel", "bestCost", "bestLevel", "bestQuality", "time", "combos"];
@@ -213,7 +213,11 @@ function renderTestResults(solution1, solution2, solution3) {
     } else if (attribute == "diffPercent2" && solution1.costDiff2 > 0) {
       td.textContent = parseInt((solution1.costDiff2 / solution1.bestCost3) * 100);
     } else if (attribute == "length") {
-      td.textContent = solution2.bestSteps.length;
+      td.textContent = currentSolutions[solution1.id][solution3.bestMethod].bestSteps.length;
+    } else if (attribute == "troopCounts") {
+      td.textContent = currentSolutions[solution1.id][solution3.bestMethod].troopCounts;
+    } else if (attribute == "bestMethod") {
+      td.textContent = [solution3.bestMethod];
     } else {
       td.textContent = solution1[attribute];
     }

@@ -1,26 +1,18 @@
-can't reach anything -> string
+idea:
 can reach level but string can't reach quality -> brute force lvl1, should be pretty fast
-can reach level and quality with string -> additional brute force IF have extra troops? it definitely can be better
-
 
 Sometimes string can't reach Q but brute can't reach level (although in some cases both can be reached)!
  -> Add "ignore quality" option? how to reach both? try to make the "maxLevel" approach work again?
 need the checkbox for cases where we cant each level anyway?
 this would make an unfortunate implementation detail visible?
-sometimes reaching the level (keeping the quality) requires very suboptimal combos that we can't all include?
-try a combined combo list? probably too slow
+sometimes reaching the level (keeping the quality) requires very suboptimal combos that we can't all include
 file:///Users/admin/Misc/Code/hoard-master/index.html?0|7|2|3|4|4|3|1|0|83
 
-
-- if step 2 is worse, go back to result from 1; try to refine step 2 further overall
 - recheck label sizes on small screens
-- better treasure is super valuable at high levels -> readd slider or add some logic for saving?
+- better treasure is super valuable at high levels -> re-add slider or add some logic for saving?
 - check if the time comparisons for the intermediate updates slow things down
 
 help:
-how does refinement work?
-how does saving treasure work?
-how to improve performance?
 are purses/rings worth using at the beginning?
 - it IS possible to save some gold by starting off with some purses and rings, but it's never a significant amount
   (verify) unless you're low on high-value troops and are spending a lot of gold anyway. In such cases, waiting
@@ -30,7 +22,6 @@ only if you are low on higher-value troops.
 
 maybe:
 add quality upgrade percentage display for <100%
-add "export link" with all values
 
 
 Scrapped the "Save rare treasure" slider. I decided that it wasn't clear how it worked and it was too inconsistent to be really useful.

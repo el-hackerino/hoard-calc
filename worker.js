@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
-const BUDGET_MAX = [0, 10, 30, 40, 30, 18];
+const BUDGET_MAX = [0, 10, 35, 45, 45, 18];
 const INITIAL_GOLD = 1000000000;
 const MAX_DEPTH = 10;
-const SEND_INTERMEDIATE_UPDATES = 0;
-const UPDATE_INTERVAL = 3000;
+const SEND_INTERMEDIATE_UPDATES = 0; // Doesn't make sense as long as the intermediate solutions may be worse than a previous one
+const UPDATE_INTERVAL = 1000;
 const TIME_LIMIT = 5000;
 const TIME_LIMIT_2 = 10000;
 var levelXp = [];
@@ -14,13 +14,13 @@ var lastUpdateTime;
 var savedSolution;
 const SEARCH_OPTIONS = {maxLevel: 1, resort: 0};
 const RNG_MIN = [0, 0, 0, 0, 0, 0];
-const RNG_MAX = [0, 10, 100, 70, 40, 12];
-const RNG_IN_LEVEL_MIN = 0;
-const RNG_IN_LEVEL_MAX = 0;
+const RNG_MAX = [0, 10, 100, 100, 60, 20];
+const RNG_IN_LEVEL_MIN = 70;
+const RNG_IN_LEVEL_MAX = 100;
 const RNG_TARGET_LEVEL_MIN = 100;
-const RNG_TARGET_LEVEL_MAX = 160;
-const RNG_IN_QUALITY_MIN = 1;
-const RNG_IN_QUALITY_MAX = 1;
+const RNG_TARGET_LEVEL_MAX = 200;
+const RNG_IN_QUALITY_MIN = 10;
+const RNG_IN_QUALITY_MAX = 10;
 
 fillXpTable();
 makeCombos();
@@ -42,6 +42,7 @@ function runTestIteration(solution, i) {
   startMethod(solution, 1);
   stringModeSearch(solution);
   finalizeMethod(solution);
+  savedSolution = JSON.parse(JSON.stringify(solution));
   // Step 2 -----------------------------------------------------------------------------
   startMethod(solution, 2);
   // *** Reset: budget, bestCost, troopTotals, steps
@@ -62,38 +63,39 @@ function runTestIteration(solution, i) {
     makeCombosFromDraft(solution);
     bruteForceSearch(solution, SEARCH_OPTIONS, solution.bestSteps.length + (solution.targetQuality - solution.bestQuality), TIME_LIMIT);
   } else {
-    console.log("SKIPPING method 3, conditions not met");
+    if (DEBUG) console.log("SKIPPING method 2, conditions not met");
     solution.final = "skipped";
   }
   finalizeMethod(solution);
-  savedSolution = Object.assign(solution, null);
+  savedSolution = JSON.parse(JSON.stringify(compareSolutions(savedSolution, solution)));
   // TODO If solution got worse, keep old solution!! (does this still happen?)
   // Step 3 -----------------------------------------------------------------------------
   startMethod(solution, 3);
   if (solution.bestSteps.length <= MAX_DEPTH) {
-    // *** Reset: budget, reachedLevel, steps
+    // *** Reset: budget, reachedLevel, bestLevel, steps
     solution.budget = [...solution.initialBudget];
     for (let [i, value] of solution.budget.entries()) {
       solution.budget[i] = Math.min(BUDGET_MAX[i], Number(value));
     }
     solution.reachedLevel = solution.initialLevel >= solution.targetLevel;
+    solution.bestLevel = solution.initialLevel;
     solution.steps = [];
     solution.combos = allCombos;
-    console.log(solution);
     bruteForceSearch(solution, SEARCH_OPTIONS, MAX_DEPTH, TIME_LIMIT_2);
   } else {
-    console.log("SKIPPING method 3, conditions not met");
+    if (DEBUG) console.log("SKIPPING method 3, conditions not met");
     solution.final = "skipped";
   }
+  savedSolution = compareSolutions(savedSolution, solution);
+  solution.bestMethod = savedSolution.method;
   finalizeMethod(solution);
   // ------------------------------------------------------------------------------------
-  // Final comparison of solutions
-  if (!solution.runTests) postMessage(compareSolutions(savedSolution, solution));
+  // Production mode: Only return the best solution
+  if (!solution.runTests && !DEBUG_SINGLE_SOLUTION) postMessage(savedSolution);
 }
 
 function startMethod(solution, method) {
-  if (DEBUG)
-    console.log("Running method " + method);
+  if (DEBUG) console.log("Running method " + method);
   solution.final = 0;
   solution.method = method;
 }
@@ -105,7 +107,7 @@ function finalizeMethod(solution) {
     console.log("Done with method " + solution.method + ", result:");
     console.log(solution);
   }
-  if (solution.runTests) postMessage(solution);
+  if (solution.runTests || DEBUG_SINGLE_SOLUTION) postMessage(solution);
 }
 
 function compareSolutions(solution1, solution2) {
@@ -115,13 +117,13 @@ function compareSolutions(solution1, solution2) {
         return solution2; // s2 has improved level, reached goal or not is irrelevant
       } else if (solution2.bestLevel == solution1.bestLevel) {
         // Both at same level short of target, go for cheaper one
-        return (solution1.bestCost - solution2.bestCost) < 0 ? solution1 : solution2;
+        return (solution1.bestCost - solution2.bestCost) <= 0 ? solution1 : solution2;
       } else {
         return solution1; // s2 has lower level
       }
     } else if (solution2.reachedLevel) {
       // Both reached target level, go for cheaper one
-      return (solution1.bestCost - solution2.bestCost) < 0 ? solution1 : solution2;
+      return (solution1.bestCost - solution2.bestCost) <= 0 ? solution1 : solution2;
     } else {
       return solution1; // s2 has lower level
     }
@@ -273,14 +275,14 @@ function bruteForceSearch(solution, options, maxDepth, timeLimit) {
 function search(startCombo, depth, solution, options, maxDepth, timeLimit) {
   // console.log("Search: " + startCombo + ", " + depth);
   if (solution.final) {
-    console.log("Returning after timeout");
+    if (DEBUG) console.log("Returning after timeout");
     return;
   }
   if (new Date().getTime() - lastUpdateTime > UPDATE_INTERVAL) {
     lastUpdateTime = new Date().getTime();
     if (lastUpdateTime - solution.startTime > timeLimit) {
       solution.final = "timeout";
-      console.log("Timeout!");
+      if (DEBUG) console.log("Timeout!");
       return;
     } else if (SEND_INTERMEDIATE_UPDATES) {
       prepSolution(options, solution);
@@ -330,17 +332,17 @@ function search(startCombo, depth, solution, options, maxDepth, timeLimit) {
         // Improved quality but didn't reach goal
         if (DEBUG) console.log("New quality: " + solution.quality);
         saveBestSolution(solution);
-      // } else if (options.maxLevel && solution.level > solution.bestLevel && !reachedLevel) {
-      //   // Improved level but didn't reach goal
-      //   if (DEBUG) console.log("New level: " + solution.level);
-      //   saveBestSolution(solution);
+      } else if (options.maxLevel && solution.quality >= solution.bestQuality && !reachedLevel && solution.level > solution.bestLevel) {
+        if (DEBUG) console.log("New Level: " + solution.level);
+        saveBestSolution(solution);
       } else if (solution.sumCost < solution.bestCost
         && solution.quality >= solution.bestQuality
-        // && (!options.maxLevel || solution.level >= solution.bestLevel)
+        && (!options.maxLevel || solution.level >= solution.bestLevel)
         // Improved cost, same or higher quality, no goal change
         && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
         if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
         saveBestSolution(solution);
+
       }
       if ((!reachedQuality || !reachedLevel) && depth < maxDepth - 1) {
         search(comboNumber, depth + 1, solution, options, maxDepth, timeLimit);
