@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
 importScripts("common.js");
 
-const BUDGET_MAX = [0, 10, 35, 45, 45, 18];
+const BUDGET_MAX = [0, 10, 35, 45, 40, 18];
+const BUDGET_ADJUSTMENT = [0, 6, 17, 25, 6, 3];
 const INITIAL_GOLD = 1000000000;
 const MAX_DEPTH = 9;
 // const SEND_INTERMEDIATE_UPDATES = 0; // Doesn't make sense as long as the intermediate solutions may be worse than a previous one
@@ -14,7 +15,7 @@ var allCombos = [];
 var savedSolution;
 const SEARCH_OPTIONS = {maxLevel: 1, resort: 0};
 const RNG_MIN = [0, 0, 0, 0, 0, 0];
-const RNG_MAX = [0, 100, 200, 200, 100, 50];
+const RNG_MAX = [0, 100, 200, 200, 100, 30];
 const RNG_IN_LEVEL_MIN = 1;
 const RNG_IN_LEVEL_MAX = 60;
 const RNG_TARGET_LEVEL_MIN = 100;
@@ -54,12 +55,13 @@ function runTestIteration(solution, i) {
     solution.bestCost = INITIAL_GOLD;
     solution.budget = [...solution.troopCounts];
     for (let [i, value] of solution.budget.entries()) {
-      solution.budget[i] = Math.min(solution.initialBudget[i], Number(value) + 8); // Allow up to N additional troops of each type
+      solution.budget[i] = Math.min(solution.initialBudget[i], Number(value) + 5); // Allow up to N additional troops of each type
     }
     // Special case: excess STs
     if (!solution.reachedQuality && solution.initialBudget[5] >= 18) {
       solution.budget[5] = 18;
     }
+    solution.preadjustedBudget = [...solution.budget];
     makeCombosFromDraft(solution);
     bruteForceSearch(solution, SEARCH_OPTIONS, solution.bestSteps.length + (solution.targetQuality - solution.bestQuality), TIME_LIMIT);
   } else {
@@ -73,9 +75,9 @@ function runTestIteration(solution, i) {
   startMethod(solution, 3);
   if (solution.bestSteps.length <= MAX_DEPTH) {
     // *** Reset: budget, reachedLevel, bestLevel, steps
-    solution.budget = [...solution.initialBudget];
-    for (let [i, value] of solution.budget.entries()) {
-      solution.budget[i] = Math.min(BUDGET_MAX[i], Number(value));
+    // Optimization: use previous result as an approximation of the required budget
+    for (let i = 0; i < solution.budget.length; i++) {
+      solution.budget[i] = Math.min(solution.preadjustedBudget[i] + BUDGET_ADJUSTMENT[i], solution.initialBudget[i], BUDGET_MAX[i]);
     }
     solution.reachedLevel = solution.initialLevel >= solution.targetLevel;
     solution.bestLevel = solution.initialLevel;

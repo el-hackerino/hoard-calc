@@ -105,6 +105,8 @@ function render(message) {
       for (let t = 0; t < detailsFromSolution.troopCounts.length; t++) {
         if (detailsFromSolution.troopCounts[t]) {
           maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], detailsFromSolution.troopCounts[t]) : detailsFromSolution.troopCounts[t];
+          // Difference to method 2:
+          //maxTroopCounts[t] = maxTroopCounts[t] ? Math.max(maxTroopCounts[t], detailsFromSolution.troopCounts[t] - solution2.troopCounts[t]) : detailsFromSolution.troopCounts[t] - solution2.troopCounts[t];
         }
       }
     }
