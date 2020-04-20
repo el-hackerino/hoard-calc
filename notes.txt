@@ -1,5 +1,3 @@
-idea:
-can reach level but string can't reach quality -> brute force lvl1, should be pretty fast
 
 Sometimes string can't reach Q but brute can't reach level (although in some cases both can be reached)!
  -> Add "ignore quality" option? how to reach both? try to make the "maxLevel" approach work again?
@@ -7,10 +5,12 @@ need the checkbox for cases where we cant each level anyway?
 this would make an unfortunate implementation detail visible?
 sometimes reaching the level (keeping the quality) requires very suboptimal combos that we can't all include
 file:///Users/admin/Misc/Code/hoard-master/index.html?0|7|2|3|4|4|3|1|0|83
+Hopefully now it will only happen in very few borderline cases and using the BF solution will be fine
+
+issue: using rings in bf makes it much slower (2x?). But rings actually make sense sometimes, at least for reaching levels.
 
 - recheck label sizes on small screens
-- better treasure is super valuable at high levels -> re-add slider or add some logic for saving?
-- check if the time comparisons for the intermediate updates slow things down
+
 
 help:
 are purses/rings worth using at the beginning?
@@ -21,7 +21,10 @@ only if you are low on higher-value troops.
 
 
 maybe:
-add quality upgrade percentage display for <100%
+- add quality upgrade percentage display for <100%
+- can reach level but string can't reach quality -> brute force lvl1, should be pretty fast
+- better treasure is super valuable at high levels -> re-add slider or add some logic for saving?
+- check if the time comparisons for the intermediate updates slow things down -> yes, they add about 33%. rework with timers somehow?
 
 
 Scrapped the "Save rare treasure" slider. I decided that it wasn't clear how it worked and it was too inconsistent to be really useful.

@@ -3,24 +3,24 @@ importScripts("common.js");
 
 const BUDGET_MAX = [0, 10, 35, 45, 45, 18];
 const INITIAL_GOLD = 1000000000;
-const MAX_DEPTH = 10;
-const SEND_INTERMEDIATE_UPDATES = 0; // Doesn't make sense as long as the intermediate solutions may be worse than a previous one
-const UPDATE_INTERVAL = 1000;
+const MAX_DEPTH = 9;
+// const SEND_INTERMEDIATE_UPDATES = 0; // Doesn't make sense as long as the intermediate solutions may be worse than a previous one
+// const UPDATE_INTERVAL = 1000;
+// var lastUpdateTime;
 const TIME_LIMIT = 5000;
 const TIME_LIMIT_2 = 10000;
 var levelXp = [];
 var allCombos = [];
-var lastUpdateTime;
 var savedSolution;
 const SEARCH_OPTIONS = {maxLevel: 1, resort: 0};
 const RNG_MIN = [0, 0, 0, 0, 0, 0];
-const RNG_MAX = [0, 10, 100, 100, 60, 20];
-const RNG_IN_LEVEL_MIN = 70;
-const RNG_IN_LEVEL_MAX = 100;
+const RNG_MAX = [0, 100, 200, 200, 100, 50];
+const RNG_IN_LEVEL_MIN = 1;
+const RNG_IN_LEVEL_MAX = 60;
 const RNG_TARGET_LEVEL_MIN = 100;
 const RNG_TARGET_LEVEL_MAX = 200;
-const RNG_IN_QUALITY_MIN = 10;
-const RNG_IN_QUALITY_MAX = 10;
+const RNG_IN_QUALITY_MIN = 1;
+const RNG_IN_QUALITY_MAX = 5;
 
 fillXpTable();
 makeCombos();
@@ -54,7 +54,7 @@ function runTestIteration(solution, i) {
     solution.bestCost = INITIAL_GOLD;
     solution.budget = [...solution.troopCounts];
     for (let [i, value] of solution.budget.entries()) {
-      solution.budget[i] = Math.min(solution.initialBudget[i], Number(value) + 5);
+      solution.budget[i] = Math.min(solution.initialBudget[i], Number(value) + 8); // Allow up to N additional troops of each type
     }
     // Special case: excess STs
     if (!solution.reachedQuality && solution.initialBudget[5] >= 18) {
@@ -278,17 +278,17 @@ function search(startCombo, depth, solution, options, maxDepth, timeLimit) {
     if (DEBUG) console.log("Returning after timeout");
     return;
   }
-  if (new Date().getTime() - lastUpdateTime > UPDATE_INTERVAL) {
-    lastUpdateTime = new Date().getTime();
-    if (lastUpdateTime - solution.startTime > timeLimit) {
-      solution.final = "timeout";
-      if (DEBUG) console.log("Timeout!");
-      return;
-    } else if (SEND_INTERMEDIATE_UPDATES) {
-      prepSolution(options, solution);
-      postMessage(solution);
-    }
-  }
+  // if (new Date().getTime() - lastUpdateTime > UPDATE_INTERVAL) {
+  //   lastUpdateTime = new Date().getTime();
+  //   if (lastUpdateTime - solution.startTime > timeLimit) {
+  //     solution.final = "timeout";
+  //     if (DEBUG) console.log("Timeout!");
+  //     return;
+  //   } else if (SEND_INTERMEDIATE_UPDATES) {
+  //     prepSolution(options, solution);
+  //     postMessage(solution);
+  //   }
+  // }
 
   for (let comboNumber = startCombo; comboNumber < solution.combos.length; comboNumber++) {
     if (solution.final) {
@@ -323,7 +323,7 @@ function search(startCombo, depth, solution, options, maxDepth, timeLimit) {
       if (solution.level >= solution.targetLevel) {
         reachedLevel = true;
         if (!solution.reachedLevel) {
-          if (DEBUG) console.log("Reached target level!");
+          if (DEBUG) console.log("Reached target level! Cost: " + solution.sumCost);
           solution.reachedLevel = true;
           saveBestSolution(solution);
         }
@@ -336,11 +336,11 @@ function search(startCombo, depth, solution, options, maxDepth, timeLimit) {
         if (DEBUG) console.log("New Level: " + solution.level);
         saveBestSolution(solution);
       } else if (solution.sumCost < solution.bestCost
-        && solution.quality >= solution.bestQuality
-        && (!options.maxLevel || solution.level >= solution.bestLevel)
+        && ((!reachedQuality && solution.quality >= solution.bestQuality) || reachedQuality)
+        && (!options.maxLevel || (!reachedLevel && solution.level >= solution.bestLevel) || reachedLevel)
         // Improved cost, same or higher quality, no goal change
         && reachedQuality == solution.reachedQuality && reachedLevel == solution.reachedLevel) {
-        if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost);
+        if (DEBUG) console.log("New best cost at same goal status: " + solution.sumCost + ", level: " + solution.level);
         saveBestSolution(solution);
 
       }
@@ -384,7 +384,6 @@ function prepSolution(options, solution) {
 }
 
 function calculateStats(solution) {
-
   let step = solution.steps[solution.lastInsert];
   let prevQuality, prevXp, prevLevel, prevCost;
   if (solution.lastInsert == 0) {
