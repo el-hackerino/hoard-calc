@@ -22,7 +22,7 @@
     padding: 2px;
   }
   .formCell {
-    padding: 0px 5px;
+    padding: 0px 3px;
   }
   /* Sizes */
   .numberInput button {
@@ -73,7 +73,7 @@
     padding: 4px;
   }
   .formCell {
-    padding: 0px 8px;
+    padding: 0px 7px;
   }
   .mainTable td,
   .mainTable th {

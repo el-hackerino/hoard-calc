@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const DEBUG = 0;
-const DEBUG_SINGLE_SOLUTION = 1;
+const DEBUG_SINGLE_SOLUTION = 0;
 const TARGET_QUALITY = 10;
 const URL_SEPARATOR = "|";
 

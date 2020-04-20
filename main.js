@@ -23,6 +23,7 @@ const ALL_INPUTS = [
 const MAIN_TABLE_COLUMNS = ["Step", "Treasure", "Gold", "Level", "Quality"];
 const MAIN_TABLE_ATTRIBUTES = ["nr", "troops", "cost", "level", "quality"];
 var resultMessage;
+var showingHelp = false;
 var myWorker;
 
 prepare();
@@ -207,7 +208,7 @@ function updateResultMessage(solution) {
 
 function showMessage(message, hideTable, showSpinner, showStopButton) {
   if (message) document.getElementById("Message").innerHTML = message;
-  toggleElement("Results", !hideTable);
+  toggleElement("Results", !hideTable && !showingHelp);
   toggleElement("StopButton", showStopButton);
   document.getElementById("Spinner").style.display = showSpinner ? "inline-block" : "none";
 }
@@ -226,20 +227,26 @@ function hideMessage() {
 
 function showHelp() {
   document.getElementById("MainForm").classList.add("hidden");
-  document.getElementById("Message").classList.add("hidden");
+  document.getElementById("MessageContainer").classList.add("hidden");
   document.getElementById("Results").classList.add("hidden");
+  document.getElementById("PermaLink").classList.add("hidden");
+  document.getElementById("Footer").classList.add("hidden");
   document.getElementById("HelpButton").classList.add("hidden");
   document.getElementById("CloseButton").classList.remove("hidden");
   document.getElementById("Help").classList.remove("hidden");
   document.body.addEventListener("click", hideHelp, true);
+  showingHelp = true;
 }
 
 function hideHelp() {
   document.getElementById("MainForm").classList.remove("hidden");
-  document.getElementById("Message").classList.remove("hidden");
+  document.getElementById("MessageContainer").classList.remove("hidden");
   document.getElementById("Results").classList.remove("hidden");
+  document.getElementById("PermaLink").classList.remove("hidden");
+  document.getElementById("Footer").classList.remove("hidden");
   document.getElementById("HelpButton").classList.remove("hidden");
   document.getElementById("CloseButton").classList.add("hidden");
   document.getElementById("Help").classList.add("hidden");
   document.body.removeEventListener("click", hideHelp, true);
+  showingHelp = false;
 }

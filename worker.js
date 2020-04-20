@@ -297,8 +297,6 @@ function search(startCombo, depth, solution, options, maxDepth, timeLimit) {
       console.log("Returning after timeout");
       return;
     }
-    // console.log(solution.combos[comboNumber]);
-    // console.log("Combo " + comboNumber);
     var reachedQuality = false;
     var reachedLevel = false;
     solution.iterations++;
@@ -306,7 +304,6 @@ function search(startCombo, depth, solution, options, maxDepth, timeLimit) {
     if (solution.steps[depth]) {
       subtractFromTotal(solution, solution.combos[solution.steps[depth].combo]);
     }
-    // console.log("Setting step, totals: " + solution.troopTotals);
     solution.steps[depth] = {combo: comboNumber, comboId: solution.combos[comboNumber].id};
     solution.lastInsert = depth;
     addToTotal(solution, solution.combos[comboNumber]);
