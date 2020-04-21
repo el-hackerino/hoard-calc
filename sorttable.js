@@ -121,7 +121,7 @@ const sorttable = {
     for (var i = 0; i < table.tBodies[0].rows.length; i++) {
       let text = sorttable.getInnerText(table.tBodies[0].rows[i].cells[column]);
       if (text != "") {
-        if (text.match(/^-?[£$¤]?[\d,.]?%?$/)) {
+        if (text.match(/^-?[£$¤]?[\d,.]*?%?$/)) {
           return sorttable.sort_numeric;
         }
         // check for a date: dd/mm/yyyy or dd/mm/yy
