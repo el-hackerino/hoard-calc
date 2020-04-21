@@ -44,6 +44,7 @@ function runTestIteration(solution, i) {
   stringModeSearch(solution);
   finalizeMethod(solution);
   savedSolution = JSON.parse(JSON.stringify(solution));
+  solution.preadjustedBudget = [...solution.initialBudget];
   // Step 2 -----------------------------------------------------------------------------
   startMethod(solution, 2);
   // *** Reset: budget, bestCost, troopTotals, steps
