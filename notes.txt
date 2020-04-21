@@ -4,6 +4,8 @@ In these cases, reaching the level (keeping the quality) requires very suboptima
  -> Add "ignore quality" option? only for cases where we cant reach level?
 file:///Users/admin/Misc/Code/hoard-master/index.html?0|7|2|3|4|4|3|1|0|83
 Expecting rare and small effect
+Extreme case? file:///Users/admin/Misc/Code/hoard-master/index.html?0|20|19|33|37|50|1|1|0|200
+
 
 Maybe:
 - add quality upgrade percentage display for <100%

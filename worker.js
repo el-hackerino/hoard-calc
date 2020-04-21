@@ -58,7 +58,7 @@ function runTestIteration(solution, i) {
       solution.budget[i] = Math.min(solution.initialBudget[i], Number(value) + 5); // Allow up to N additional troops of each type
     }
     // Special case: excess STs
-    if (!solution.reachedQuality && solution.initialBudget[5] >= 18) {
+    if (!solution.reachedQuality && solution.initialBudget[5] >= 18 && solution.budget[5] < 18) {
       solution.budget[5] = 18;
     }
     solution.preadjustedBudget = [...solution.budget];
