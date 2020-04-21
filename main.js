@@ -77,10 +77,14 @@ function prepare() {
 }
 
 function processUrlParams() {
-  let params = window.location.search.slice(1).split(URL_SEPARATOR);
-  if (params && params.length == 10) {
-    for (let [i, input] of ALL_INPUTS.entries()) {
-      input.value = params[i];
+  let params;
+  for (let i = 0; i < 2; i++) {
+    params = window.location.search.slice(1).split(URL_SEPARATORS[i]);
+    if (params && params.length == 10) {
+      for (let [i, input] of ALL_INPUTS.entries()) {
+        input.value = params[i];
+      }
+      break;
     }
   }
 }

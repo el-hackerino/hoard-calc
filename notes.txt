@@ -6,6 +6,9 @@ file:///Users/admin/Misc/Code/hoard-master/index.html?0|7|2|3|4|4|3|1|0|83
 Expecting rare and small effect
 Extreme case? file:///Users/admin/Misc/Code/hoard-master/index.html?0|20|19|33|37|50|1|1|0|200
 
+Weird:
+file:///Users/admin/Misc/Code/hoard-master/index.html?0|20|19|33|37|20|1|1|0|180
+
 
 Maybe:
 - add quality upgrade percentage display for <100%
