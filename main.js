@@ -91,6 +91,14 @@ function processUrlParams() {
 
 function calculate() {
   if (DEBUG) console.log("Calculating.........................................................");
+  if (Number(INPUT_LEVEL.value) <= 0) INPUT_LEVEL.value = 1;
+  if (Number(INPUT_LEVEL.value) > 1000) INPUT_LEVEL.value = 1000;
+  if (Number(INPUT_TARGET_LEVEL.value) <= 0) INPUT_TARGET_LEVEL.value = 1;
+  if (Number(INPUT_TARGET_LEVEL.value) > 1000) INPUT_TARGET_LEVEL.value = 1000;
+  if (Number(INPUT_QUALITY.value) <= 0) INPUT_QUALITY.value = 1;
+  if (Number(INPUT_QUALITY.value) > 10) INPUT_QUALITY.value = 10;
+  if (Number(INPUT_XP.value) < 0) INPUT_XP.value = 0;
+  if (Number(INPUT_XP.value) > Number(INPUT_LEVEL.value) + 1) INPUT_XP.value = Number(INPUT_LEVEL.value) + 1;
   if (Number(INPUT_QUALITY.value) >= TARGET_QUALITY
     && Number(INPUT_LEVEL.value) >= Number(INPUT_TARGET_LEVEL.value)) {
     showMessage("No need to upgrade!", true, false);
