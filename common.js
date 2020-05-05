@@ -9,7 +9,7 @@ const TROOPS = [
   { shortName: "R", name: "Gold Ring",        percent: 10, xp: 25 },
   { shortName: "P", name: "Priest's Chalice", percent: 20, xp: 50 },
   { shortName: "K", name: "King's Crown",     percent: 25, xp: 100 },
-  { shortName: "G", name: "Genie' Lamp",      percent: 30, xp: 250 },
+  { shortName: "G", name: "Genie's Lamp",      percent: 30, xp: 250 },
   { shortName: "S", name: "Sacred Treasure",  percent: 50, xp: 500 }
 ];
 
