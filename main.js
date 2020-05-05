@@ -190,7 +190,13 @@ function render(workerMessage) {
   }
 
   const totalCostId = "TotalCost" + (DEBUG_SINGLE_SOLUTION ? solution.method : "1");
-  document.getElementById(totalCostId).innerHTML = solution.bestCost;
+  let bestCostString = "" + solution.bestCost;
+  let i = bestCostString.length - 3;
+  while (i > 0) {
+    bestCostString = bestCostString.slice(0, i) + " " + bestCostString.slice(i);
+    i -= 3;
+  }
+  document.getElementById(totalCostId).innerHTML = bestCostString;
 }
 
 function updateResultMessage(solution) {
