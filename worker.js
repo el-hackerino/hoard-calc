@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 importScripts("common.js");
 
 const BUDGET_MAX = [0, 10, 35, 45, 40, 18];

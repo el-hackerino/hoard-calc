@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const SHOW_STOP_BUTTON_AFTER = 10000;
 
 const TROOP_INPUTS = [

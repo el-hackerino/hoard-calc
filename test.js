@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const TEST_ITERATIONS = 1000;
 const RUN_SECONDARY_SEARCH = 1;
 const DETAILS_FROM_SOLUTION_TYPE = 3;
