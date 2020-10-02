@@ -567,6 +567,7 @@ function countTroops(arr) {
 function fillXpTable() {
   for (let i = 0; i <= 1000; i++) {
     levelXp[i] = 0.5 * i + 0.5 * i * i;
+    if (i == 1) levelXp[i]--; // Fix a bug that makes the game actually start at level 0
   }
 }
 
